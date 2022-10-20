@@ -1,37 +1,60 @@
-#include "Sistema.h"
+#include "Temp.h"
 
-/******************************************/
-/*               Variables                */
-/******************************************/
-temp_param tp;
-/******************************************/
-/*            Public Funtions             */
-/******************************************/
-void Sistem::init_temp(short unsigned int Beta, byte vcc, byte R25, byte Rd)
+/**
+ * 
+*/
+Temp::Temp(/* args */)
 {
-  tp.Rref = (float)R25 * 1000 * exp(-(float)Beta / (25 + 275.15));
-  tp.Beta = Beta;
-  tp.vcc = vcc;
-  tp.R25 = R25;
-  tp.Rd = Rd;
+  r25=0;
+  rser=0;    
+  beta=0;
+  sensePin=0;
 }
-
-temp Sistem::check_temp()
+/**
+ * 
+*/
+Temp::~Temp()
 {
-  temp ret;
-  ret.arduino = Sistem::calc_temp(0);
-  ret.driver = Sistem::calc_temp(1);
-  ret.suply = Sistem::calc_temp(2);
-  return ret;
 }
-/******************************************/
-/*            Private Funtions            */
-/******************************************/
-float Sistem::calc_temp(byte pin)
+/**
+ * Set series resistor in ohms
+*/
+void Temp::setRser(float R)
 {
-  float V_div_t = 0;
-  float R_NTC = 0;
-  V_div_t = (float)tp.vcc * ((float)(analogRead(pin) + 1) / (float)1024);
-  R_NTC = -tp.Rd * 1000 + (float)tp.vcc * (float)tp.Rd * 1000 / V_div_t;
-  return tp.Beta / log(R_NTC / tp.Rref) - 275.15;
+  rser=R;
+}
+/**
+ * Set Beta value
+*/
+void Temp::setBeta(float B)
+{
+  beta=B;
+}
+/**
+ * Set NTC resistenace at 25 degrees celcius, in ohms
+*/
+void Temp::setR25(float R)
+{
+  r25=R;
+}
+/**
+ * Set input pin
+*/
+void Temp::setPin(uint8_t pin)
+{
+  sensePin=pin;
+}
+/**
+ * Compute temperature at pin
+*/
+float Temp::calc_temp()
+{
+  // Compute voltage at the analog input
+  float vmeas=VCC*(float)analogRead(sensePin)/1023.0;
+  // Compute resistence of NTC
+  float rmeas=vmeas*rser/(VCC-vmeas);
+  // Calculate the inverse of the temperature in kelvin
+  float denum=log(rmeas/r25)/beta + 1.0/298.15;
+  // Compute temperature in Celcius
+  return 1.0/denum - 273.15;
 }

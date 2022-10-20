@@ -1,27 +1,21 @@
 #include "Arduino.h"
 
-typedef struct temperature
-{
-  float arduino;
-  float driver;
-  float suply;
-} temp;
+#define VCC 5
 
-typedef struct temtemperature_paramameters
+class Temp
 {
-  byte vcc;
-  byte R25;
-  byte Rd;
-  float Rref;
-  short unsigned int Beta;
-} temp_param;
-
-class Sistem
-{
-  public:
-    void init_temp(short unsigned int Beta, byte vcc, byte R25, byte Rd);
-    void(*resetFunc) (void) = 0;
-    temp check_temp();
   private:
-    float calc_temp(byte pin);
+    float r25;
+    float rser;    
+    float beta;
+    uint8_t sensePin;
+
+  public:
+    Temp();
+    ~Temp();
+    void setRser(float R);
+    void setBeta(float B);
+    void setR25(float R);
+    void setPin(uint8_t pin);
+    float calc_temp();
 };
