@@ -1,6 +1,10 @@
-#include "Arduino.h"
+#include <Arduino.h>
 
-#define VCC 5
+#ifndef Temp_H
+#define Temp_H
+
+#define VCC     5     // Supply voltage
+#define MAX_VAL 1023  // Input reading max value
 
 class Temp
 {
@@ -13,9 +17,11 @@ class Temp
   public:
     Temp();
     ~Temp();
+    //
     void setRser(float R);
     void setBeta(float B);
     void setR25(float R);
     void setPin(uint8_t pin);
-    float calc_temp();
+    float calcTemp();
 };
+#endif

@@ -1,8 +1,9 @@
 #include "Temp.h"
 
 /**
+ * @brief Constructor
  * 
-*/
+ */
 Temp::Temp(/* args */)
 {
   r25=0;
@@ -11,46 +12,58 @@ Temp::Temp(/* args */)
   sensePin=0;
 }
 /**
+ * @brief Destroy the Temp:: Temp object
  * 
-*/
+ */
 Temp::~Temp()
 {
 }
 /**
- * Set series resistor in ohms
-*/
+ * @brief Set series resistor value 
+ * 
+ * @param R Resistor value in ohms
+ */
 void Temp::setRser(float R)
 {
   rser=R;
 }
 /**
- * Set Beta value
-*/
+ * @brief Set Beta value
+ * 
+ * @param B value to be set
+ */
 void Temp::setBeta(float B)
 {
   beta=B;
 }
 /**
- * Set NTC resistenace at 25 degrees celcius, in ohms
-*/
+ * @brief Set NTC resistenace at 25 degrees celcius
+ * 
+ * @param R value in ohms
+ */
 void Temp::setR25(float R)
 {
   r25=R;
 }
 /**
- * Set input pin
-*/
+ * @brief Set input pin used tyo make the reading (Analog pin)
+ * 
+ * @param pin pin number
+ */
 void Temp::setPin(uint8_t pin)
 {
+  pinMode(pin, INPUT);
   sensePin=pin;
 }
 /**
- * Compute temperature at pin
-*/
-float Temp::calc_temp()
+ * @brief Compute temperature at pin
+ * 
+ * @return float The temperature in Celcius
+ */
+float Temp::calcTemp()
 {
   // Compute voltage at the analog input
-  float vmeas=VCC*(float)analogRead(sensePin)/1023.0;
+  float vmeas=VCC*(float)analogRead(sensePin)/MAX_VAL;
   // Compute resistence of NTC
   float rmeas=vmeas*rser/(VCC-vmeas);
   // Calculate the inverse of the temperature in kelvin
