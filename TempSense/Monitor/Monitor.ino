@@ -1,20 +1,25 @@
 #include "Temp.h"
-#include "Power.h"
+#include "Energy.h"
 #include "HeartBeat.h"
 #include <Wire.h>
 
-// Debug mode
-//#define DEBUG
-
-#define N_SENSORS 4
-#define CURRENT_PIN 0
+#define N_SENSORS         4
+#define VOLTAGE_PIN       6
+#define CURRENT_PIN       7
 // Sensors are all the same in this case 
-#define RSER  47000
-#define R25   68000
-#define BETA  4600 
+#define RSER              47e3  // ohm
+#define R25               68e3  // ohm
+#define BETA              4.6e3 // ohm
 // i2c
-#define INO_ADDR  8
-#define PI_ADDR   9
+#define INO_ADDR          8
+#define PI_ADDR           9
+// Voltage resistor divider
+#define RV_HI              33.8e3 // ohm
+#define RV_LO              9.85e3 // ohm
+// Currente ratio
+#define CURR_RATIO        66 // mV/A
+#define RC_HI             6.7e3 // ohm
+#define RC_LO             9.89e3 // ohm
 
 #define GET_CURRENT       '0'
 #define GET_VOLTAGE       '1'
@@ -26,10 +31,13 @@
 #define FLOAT_DEC         4
 #define LONG_LEN          11
 //
-#define BEAT_TIME         1000
+#define BEAT_TIME         1e3 // in ms
+// 
+#define TEST_FUNTIONS
+#define PRINT_TEST_PERIOD 1e3 // in ms
 
 Temp sensors[N_SENSORS];
-Power power;
+Energy energy;
 HeartBeat heart(LED_BUILTIN);
 uint8_t index;
 char cmd;
@@ -41,18 +49,46 @@ void stateMachine();
 void senFloat(float value);
 float readCurrent();
 float readVoltage();
-float energySpent();
 long timeToLive();
 void receiveHandler();
 void requestHandler();
 
+#ifdef TEST_FUNTIONS
+// Test functions fro standalone use
+void testFunctions()
+{
+  static unsigned long timer=millis();
+  // State machine to print values periodicly
+  if(millis()-timer>PRINT_TEST_PERIOD)
+  {
+    timer=millis();
+    Serial.println("Test Functions Subroutine");
+    // All temps test
+    Serial.print("Temp Readings: ");
+    for(uint8_t sensor=0; sensor<N_SENSORS; sensor++)
+      Serial.print("T"+String(sensor)+":"+String(sensors[sensor].calcTemp(), 4)+" | ");
+    // Voltage test
+    Serial.println("\nVoltage: "+String(readVoltage(), 4)+" V");
+    // Current test
+    Serial.println("Current: "+String(readCurrent(), 4)+" A");
+    // Power consuption
+    Serial.println("Power: "+String(readVoltage()*readCurrent(), 4)+" W");    
+    // Get Energy
+    Serial.println("Energy consumed: "+String(energy.energySpent(), 4)+" Wh");
+    // Get Runtime
+    Serial.println("Run time: "+String(millis()/1e3)+" s");
+    // Get Time to Live
+    Serial.println("Time to Live: "+String(timeToLive())+" s\n");
+  }  
+}
+#endif
 /**
  * @brief Setup function
  * 
  */
 void setup()
 {
-  #ifdef DEBUG
+  #ifdef TEST_FUNTIONS
     Serial.begin(500000);
   #endif
   // Initialize all sensors
@@ -61,6 +97,8 @@ void setup()
   Wire.begin(INO_ADDR);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
+  // Setup energy object
+  energy.begin(readVoltage, readCurrent);
 }
 /**
  * @brief Loop function
@@ -69,8 +107,11 @@ void setup()
 void loop()
 {
   stateMachine();
-  power.controller();
+  energy.controller();
   heart.controller();
+  #ifdef TEST_FUNTIONS
+    testFunctions();
+  #endif
 }
 /**
  * @brief 
@@ -86,7 +127,7 @@ void stateMachine()
     if(millis()-timer>BEAT_TIME)
     {
       timer=millis();
-      heart.beat(BEAT_TIME/10);
+      heart.beat(BEAT_TIME/100);
     }
   }
 }
@@ -134,8 +175,12 @@ void sendLong(long value)
  */
 float readCurrent()
 {
-  long voltage=map(analogRead(CURRENT_PIN), 0, 1023, 0, 5);
-  return ;
+  // Read pin voltage
+  float voltage = (float)map(analogRead(CURRENT_PIN), 0, 1023, 0, 33e4);
+  // Sensed voltage
+  voltage = voltage/100;
+  voltage = voltage*(RC_LO+RC_HI)/RC_LO;
+  return voltage/CURR_RATIO;
 }
 /**
  * @brief Read voltage
@@ -144,16 +189,11 @@ float readCurrent()
  */
 float readVoltage()
 {
-  return 222.6543;
-}
-/**
- * @brief Compute energy spent based on the current and voltages read
- * 
- * @return float Energy spent in Wh
- */
-float energySpent()
-{
-  return 0;
+  // Read pin voltage
+  float voltage = (float)map(analogRead(VOLTAGE_PIN), 0, 1023, 0, 33e4);
+  voltage = voltage/1.0e5;
+  // Sense voltage
+  return voltage*(RV_LO+RV_HI)/RV_LO;
 }
 /**
  * @brief Compute Time To Live based on the energy spent, the total capacity
@@ -163,8 +203,9 @@ float energySpent()
  */
 long timeToLive()
 {
-  return 50123;
-
+  float spentPerc = energy.energySpent()/TOTAL_CAPACITY;
+  long runTimeSec = millis()/1e3;
+  return (float)runTimeSec*(1-spentPerc)/spentPerc;
 }
 /**
  * @brief Handler for i2c requests
@@ -185,9 +226,9 @@ void requestHandler()
   else if(cmd==GET_CURRENT)
     sendFloat(readCurrent());
   else if(cmd==GET_ENERGY)
-    sendFloat(energySpent());
+    sendFloat(energy.energySpent());
   else if(cmd==GET_RUNTIME)
-    sendLong(millis());
+    sendLong(millis()/1e3);
   else if(cmd==GET_TIME_TO_LIVE)
     sendLong(timeToLive());
   else if(cmd-GET_TEMP_BASE<N_SENSORS)
@@ -197,9 +238,3 @@ void requestHandler()
   // Clear cmd
   cmd='x';
 }
-
-
-
-
-
-
