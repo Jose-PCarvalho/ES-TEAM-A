@@ -1,6 +1,7 @@
 #include "Temp.h"
 #include "Energy.h"
 #include "HeartBeat.h"
+#include "Fan.h"
 #include <Wire.h>
 
 #define N_SENSORS         4
@@ -20,7 +21,15 @@
 #define CURR_RATIO        66 // mV/A
 #define RC_HI             6.7e3 // ohm
 #define RC_LO             9.89e3 // ohm
-
+// Relay pins
+#define POWER_BOX_RELAY    6  //
+#define CONTROL_BOX_RELAY  7  // 
+#define AUX_RELAY_1        8  // Not used
+#define AUX_RELAY_2        9  // Not used
+#define N_FANS            2   // Number of fans for 
+#define ON_TEMP           35  // Turn fans on at this temperature
+#define HYSTERESIS        3   // Turn off when temperature reaches ON_TEMP-HYSTERESIS
+// I2C commands
 #define GET_CURRENT       '0'
 #define GET_VOLTAGE       '1'
 #define GET_ENERGY        '2'
@@ -30,12 +39,13 @@
 #define FLOAT_LEN         8
 #define FLOAT_DEC         4
 #define LONG_LEN          11
-//
+// Period for herat beat
 #define BEAT_TIME         1e3 // in ms
-// 
+// For testing purposes
 #define TEST_FUNTIONS
 #define PRINT_TEST_PERIOD 1e3 // in ms
 
+Fan fans[N_FANS];
 Temp sensors[N_SENSORS];
 Energy energy;
 HeartBeat heart(LED_BUILTIN);
@@ -44,6 +54,7 @@ char cmd;
 // Aux functions /////////
 // Setup functions
 void setSensors();
+void setRelays();
 // Utility Functions
 void stateMachine();
 void senFloat(float value);
@@ -99,6 +110,13 @@ void setup()
   Wire.onRequest(requestHandler);
   // Setup energy object
   energy.begin(readVoltage, readCurrent);
+  // Set up relays
+  pinMode(POWER_BOX_RELAY, OUTPUT);
+  pinMode(CONTROL_BOX_RELAY, OUTPUT);
+  //pinMode(AUX_RELAY_1, OUTPUT); // Uncomment when used
+  //pinMode(AUX_RELAY_2, OUTPUT); // Uncomment when used
+  // Initialize all fans
+  setRelays();
 }
 /**
  * @brief Loop function
@@ -109,6 +127,8 @@ void loop()
   stateMachine();
   energy.controller();
   heart.controller();
+  fans[0].controller();
+  fans[1].controller();
   #ifdef TEST_FUNTIONS
     testFunctions();
   #endif
@@ -237,4 +257,38 @@ void requestHandler()
    sendFloat(-200);
   // Clear cmd
   cmd='x';
+}
+/**
+ * @brief Wrap non static element in a static function for Fan class
+ * 
+ * @param sensor The sensor index to compute the temperature
+ * @return float The computed temerature
+ */
+float staticWrapper(uint8_t sensor)
+{
+  return sensors[sensor].calcTemp();
+}
+/**
+ * @brief Setup fans
+ * 
+ */
+void setRelays()
+{
+  // Power box fan in  position 0
+  fans[0].setPin(POWER_BOX_RELAY);
+  fans[0].setLogic(false);
+  // Control box fan in postion 1
+  fans[1].setPin(CONTROL_BOX_RELAY);
+  fans[1].setLogic(false);
+  // Default fan temperature configuration
+  for(uint8_t fan=0; fan < N_FANS; fan++)
+  {
+    fans[fan].setOnTemp(ON_TEMP);
+    fans[fan].setOffTemp(ON_TEMP-HYSTERESIS);
+    // Uses sensor 0 and 1 for the fans
+    fans[fan].setSensorIndex(fan);
+    fans[fan].setCalcTempFunc(staticWrapper);
+  }
+  // not used
+  // not used
 }
