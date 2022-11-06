@@ -7,6 +7,7 @@
 //#define DEBUG
 
 #define N_SENSORS 4
+#define CURRENT_PIN 0
 // Sensors are all the same in this case 
 #define RSER  47000
 #define R25   68000
@@ -133,7 +134,8 @@ void sendLong(long value)
  */
 float readCurrent()
 {
-  return 2.123;
+  long voltage=map(analogRead(CURRENT_PIN), 0, 1023, 0, 5);
+  return ;
 }
 /**
  * @brief Read voltage
