@@ -1,0 +1,8 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/pedrosr/pm/devel/lib/python3/dist-packages",
+        "/home/pedrosr/catkin_ws/devel/lib/python3/dist-packages",
+        "/home/pedrosr/atlantis_ws/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
+}
