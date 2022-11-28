@@ -4,8 +4,7 @@ import wiringpi
 
 LEFT_MOTOR_PIN = 13
 RIGHT_MOTOR_PIN = 18
-FRONT = 1
-BACKWARDS = -1
+
 
 
 # use 'GPIO naming'
@@ -18,8 +17,7 @@ def init_pwm():
 
 class Motor:
     def __init__(self,pin):
-        self.speed = 0  # from 0 to 100
-        self.dir = 1
+        self.speed = 0  # from -100 to 100
         self.base_pwm = 150 #1500 us
         self.pin = pin
         init_pwm()
@@ -27,11 +25,11 @@ class Motor:
         time.sleep(7) ##iniciar ESC
         print("Initiating Motor")
 
-    def set_speed(self,speed, direction=1):
-        # from 0 to 100
+    def set_speed(self,speed):
+        # from -100 to 100
         self.speed = speed
         self.dir = direction
-        wiringpi.pwmWrite(self.pin, self.base_pwm + 4*self.dir * self.speed / 10) #soma a 150 +/- 400
+        wiringpi.pwmWrite(self.pin, self.base_pwm + 4 * self.speed / 10) #soma a 150 +/- 400
         # range de 1100us a 1900us
 
     def stop(self):
@@ -39,9 +37,8 @@ class Motor:
 
 Motor_Right=Motor(RIGHT_MOTOR_PIN)
 Motor_Left=Motor(LEFT_MOTOR_PIN)
-direction=-1
 while True:
-    direction=-direction
-    for i in range(100):
-        Motor_Right.set_speed(i,direction)
-        Motor_Left.set_speed(i,direction)
+    for i in range(-100,100):
+        Motor_Right.set_speed(i)
+        Motor_Left.set_speed(i)
+        time.sleep(1)
