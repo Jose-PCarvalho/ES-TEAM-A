@@ -28,7 +28,6 @@ class Motor:
     def set_speed(self,speed):
         # from -100 to 100
         self.speed = speed
-        self.dir = direction
         wiringpi.pwmWrite(self.pin, self.base_pwm + 4 * self.speed / 10) #soma a 150 +/- 400
         # range de 1100us a 1900us
 
