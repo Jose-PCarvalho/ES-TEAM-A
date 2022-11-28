@@ -1,4 +1,4 @@
-#Node de visão
+## Node de visão
 
 Faz track de boias
 
@@ -8,4 +8,7 @@ Faz track de boias
 base: 
 ```javascript
 roslaunch es_vision vision.launch 
+```
+
+parâmetros:
 
