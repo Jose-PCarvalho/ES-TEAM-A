@@ -1,4 +1,6 @@
-## Node de visão
+# ***work in progress***
+
+# Node de visão
 
 Faz track de boias
 
@@ -6,9 +8,20 @@ Faz track de boias
 ## Usage/Examples
 
 base: 
-```javascript
+```
 roslaunch es_vision vision.launch 
 ```
 
 parâmetros:
 
+- ``` debug ```- mostra janela com barras para ajustar parâmetros. Automaticamente usa ```show_original```
+    * ```Frue```
+    * ```False```
+- ```show_original``` - mostra o vídeo original.
+    * ```Frue```
+    * ```False```
+
+exemplo:
+```
+roslaunch es_vision vision.launch debug:=True
+```
