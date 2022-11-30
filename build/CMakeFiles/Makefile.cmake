@@ -15,6 +15,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "catkin/catkin_generated/version/package.cmake"
   "catkin_generated/installspace/_setup_util.py"
   "catkin_generated/order_packages.cmake"
+<<<<<<< HEAD
   "ros-mpu9250-ahrs/imu_filter_madgwick/catkin_generated/ordered_paths.cmake"
   "ros-mpu9250-ahrs/imu_filter_madgwick/catkin_generated/package.cmake"
   "ros-mpu9250-ahrs/mpu9250-driver/catkin_generated/ordered_paths.cmake"
@@ -54,6 +55,21 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/opt/ros/noetic/share/bond/cmake/bondConfig.cmake"
   "/opt/ros/noetic/share/bondcpp/cmake/bondcppConfig-version.cmake"
   "/opt/ros/noetic/share/bondcpp/cmake/bondcppConfig.cmake"
+=======
+  "motor_ctrl/catkin_generated/ordered_paths.cmake"
+  "motor_ctrl/catkin_generated/package.cmake"
+  "visao/catkin_generated/es_vision-msg-extras.cmake.develspace.in"
+  "visao/catkin_generated/es_vision-msg-extras.cmake.installspace.in"
+  "visao/catkin_generated/ordered_paths.cmake"
+  "visao/catkin_generated/package.cmake"
+  "visao/cmake/es_vision-genmsg.cmake"
+  "/home/pedrosr/ES-TEAM-A/devel/share/es_vision/cmake/es_vision-msg-paths.cmake"
+  "/home/pedrosr/ES-TEAM-A/src/CMakeLists.txt"
+  "/home/pedrosr/ES-TEAM-A/src/motor_ctrl/CMakeLists.txt"
+  "/home/pedrosr/ES-TEAM-A/src/motor_ctrl/package.xml"
+  "/home/pedrosr/ES-TEAM-A/src/visao/CMakeLists.txt"
+  "/home/pedrosr/ES-TEAM-A/src/visao/package.xml"
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
   "/opt/ros/noetic/share/catkin/cmake/all.cmake"
   "/opt/ros/noetic/share/catkin/cmake/assert.cmake"
   "/opt/ros/noetic/share/catkin/cmake/atomic_configure_file.cmake"
@@ -387,11 +403,16 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "gtest/CMakeFiles/CMakeDirectoryInformation.cmake"
   "gtest/googlemock/CMakeFiles/CMakeDirectoryInformation.cmake"
   "gtest/googletest/CMakeFiles/CMakeDirectoryInformation.cmake"
+<<<<<<< HEAD
   "ros-sensor_msgs_ext/CMakeFiles/CMakeDirectoryInformation.cmake"
   "ros-mpu9250-ahrs/mpu9250-driver/CMakeFiles/CMakeDirectoryInformation.cmake"
   "ros-mpu9250-ahrs/tf2_geometry_msgs/CMakeFiles/CMakeDirectoryInformation.cmake"
   "ros-mpu9250-ahrs/imu_filter_madgwick/CMakeFiles/CMakeDirectoryInformation.cmake"
   "TFmini-ROS/tfmini_ros/CMakeFiles/CMakeDirectoryInformation.cmake"
+=======
+  "visao/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "motor_ctrl/CMakeFiles/CMakeDirectoryInformation.cmake"
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
   )
 
 # Dependency information for all targets:

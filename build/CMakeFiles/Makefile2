@@ -54,21 +54,31 @@ CMAKE_BINARY_DIR = /home/ubuntu/ES-TEAM-A/build
 
 # The main recursive "all" target.
 all: gtest/all
+<<<<<<< HEAD
 all: ros-sensor_msgs_ext/all
 all: ros-mpu9250-ahrs/mpu9250-driver/all
 all: ros-mpu9250-ahrs/tf2_geometry_msgs/all
 all: ros-mpu9250-ahrs/imu_filter_madgwick/all
 all: TFmini-ROS/tfmini_ros/all
+=======
+all: visao/all
+all: motor_ctrl/all
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
 
 .PHONY : all
 
 # The main recursive "preinstall" target.
 preinstall: gtest/preinstall
+<<<<<<< HEAD
 preinstall: ros-sensor_msgs_ext/preinstall
 preinstall: ros-mpu9250-ahrs/mpu9250-driver/preinstall
 preinstall: ros-mpu9250-ahrs/tf2_geometry_msgs/preinstall
 preinstall: ros-mpu9250-ahrs/imu_filter_madgwick/preinstall
 preinstall: TFmini-ROS/tfmini_ros/preinstall
+=======
+preinstall: visao/preinstall
+preinstall: motor_ctrl/preinstall
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
 
 .PHONY : preinstall
 
@@ -79,11 +89,16 @@ clean: CMakeFiles/clean_test_results.dir/clean
 clean: CMakeFiles/tests.dir/clean
 clean: CMakeFiles/download_extra_data.dir/clean
 clean: gtest/clean
+<<<<<<< HEAD
 clean: ros-sensor_msgs_ext/clean
 clean: ros-mpu9250-ahrs/mpu9250-driver/clean
 clean: ros-mpu9250-ahrs/tf2_geometry_msgs/clean
 clean: ros-mpu9250-ahrs/imu_filter_madgwick/clean
 clean: TFmini-ROS/tfmini_ros/clean
+=======
+clean: visao/clean
+clean: motor_ctrl/clean
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
 
 .PHONY : clean
 
@@ -163,6 +178,7 @@ gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest.dir/clean
 .PHONY : gtest/googletest/clean
 
 #=============================================================================
+<<<<<<< HEAD
 # Directory level rules for directory ros-mpu9250-ahrs/imu_filter_madgwick
 
 # Recursive "all" directory target.
@@ -311,6 +327,27 @@ ros-mpu9250-ahrs/tf2_geometry_msgs/clean: ros-mpu9250-ahrs/tf2_geometry_msgs/CMa
 
 #=============================================================================
 # Directory level rules for directory ros-sensor_msgs_ext
+=======
+# Directory level rules for directory motor_ctrl
+
+# Recursive "all" directory target.
+motor_ctrl/all:
+
+.PHONY : motor_ctrl/all
+
+# Recursive "preinstall" directory target.
+motor_ctrl/preinstall:
+
+.PHONY : motor_ctrl/preinstall
+
+# Recursive "clean" directory target.
+motor_ctrl/clean:
+
+.PHONY : motor_ctrl/clean
+
+#=============================================================================
+# Directory level rules for directory visao
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
 
 # Recursive "all" directory target.
 ros-sensor_msgs_ext/all: ros-sensor_msgs_ext/CMakeFiles/sensor_msgs_ext_generate_messages.dir/all

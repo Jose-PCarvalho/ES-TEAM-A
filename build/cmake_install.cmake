@@ -130,12 +130,18 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+<<<<<<< HEAD
   include("/home/ubuntu/ES-TEAM-A/build/gtest/cmake_install.cmake")
   include("/home/ubuntu/ES-TEAM-A/build/ros-sensor_msgs_ext/cmake_install.cmake")
   include("/home/ubuntu/ES-TEAM-A/build/ros-mpu9250-ahrs/mpu9250-driver/cmake_install.cmake")
   include("/home/ubuntu/ES-TEAM-A/build/ros-mpu9250-ahrs/tf2_geometry_msgs/cmake_install.cmake")
   include("/home/ubuntu/ES-TEAM-A/build/ros-mpu9250-ahrs/imu_filter_madgwick/cmake_install.cmake")
   include("/home/ubuntu/ES-TEAM-A/build/TFmini-ROS/tfmini_ros/cmake_install.cmake")
+=======
+  include("/home/pedrosr/ES-TEAM-A/build/gtest/cmake_install.cmake")
+  include("/home/pedrosr/ES-TEAM-A/build/visao/cmake_install.cmake")
+  include("/home/pedrosr/ES-TEAM-A/build/motor_ctrl/cmake_install.cmake")
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
 
 endif()
 

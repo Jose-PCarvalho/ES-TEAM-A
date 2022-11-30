@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/ES-TEAM-A/devel
+
+Name: mpu9250-driver
+Description: Description of mpu9250-driver
+Version: 0.1.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

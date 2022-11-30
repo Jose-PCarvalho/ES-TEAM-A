@@ -1,0 +1,29 @@
+(cl:defpackage sensor_msgs_ext-msg
+  (:use )
+  (:export
+   "<ACCELEROMETER>"
+   "ACCELEROMETER"
+   "<ANALOG_VOLTAGE>"
+   "ANALOG_VOLTAGE"
+   "<AXIS_STATE>"
+   "AXIS_STATE"
+   "<COVARIANCE>"
+   "COVARIANCE"
+   "<GNSS_FIX>"
+   "GNSS_FIX"
+   "<GNSS_POSITION>"
+   "GNSS_POSITION"
+   "<GNSS_TRACK>"
+   "GNSS_TRACK"
+   "<GYROSCOPE>"
+   "GYROSCOPE"
+   "<MAGNETOMETER>"
+   "MAGNETOMETER"
+   "<PROXIMITY>"
+   "PROXIMITY"
+   "<TEMPERATURE>"
+   "TEMPERATURE"
+   "<TIME_REFERENCE>"
+   "TIME_REFERENCE"
+  ))
+

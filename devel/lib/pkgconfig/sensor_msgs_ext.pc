@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/ES-TEAM-A/devel
+
+Name: sensor_msgs_ext
+Description: Description of sensor_msgs_ext
+Version: 0.1.0
+Cflags: -I/home/ubuntu/ES-TEAM-A/devel/include
+Libs: -L${prefix}/lib 
+Requires: message_runtime

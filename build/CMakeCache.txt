@@ -535,6 +535,7 @@ message_generation_DIR:PATH=/opt/ros/noetic/share/message_generation/cmake
 message_runtime_DIR:PATH=/opt/ros/noetic/share/message_runtime/cmake
 
 //Value Computed by CMake
+<<<<<<< HEAD
 mpu9250-driver_BINARY_DIR:STATIC=/home/ubuntu/ES-TEAM-A/build/ros-mpu9250-ahrs/mpu9250-driver
 
 //Value Computed by CMake
@@ -548,6 +549,12 @@ nodelet_DIR:PATH=/opt/ros/noetic/share/nodelet/cmake
 
 //The directory containing a CMake configuration file for orocos_kdl.
 orocos_kdl_DIR:PATH=/usr/share/orocos_kdl/cmake
+=======
+motor_ctrl_BINARY_DIR:STATIC=/home/pedrosr/ES-TEAM-A/build/motor_ctrl
+
+//Value Computed by CMake
+motor_ctrl_SOURCE_DIR:STATIC=/home/pedrosr/ES-TEAM-A/src/motor_ctrl
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
 
 //The directory containing a CMake configuration file for pluginlib.
 pluginlib_DIR:PATH=/opt/ros/noetic/share/pluginlib/cmake
@@ -783,7 +790,11 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
+<<<<<<< HEAD
 CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=9
+=======
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=6
+>>>>>>> 309d6c3f0d5cc3d58b936d72160d8f981e6d4ebc
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
