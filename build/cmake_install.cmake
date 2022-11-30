@@ -1,8 +1,8 @@
-# Install script for directory: /home/pedrosr/ES-TEAM-A/src
+# Install script for directory: /home/ubuntu/ES-TEAM-A/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/pedrosr/ES-TEAM-A/install")
+  set(CMAKE_INSTALL_PREFIX "/home/ubuntu/ES-TEAM-A/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -49,89 +49,93 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/pedrosr/ES-TEAM-A/install/_setup_util.py")
+   "/home/ubuntu/ES-TEAM-A/install/_setup_util.py")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/pedrosr/ES-TEAM-A/install" TYPE PROGRAM FILES "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/_setup_util.py")
+file(INSTALL DESTINATION "/home/ubuntu/ES-TEAM-A/install" TYPE PROGRAM FILES "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/_setup_util.py")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/pedrosr/ES-TEAM-A/install/env.sh")
+   "/home/ubuntu/ES-TEAM-A/install/env.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/pedrosr/ES-TEAM-A/install" TYPE PROGRAM FILES "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/env.sh")
+file(INSTALL DESTINATION "/home/ubuntu/ES-TEAM-A/install" TYPE PROGRAM FILES "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/env.sh")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/pedrosr/ES-TEAM-A/install/setup.bash;/home/pedrosr/ES-TEAM-A/install/local_setup.bash")
+   "/home/ubuntu/ES-TEAM-A/install/setup.bash;/home/ubuntu/ES-TEAM-A/install/local_setup.bash")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/pedrosr/ES-TEAM-A/install" TYPE FILE FILES
-    "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/setup.bash"
-    "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/local_setup.bash"
+file(INSTALL DESTINATION "/home/ubuntu/ES-TEAM-A/install" TYPE FILE FILES
+    "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/setup.bash"
+    "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/local_setup.bash"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/pedrosr/ES-TEAM-A/install/setup.sh;/home/pedrosr/ES-TEAM-A/install/local_setup.sh")
+   "/home/ubuntu/ES-TEAM-A/install/setup.sh;/home/ubuntu/ES-TEAM-A/install/local_setup.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/pedrosr/ES-TEAM-A/install" TYPE FILE FILES
-    "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/setup.sh"
-    "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/local_setup.sh"
+file(INSTALL DESTINATION "/home/ubuntu/ES-TEAM-A/install" TYPE FILE FILES
+    "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/setup.sh"
+    "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/local_setup.sh"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/pedrosr/ES-TEAM-A/install/setup.zsh;/home/pedrosr/ES-TEAM-A/install/local_setup.zsh")
+   "/home/ubuntu/ES-TEAM-A/install/setup.zsh;/home/ubuntu/ES-TEAM-A/install/local_setup.zsh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/pedrosr/ES-TEAM-A/install" TYPE FILE FILES
-    "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/setup.zsh"
-    "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/local_setup.zsh"
+file(INSTALL DESTINATION "/home/ubuntu/ES-TEAM-A/install" TYPE FILE FILES
+    "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/setup.zsh"
+    "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/local_setup.zsh"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/pedrosr/ES-TEAM-A/install/.rosinstall")
+   "/home/ubuntu/ES-TEAM-A/install/.rosinstall")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/pedrosr/ES-TEAM-A/install" TYPE FILE FILES "/home/pedrosr/ES-TEAM-A/build/catkin_generated/installspace/.rosinstall")
+file(INSTALL DESTINATION "/home/ubuntu/ES-TEAM-A/install" TYPE FILE FILES "/home/ubuntu/ES-TEAM-A/build/catkin_generated/installspace/.rosinstall")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/pedrosr/ES-TEAM-A/build/gtest/cmake_install.cmake")
-  include("/home/pedrosr/ES-TEAM-A/build/visao/cmake_install.cmake")
+  include("/home/ubuntu/ES-TEAM-A/build/gtest/cmake_install.cmake")
+  include("/home/ubuntu/ES-TEAM-A/build/ros-sensor_msgs_ext/cmake_install.cmake")
+  include("/home/ubuntu/ES-TEAM-A/build/ros-mpu9250-ahrs/mpu9250-driver/cmake_install.cmake")
+  include("/home/ubuntu/ES-TEAM-A/build/ros-mpu9250-ahrs/tf2_geometry_msgs/cmake_install.cmake")
+  include("/home/ubuntu/ES-TEAM-A/build/ros-mpu9250-ahrs/imu_filter_madgwick/cmake_install.cmake")
+  include("/home/ubuntu/ES-TEAM-A/build/TFmini-ROS/tfmini_ros/cmake_install.cmake")
 
 endif()
 
@@ -143,5 +147,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/pedrosr/ES-TEAM-A/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ubuntu/ES-TEAM-A/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,2 +1,2 @@
-visao
--DCATKIN_DEVEL_PREFIX=/home/pedrosr/ES-TEAM-A/devel -DCMAKE_INSTALL_PREFIX=/home/pedrosr/ES-TEAM-A/install -G Unix Makefiles
+TFmini-ROS/tfmini_ros:ros-mpu9250-ahrs/imu_filter_madgwick:ros-mpu9250-ahrs/mpu9250-driver:ros-mpu9250-ahrs/tf2_geometry_msgs:ros-sensor_msgs_ext
+-DCATKIN_DEVEL_PREFIX=/home/ubuntu/ES-TEAM-A/devel -DCMAKE_INSTALL_PREFIX=/home/ubuntu/ES-TEAM-A/install -G Unix Makefiles
