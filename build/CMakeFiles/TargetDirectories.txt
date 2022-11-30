@@ -82,3 +82,10 @@
 /home/pedrosr/ES-TEAM-A/build/visao/CMakeFiles/es_vision_genlisp.dir
 /home/pedrosr/ES-TEAM-A/build/visao/CMakeFiles/sensor_msgs_generate_messages_nodejs.dir
 /home/pedrosr/ES-TEAM-A/build/visao/CMakeFiles/es_vision_gencpp.dir
+/home/pedrosr/ES-TEAM-A/build/motor_ctrl/CMakeFiles/install/strip.dir
+/home/pedrosr/ES-TEAM-A/build/motor_ctrl/CMakeFiles/install/local.dir
+/home/pedrosr/ES-TEAM-A/build/motor_ctrl/CMakeFiles/install.dir
+/home/pedrosr/ES-TEAM-A/build/motor_ctrl/CMakeFiles/list_install_components.dir
+/home/pedrosr/ES-TEAM-A/build/motor_ctrl/CMakeFiles/rebuild_cache.dir
+/home/pedrosr/ES-TEAM-A/build/motor_ctrl/CMakeFiles/edit_cache.dir
+/home/pedrosr/ES-TEAM-A/build/motor_ctrl/CMakeFiles/test.dir

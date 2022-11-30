@@ -7,8 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/pedrosr/ES-TEAM-A/devel:$CMAKE_PREFIX_PATH"
-export LD_LIBRARY_PATH="/home/pedrosr/ES-TEAM-A/devel/lib:$LD_LIBRARY_PATH"
 export PWD='/home/pedrosr/ES-TEAM-A/build'
-export ROSLISP_PACKAGE_DIRECTORIES="/home/pedrosr/ES-TEAM-A/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
-export ROS_PACKAGE_PATH="/home/pedrosr/ES-TEAM-A/src:$ROS_PACKAGE_PATH"

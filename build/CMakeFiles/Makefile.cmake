@@ -13,6 +13,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "catkin/catkin_generated/version/package.cmake"
   "catkin_generated/installspace/_setup_util.py"
   "catkin_generated/order_packages.cmake"
+  "motor_ctrl/catkin_generated/ordered_paths.cmake"
+  "motor_ctrl/catkin_generated/package.cmake"
   "visao/catkin_generated/es_vision-msg-extras.cmake.develspace.in"
   "visao/catkin_generated/es_vision-msg-extras.cmake.installspace.in"
   "visao/catkin_generated/ordered_paths.cmake"
@@ -20,6 +22,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "visao/cmake/es_vision-genmsg.cmake"
   "/home/pedrosr/ES-TEAM-A/devel/share/es_vision/cmake/es_vision-msg-paths.cmake"
   "/home/pedrosr/ES-TEAM-A/src/CMakeLists.txt"
+  "/home/pedrosr/ES-TEAM-A/src/motor_ctrl/CMakeLists.txt"
+  "/home/pedrosr/ES-TEAM-A/src/motor_ctrl/package.xml"
   "/home/pedrosr/ES-TEAM-A/src/visao/CMakeLists.txt"
   "/home/pedrosr/ES-TEAM-A/src/visao/package.xml"
   "/opt/ros/noetic/share/catkin/cmake/all.cmake"
@@ -231,6 +235,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "gtest/googlemock/CMakeFiles/CMakeDirectoryInformation.cmake"
   "gtest/googletest/CMakeFiles/CMakeDirectoryInformation.cmake"
   "visao/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "motor_ctrl/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
