@@ -8,6 +8,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/CompressedImage.h>
 #include <geometry_msgs/Point.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
@@ -41,7 +42,7 @@ void detect_cb (const geometry_msgs::PointConstPtr& msg)
     //ROS_WARN("got detect point %d", msg->z);
 }
 
-void video_cb (const sensor_msgs::ImageConstPtr& msg)
+void video_cb (const sensor_msgs::CompressedImageConstPtr& msg)
 {
     cv_bridge::CvImagePtr cam;
 
@@ -74,7 +75,7 @@ int main(int argc, char** argv)
     ros::Publisher pub;
     pub = nh.advertise<sensor_msgs::Image>("/vision/final", 1);
 
-    sub_video = nh.subscribe("/vision/video_raw",1,video_cb);
+    sub_video = nh.subscribe("/raspicam_node/image/compressed",1,video_cb);
     sub_track = nh.subscribe("/vision/tracker",1,track_cb);
     sub_detect = nh.subscribe("/vision/point",1,detect_cb);
 

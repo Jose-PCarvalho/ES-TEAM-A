@@ -10,6 +10,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/CompressedImage.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <geometry_msgs/Point.h>
@@ -111,10 +112,10 @@ void update_image_cont()
     cv_bridge::CvImagePtr mask_bridge(new cv_bridge::CvImage);
     cv_bridge::CvImagePtr contours_bridge(new cv_bridge::CvImage);
 
-    mask_bridge->encoding = "bgr8";
+    mask_bridge->encoding = "8UC";
     mask_bridge->image = mask;
 
-    contours_bridge->encoding = "bgr8";
+    contours_bridge->encoding = "8UC";
     contours_bridge->image = mask;
 
     mask_pub.publish(mask_bridge->toImageMsg());
@@ -128,7 +129,7 @@ void update_image_cont()
     pub.publish(pt_msg);
 }
 
-void callback (const sensor_msgs::ImageConstPtr& cam_msg)
+void callback (const sensor_msgs::CompressedImageConstPtr& cam_msg)
 {
     cv_bridge::CvImagePtr cam, res;
     sensor_msgs::ImagePtr out_msg;
@@ -159,8 +160,8 @@ int main(int argc, char** argv)
     ros::Subscriber sub, sub_params;
     pub = nh.advertise<geometry_msgs::Point>("/vision/point", 1);
     area_pub = nh.advertise<std_msgs::Float32>("/vision/area", 1);
-    contours_pub = nh.advertise<std_msgs::Float32>("/vision/contours", 1);
-    mask_pub = nh.advertise<std_msgs::Float32>("/vision/mask", 1);
+    contours_pub = nh.advertise<sensor_msgs::Image>("/vision/contours", 1);
+    mask_pub = nh.advertise<sensor_msgs::Image>("/vision/mask", 1);
 
     nh.param<int>("/H_MIN", H_MIN, 0);
     nh.param<int>("/H_MAX", H_MAX, 255);
@@ -176,7 +177,7 @@ int main(int argc, char** argv)
 
     sub_params = nh.subscribe("/vision/seg_params",1,update_params);
 
-    sub = nh.subscribe("/video_raw", 1, callback);    
+    sub = nh.subscribe("/raspicam_node/image/compressed", 1, callback);    
 
     while (ros::ok())
     {
