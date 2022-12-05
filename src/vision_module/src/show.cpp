@@ -67,7 +67,7 @@ void video_cb (const sensor_msgs::CompressedImageConstPtr& msg)
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "/vision/display");
+    ros::init(argc, argv, "vision/display");
     ros::NodeHandle nh;
   
     ros::Subscriber sub_video, sub_track, sub_detect;
