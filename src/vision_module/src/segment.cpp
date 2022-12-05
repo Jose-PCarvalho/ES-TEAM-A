@@ -112,10 +112,10 @@ void update_image_cont()
     cv_bridge::CvImagePtr mask_bridge(new cv_bridge::CvImage);
     cv_bridge::CvImagePtr contours_bridge(new cv_bridge::CvImage);
 
-    mask_bridge->encoding = "8UC";
+    mask_bridge->encoding = "mono8";
     mask_bridge->image = mask;
 
-    contours_bridge->encoding = "8UC";
+    contours_bridge->encoding = "mono8";
     contours_bridge->image = mask;
 
     mask_pub.publish(mask_bridge->toImageMsg());
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
     nh.param<bool>("/debug", debug, "False");
     //eval_debug();
 
-    sub_params = nh.subscribe("/vision/seg_params",1,update_params);
+    sub_params = nh.subscribe("/vision_module/seg_params",1,update_params);
 
     sub = nh.subscribe("/raspicam_node/image/compressed", 1, callback);    
 
