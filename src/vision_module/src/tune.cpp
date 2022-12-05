@@ -52,7 +52,7 @@ void createTrackbars()
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "/vision_module/segment");
+    ros::init(argc, argv, "vision_module_segment");
     ros::NodeHandle nh;
   
     ros::Subscriber sub;

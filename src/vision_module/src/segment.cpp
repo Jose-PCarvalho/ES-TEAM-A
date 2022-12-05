@@ -154,7 +154,7 @@ void callback (const sensor_msgs::CompressedImageConstPtr& cam_msg)
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "vision/segment");
+    ros::init(argc, argv, "vision_segment");
     ros::NodeHandle nh;
   
     ros::Subscriber sub, sub_params;

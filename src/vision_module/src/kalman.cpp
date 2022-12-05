@@ -30,7 +30,7 @@ void callback (const geometry_msgs::PointConstPtr msg)
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "vision/kalman");
+    ros::init(argc, argv, "vision_kalman");
     ros::NodeHandle nh;
   
     ros::Subscriber sub;
