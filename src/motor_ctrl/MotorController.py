@@ -10,6 +10,7 @@ def init_pwm():
     wiringpi.wiringPiSetupGpio()
     wiringpi.pwmSetClock(192)
     wiringpi.pwmSetRange(2000)
+    wiringpi.pwmSetMode(wiringpi.GPIO.PWM_MODE_MS)
 
 class Motor:
     def __init__(self,pin):
@@ -17,7 +18,8 @@ class Motor:
         self.base_pwm = 150 #1500 us
         self.pin = pin
         init_pwm()
-        wiringpi.pwmWrite(pin, self.base_pwm)
+        wiringpi.pinMode(self.pin, wiringpi.GPIO.PWM_OUTPUT)
+        wiringpi.pwmWrite(self.pin, self.base_pwm)
         time.sleep(7) ##iniciar ESC
         print("Initiating Motor")
 
