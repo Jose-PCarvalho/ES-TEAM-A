@@ -7,6 +7,7 @@ RIGHT_MOTOR_PIN = 18
 
 def init_pwm():
     # divide down clock
+    print("init")
     wiringpi.wiringPiSetupGpio()
     wiringpi.pwmSetClock(192)
     wiringpi.pwmSetRange(2000)
@@ -39,3 +40,4 @@ while True:
     for i in range(100):
         Motor_Right.set_speed(i)
         Motor_Left.set_speed(i)
+        time.sleep(1)

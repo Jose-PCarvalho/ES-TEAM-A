@@ -1,0 +1,30 @@
+<launch>
+
+    <group>
+        <!-- argumentos -->
+        <arg name="material" default="Plastic"/>
+        <arg name="show_original" default="False"/>
+        <arg name="debug" default="False"/>
+
+        <!-- Nodes -->
+        <node pkg="vision_module" name="segment" type="segment" output="screen"/>
+        <node pkg="vision_module" name="kalman" type="kalman" output="screen" />
+        <node pkg="vision_module" name="display" type="display" output="screen" />
+                
+        <!-- Parametros -->
+        <param name="/material" value="$(arg material)" />
+        <param name="/show_original" value="$(arg show_original)" />
+        <param name="/debug" value="$(arg debug)"/>
+
+        <group if="$(eval arg('debug') ==True)">
+            <node pkg="vision_module" type="tune" name="tune" output="screen"/>
+            <param name="/show_original" value="True" />
+        </group>
+
+        <param name="/kernel_size" value="33" />
+        
+        <rosparam file="$(find vision_module)/cfg/hsv_params.yaml" />
+
+    </group>
+    
+</launch>   
