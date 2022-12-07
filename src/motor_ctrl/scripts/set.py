@@ -1,8 +1,12 @@
 import sys
 import wiringpi
 import time
+import sys
 
 print("\nInit Service Called")
+
+left = sys.argv[1]
+right = sys.argv[2]
     
 # use 'GPIO naming'
 wiringpi.wiringPiSetupGpio()
@@ -19,6 +23,5 @@ wiringpi.pwmSetClock(192)
 wiringpi.pwmSetRange(2000)
 
 delay_period = 0.01
-wiringpi.pwmWrite(13, 150)
-wiringpi.pwmWrite(18, 150)
-time.sleep(7)
+wiringpi.pwmWrite(13, left)
+wiringpi.pwmWrite(18, right)

@@ -2,6 +2,7 @@ import rospy
 import sys
 import wiringpi
 import time
+import os
 
 from motor_ctrl.srv import set_motors, set_motorsResponse
 
@@ -11,6 +12,11 @@ def set_fun(req):
     
     print("\nSettings " , req.left, " ", req.right )
     #print("\nInit motors")
+    
+    cmd = "echo ubuntu | sudo -S python3 set.py %d %d" 
+    cmd = cmd %(req.left, req.right)
+    
+    os.system(cmd)
     
     wiringpi.pwmWrite(13, req.left)
     wiringpi.pwmWrite(18, req.right)
