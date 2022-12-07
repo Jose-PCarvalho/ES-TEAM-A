@@ -71,15 +71,15 @@ int main(int argc, char** argv)
     motor_ctrl::init_motors srv;
     srv.request.req = true;
 
-    if (client_init.call(srv))
-    {
-      ROS_INFO("Init sucess");
-    }
-    else
-    {
-      ROS_ERROR("Failed to call service init_motors");
-      return 1;
-    }
+    // if (client_init.call(srv))
+    // {
+    //   ROS_INFO("Init sucess");
+    // }
+    // else
+    // {
+    //   ROS_ERROR("Failed to call service init_motors");
+    //   return 1;
+    // }
 
     // ros::Subscriber sub;
     // pub = nh.advertise<motor_ctrl::speeds>("/speeds", 1);

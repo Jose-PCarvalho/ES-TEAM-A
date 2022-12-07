@@ -4,8 +4,8 @@
         <!-- argumentos -->
 
         <!-- Nodes -->
-        <node pkg="motor_ctrl" name="init_server" type="init_server.py" output="screen" launch-prefix="sudo"/>
-        <node pkg="motor_ctrl" name="set_server" type="set_server.py" output="screen" launch-prefix="sudo"/>
+        <node pkg="motor_ctrl" name="init_server" type="init_server.py" output="screen"/>
+        <node pkg="motor_ctrl" name="set_server" type="set_server.py" output="screen" />
         <node pkg="motor_ctrl" name="teste" type="teste" output="screen" launch-prefix="bash -c 'sleep 3; $0 $@' "/>
 
     </group>
