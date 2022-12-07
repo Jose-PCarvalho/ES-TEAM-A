@@ -1,56 +1,41 @@
 import numpy 
 
+def clip(value):
+    if value > 100:
+        return 100, True
+    elif value < -100:
+        return -100, True
+    else:
+        return value, False
+
+
 class PID:
+    def __init__(self,k=2,ki =0.1):
+        self.k = k
+        self.ki = ki
+        self.integral_error = 0
 
+    def compute(self, ref, measure):
+        error = ref - measure
+        self.integral_error += error
+        u = self.k * error + self.integral_error * self.ki
+        u, saturated = clip(u)
+        if saturated:  # anti_windup
+            self.integral_error -= error
+        return u
+
+class MotorControl:
     def __init__(self):
-        self.v = 1
-        self.w = 90
-        self.Vref = 12
-        self.Wref = 0
-        self.k = 2
+        self.pid_v=PID()
+        self.pid_w=PID()
+        self.uv=0
+        self.uw=0
+        self.u1=0
+        self.u2=0
 
-    def clip(self,value):
-        if value > 100 :
-            return 100, True
-        elif value < -100 :
-            return -1, True
-        else:
-            return value, False 
-
-    def test(self):
-        print("v={0}".format(self.v))
-        print("w={0}".format(self.w))
-        uv = self.k*(self.Vref-self.v)
-        uw = self.k*(self.Wref-self.w)            
-
-        uv,ov = self.clip(uv)
-        uw,ov = self.clip(uw)
-
-        u1 = uv+uw
-        u2 = uv-uw
-        
-        print(uv)
-        print(uw)
-        
-        self.v = self.v + 90
-        self.w = self.w + 90
-
-        u1,ov = self.clip(u1)
-        u2,ov = self.clip(u2)
-        print(u1)
-        print(u2)
-        print("\n")
-        return u1,u2
-
-            
-                    
-PID1 = PID()
-for i in range (1,5):
-    u1,u2 = PID1.test()
-   
-
-
-
-    
-
-
+    def motor_speed(self,v_ref,w_ref,v,w):
+        self.uv=self.pid_v(v_ref,v,w)
+        self.uw=self.pid_w(w_ref, v, w)
+        self.u1=self.uv+self.uw
+        self.u2=self.uv-self.uw
+        return self.u1, self.u2
