@@ -5,8 +5,6 @@ import time
 
 from motor_ctrl.srv import init_motors, init_motorsResponse
 
-import rospy
-
 def init_fun(req):
     
     #print("teste: [%s]"%(req.req,))
