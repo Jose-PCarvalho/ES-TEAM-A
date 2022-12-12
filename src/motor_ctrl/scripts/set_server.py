@@ -11,23 +11,30 @@ import rospy
 def set_fun(req):
     
     print("\nSettings " , req.left, " ", req.right )
-    #print("\nInit motors")
-    
-    cmd = "echo ubuntu | sudo -S python3 set.py %d %d" 
-    cmd = cmd %(req.left, req.right)
-    
+    cmd = "echo ubuntu | sudo -S gpio pwm 1 %d" 
+    cmd = cmd %(req.left)
+    os.system(cmd)
+    cmd = "echo ubuntu | sudo -S gpio pwm 23 %d" 
+    cmd = cmd %(req.right)
     os.system(cmd)
     
-    wiringpi.pwmWrite(13, req.left)
-    wiringpi.pwmWrite(18, req.right)
     
     return True
 
 def set_motors_server():
     rospy.init_node('set_motors_server')
+    os.system("echo ubuntu | sudo -S gpio mode 1 pwm ")
+    os.system("echo ubuntu | sudo -S gpio mode 23 pwm ")
+    os.system("echo ubuntu | sudo -S gpio pwm-ms")
+    os.system("echo ubuntu | sudo -S gpio pwmr 2000")
+    os.system("echo ubuntu | sudo -S gpio pwmc 192")
+    os.system("echo ubuntu | sudo -S gpio pwm 1 150")
+    os.system("echo ubuntu | sudo -S gpio pwm 23 150")
+    time.sleep(7)
     print("set motors server online")
+    
+
     s = rospy.Service('set_motors', set_motors, set_fun)
-    #print("Ready to add two ints.")
     rospy.spin()
 
 if __name__ == "__main__":
