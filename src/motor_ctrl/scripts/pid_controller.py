@@ -91,7 +91,7 @@ def callback(data):
 def timer_callback(event):
     print(controller.w_ref)
     #controller.motor_speed(v_ref=0,w_ref=1,v=0,w=0)
-    controller.motor_speed(v=0,w=0)
+    controller.motor_speed(v=-1,w=0)
     print("Motors: ")
     print(controller.u1,controller.u2)
     set_fun(controller.u1,controller.u2)
@@ -100,7 +100,7 @@ def timer_callback(event):
 def listener():
     rospy.init_node('control', anonymous=True)
     #rospy.Subscriber ('/cmd_vel',Twist,callback)    
-    timer = rospy.Timer(rospy.Duration(0.1), timer_callback)
+    timer = rospy.Timer(rospy.Duration(1), timer_callback)
     #print ("Last message published")
 
     rospy.spin()    
