@@ -12,7 +12,7 @@ int main(int argc, char **argv)
   std::system("echo ubuntu | sudo -S gpio mode 5 out");
   std::system("echo ubuntu | sudo -S gpio write 5 1");
 
-  nh.param("serial_port", portName, std::string("/dev/ttyUSB0"));
+  nh.param("serial_port", portName, std::string("/dev/ttyAMA0"));
   nh.param("baud_rate", baud_rate, 115200);
 
   tfmini_obj = new benewake::TFmini(portName, baud_rate);
