@@ -5,7 +5,7 @@
 sensor_msgs::Imu new_imu_data, old_imu_data;
 bool first_run = true;
 
-void callback (sensor_msgs::ImuConstPtr &msg)
+void callback (const sensor_msgs::ImuConstPtr &msg)
 {
     if (first_run)
     {
@@ -19,7 +19,7 @@ void callback (sensor_msgs::ImuConstPtr &msg)
 
 int main(int argc, char** argv)
 {
-    /*ros::init(argc, argv, "imu_odom");
+    ros::init(argc, argv, "imu_odom");
     ros::NodeHandle nh;
     ros::Subscriber sub;
     sub = nh.subscribe("/imu_data", 1, callback);
@@ -30,5 +30,5 @@ int main(int argc, char** argv)
     {
         ros::spinOnce();
         rate.sleep();
-    }*/
+    }
 }
