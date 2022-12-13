@@ -19,7 +19,7 @@
 
 #include <cstdlib>
 
-int LEFT=0, RIGHT=0; 
+int LEFT=150, RIGHT=150; 
 //ros::Publisher pub;
 bool debug;
 ros::ServiceClient client_init, client_set ;
@@ -33,17 +33,39 @@ void on_trackbar( int, void* )
     //msg.left = LEFT;
     //msg.right = RIGHT;
 
-    srv.request.left = LEFT;
-    srv.request.right = RIGHT;
+    //srv.request.left = LEFT;
+    //srv.request.right = RIGHT;
 
-    if (client_set.call(srv))
-    {
-      ROS_INFO("Init sucess");
-    }
-    else
-    {
-      ROS_ERROR("Failed to set motor speeds");
-    }
+    //std::string left, right;
+    std::stringstream left_ss, right_ss;
+    left_ss << "echo ubuntu | sudo -S gpio pwm 1 " << LEFT;
+    right_ss << "echo ubuntu | sudo -S gpio pwm 23 " << RIGHT;
+
+    std::string left, right;
+
+    left = left_ss.str();
+    right = right_ss.str();
+
+    char left_c[left.length()+1]; 
+    char right_c[right.length()+1]; 
+
+    strcpy(left_c,left.c_str());
+    strcpy(right_c,right.c_str() );
+
+    //std::system("echo ubuntu | sudo -S gpio pwm 1 " + left);
+    //std::system("echo ubuntu | sudo -S gpio pwm 23 " + right);
+
+    std::system(left_c);
+    std::system(right_c);
+
+    // if (client_set.call(srv))
+    // {
+    //   ROS_INFO("Init sucess");
+    // }
+    // else
+    // {
+    //   ROS_ERROR("Failed to set motor speeds");
+    // }
 
     //pub.publish(msg);
 }
@@ -53,7 +75,7 @@ void createTrackbars()
     ROS_WARN("Creating Trackbars");
     const std::string trackbarWindowName = "Trackbars";
     cv::namedWindow(trackbarWindowName,cv::WINDOW_AUTOSIZE);
-	char TrackbarName[50];
+	  char TrackbarName[50];
 
     cv::createTrackbar( "Left", trackbarWindowName, &LEFT, 100, on_trackbar );
     cv::createTrackbar( "Right", trackbarWindowName, &RIGHT, 100, on_trackbar );
@@ -68,8 +90,22 @@ int main(int argc, char** argv)
   
     client_init = nh.serviceClient<motor_ctrl::init_motors>("init_motors");
     client_set = nh.serviceClient<motor_ctrl::set_motors>("set_motors");
-    motor_ctrl::init_motors srv;
-    srv.request.req = true;
+
+    ROS_INFO("Initing motors");
+
+    std::system("echo ubuntu | sudo -S gpio mode 1 pwm ");
+    std::system("echo ubuntu | sudo -S gpio mode 23 pwm ");
+    std::system("echo ubuntu | sudo -S gpio pwm-ms");
+    std::system("echo ubuntu | sudo -S gpio pwmr 2000");
+    std::system("echo ubuntu | sudo -S gpio pwmc 192");
+    std::system("echo ubuntu | sudo -S gpio pwm 1 150");
+    std::system("echo ubuntu | sudo -S gpio pwm 23 150");
+    sleep(5);
+
+    ROS_INFO("Motors Online");
+
+    //motor_ctrl::init_motors srv;
+    //srv.request.req = true;
 
     // if (client_init.call(srv))
     // {
