@@ -70,6 +70,8 @@ add_service_files(
   set_motors.srv
 )
 
+catkin_python_setup()
+
 generate_messages(
  DEPENDENCIES
  std_msgs
@@ -117,6 +119,7 @@ catkin_package(
   
 #  DEPENDS system_lib
 )
+
 
 ###########
 ## Build ##
@@ -176,7 +179,7 @@ target_link_libraries(teste
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/set_server.py
+  scripts/set_server.py scripts/pid_controller.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
