@@ -1,8 +1,0 @@
-# bool req
-# ---
-# bool resp
-
-int32 left
-int32 right
----
-bool resp

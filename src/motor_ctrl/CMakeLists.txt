@@ -67,7 +67,6 @@ add_message_files(
 ## Generate added messages and services with any dependencies listed here
 add_service_files(
   FILES
-  init_motors.srv
   set_motors.srv
 )
 
@@ -177,7 +176,6 @@ target_link_libraries(teste
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/set.py
   scripts/set_server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
