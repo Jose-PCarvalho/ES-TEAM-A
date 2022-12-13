@@ -8,6 +8,9 @@ int main(int argc, char **argv)
   std::string portName;
   int baud_rate;
   benewake::TFmini *tfmini_obj;
+  std::system("echo ubuntu | sudo -S gpio mode 4 out");
+  std::system("echo ubuntu | sudo -S gpio mode 5 out");
+  std::system("echo ubuntu | sudo -S gpio write 5 1");
 
   nh.param("serial_port", portName, std::string("/dev/ttyUSB0"));
   nh.param("baud_rate", baud_rate, 115200);
