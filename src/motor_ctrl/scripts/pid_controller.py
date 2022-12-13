@@ -4,6 +4,7 @@ from std_msgs.msg import String
 import numpy as np
 import os
 import time
+from geometry_msgs.msg import Twist
 
 class MotorControl:
     def __init__(self):
@@ -14,10 +15,12 @@ class MotorControl:
         self.uw=0
         self.u1=0
         self.u2=0
+        self.v_ref=0
+        self.w_ref=0
 
-    def motor_speed(self,v_ref,w_ref,v,w):
-        self.uv=self.pid_v.compute(v_ref,v)
-        self.uw=self.pid_w.compute(w_ref, w)
+    def motor_speed(self,v,w):
+        self.uv=self.pid_v.compute(self.v_ref,v)
+        self.uw=self.pid_w.compute(self.w_ref, w)
         self.u1=self.uv+self.uw
         self.u2=self.uv-self.uw
         return self.u1, self.u2
@@ -46,24 +49,24 @@ class PID:
 
 
 def init_motors():
-    os.system("echo ubuntu | sudo -S gpio mode 1 pwm ")
-    os.system("echo ubuntu | sudo -S gpio mode 23 pwm ")
-    os.system("echo ubuntu | sudo -S gpio pwm-ms")
-    os.system("echo ubuntu | sudo -S gpio pwmr 2000")
-    os.system("echo ubuntu | sudo -S gpio pwmc 192")
-    os.system("echo ubuntu | sudo -S gpio pwm 1 150")
-    os.system("echo ubuntu | sudo -S gpio pwm 23 150")
-    time.sleep(7)
+    #os.system("echo ubuntu | sudo -S gpio mode 1 pwm ")
+    #os.system("echo ubuntu | sudo -S gpio mode 23 pwm ")
+    #os.system("echo ubuntu | sudo -S gpio pwm-ms")
+    #os.system("echo ubuntu | sudo -S gpio pwmr 2000")
+    #os.system("echo ubuntu | sudo -S gpio pwmc 192")
+    #os.system("echo ubuntu | sudo -S gpio pwm 1 150")
+    #os.system("echo ubuntu | sudo -S gpio pwm 23 150")
+    time.sleep(1)
 
 def set_fun(left,right):
     
     print("\nSettings " , left, " ", right )
     cmd = "echo ubuntu | sudo -S gpio pwm 1 %d" 
     cmd = cmd %(150+left*4)
-    os.system(cmd)
+    #os.system(cmd)
     cmd = "echo ubuntu | sudo -S gpio pwm 23 %d" 
     cmd = cmd %(150+right*4)
-    os.system(cmd)
+    #os.system(cmd)
     
     
     return True
@@ -74,23 +77,32 @@ pub = rospy.Publisher('/status', String, queue_size=1)
 controller= MotorControl()
 
 def callback(data):
+    #vel_msg = Twist()
+    
+    controller.v_ref = data.linear.x
+    controller.w_ref = data.angular.x
     global started, last_data
     last_data = data
+    
+    
     if (not started):
         started = True
-    print(data)
+    #print(vel_msg.linear.x)
 
 def timer_callback(event):
-    controller.motor_speed(v_ref=0,w_ref=1,v=0,w=0)
+    print(controller.w_ref)
+    #controller.motor_speed(v_ref=0,w_ref=1,v=0,w=0)
+    controller.motor_speed(v=0,w=0)
+    print("Motors: ")
     print(controller.u1,controller.u2)
-    set_fun(controller.u1,controller.u2)
+    #set_fun(controller.u1,controller.u2)
 
 
 def listener():
-    
     rospy.init_node('control', anonymous=True)
+    rospy.Subscriber ('/cmd_vel',Twist,callback)    
     timer = rospy.Timer(rospy.Duration(0.1), timer_callback)
-    print ("Last message published")
+    #print ("Last message published")
 
     rospy.spin()    
     timer.shutdown()
