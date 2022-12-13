@@ -49,24 +49,24 @@ class PID:
 
 
 def init_motors():
-    #os.system("echo ubuntu | sudo -S gpio mode 1 pwm ")
-    #os.system("echo ubuntu | sudo -S gpio mode 23 pwm ")
-    #os.system("echo ubuntu | sudo -S gpio pwm-ms")
-    #os.system("echo ubuntu | sudo -S gpio pwmr 2000")
-    #os.system("echo ubuntu | sudo -S gpio pwmc 192")
-    #os.system("echo ubuntu | sudo -S gpio pwm 1 150")
-    #os.system("echo ubuntu | sudo -S gpio pwm 23 150")
-    time.sleep(1)
+    os.system("echo ubuntu | sudo -S gpio mode 1 pwm ")
+    os.system("echo ubuntu | sudo -S gpio mode 23 pwm ")
+    os.system("echo ubuntu | sudo -S gpio pwm-ms")
+    os.system("echo ubuntu | sudo -S gpio pwmr 2000")
+    os.system("echo ubuntu | sudo -S gpio pwmc 192")
+    os.system("echo ubuntu | sudo -S gpio pwm 1 150")
+    os.system("echo ubuntu | sudo -S gpio pwm 23 150")
+    time.sleep(2)
 
 def set_fun(left,right):
     
     print("\nSettings " , left, " ", right )
     cmd = "echo ubuntu | sudo -S gpio pwm 1 %d" 
     cmd = cmd %(150+left*4)
-    #os.system(cmd)
+    os.system(cmd)
     cmd = "echo ubuntu | sudo -S gpio pwm 23 %d" 
     cmd = cmd %(150+right*4)
-    #os.system(cmd)
+    os.system(cmd)
     
     
     return True
@@ -92,15 +92,15 @@ def callback(data):
 def timer_callback(event):
     print(controller.w_ref)
     #controller.motor_speed(v_ref=0,w_ref=1,v=0,w=0)
-    controller.motor_speed(v=0,w=0)
+    controller.motor_speed(v=1,w=0)
     print("Motors: ")
     print(controller.u1,controller.u2)
-    #set_fun(controller.u1,controller.u2)
+    set_fun(controller.u1,controller.u2)
 
 
 def listener():
     rospy.init_node('control', anonymous=True)
-    rospy.Subscriber ('/cmd_vel',Twist,callback)    
+    #rospy.Subscriber ('/cmd_vel',Twist,callback)    
     timer = rospy.Timer(rospy.Duration(0.1), timer_callback)
     #print ("Last message published")
 
