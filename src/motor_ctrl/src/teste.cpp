@@ -56,7 +56,7 @@ void on_trackbar( int, void* )
 
     if (client_set.call(srv))
     {
-      ROS_INFO("Init sucess");
+      ROS_INFO("Sucess call");
     }
     else
     {
@@ -104,6 +104,23 @@ int main(int argc, char** argv)
     //srv.request.req = true;
 
     createTrackbars();
+
+    motor_ctrl::set_motors srv;
+
+    srv.request.left = 150;
+    srv.request.right = 150;
+
+    if (client_set.call(srv))
+    {
+      ROS_INFO("Sucess call");
+    }
+    else
+    {
+      ROS_ERROR("Failed to set motor speeds");
+    }
+
+    std::system("echo ubuntu | sudo -S gpio pwm 1 150");
+    std::system("echo ubuntu | sudo -S gpio pwm 23 150");
 
     return 0;
 }
