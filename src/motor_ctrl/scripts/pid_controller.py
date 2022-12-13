@@ -91,10 +91,12 @@ def callback(data):
 def timer_callback(event):
     print(controller.w_ref)
     #controller.motor_speed(v_ref=0,w_ref=1,v=0,w=0)
-    controller.motor_speed(v=-1,w=0)
-    print("Motors: ")
-    print(controller.u1,controller.u2)
-    set_fun(controller.u1,controller.u2)
+    #controller.motor_speed(v=-1,w=0)
+    #print("Motors: ")
+    #print(controller.u1,controller.u2)
+    u1=controller.v_ref*10+controller.w_ref*100
+    u2=controller.w_ref*10-controller.w_ref*100
+    set_fun(u1,u2)
 
 
 def listener():
