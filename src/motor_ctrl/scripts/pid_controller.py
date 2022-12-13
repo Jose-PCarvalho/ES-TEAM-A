@@ -62,10 +62,10 @@ def set_fun(left,right):
     
     print("\nSettings " , left, " ", right )
     cmd = "echo ubuntu | sudo -S gpio pwm 1 %d" 
-    cmd = cmd %(150+left*4)
+    cmd = cmd %(150+left*0.4)
     os.system(cmd)
     cmd = "echo ubuntu | sudo -S gpio pwm 23 %d" 
-    cmd = cmd %(150+right*4)
+    cmd = cmd %(150+right*0.4)
     os.system(cmd)
     
     
@@ -101,7 +101,7 @@ def timer_callback(event):
 def listener():
     rospy.init_node('control', anonymous=True)
     #rospy.Subscriber ('/cmd_vel',Twist,callback)    
-    timer = rospy.Timer(rospy.Duration(0.1), timer_callback)
+    timer = rospy.Timer(rospy.Duration(1), timer_callback)
     #print ("Last message published")
 
     rospy.spin()    
