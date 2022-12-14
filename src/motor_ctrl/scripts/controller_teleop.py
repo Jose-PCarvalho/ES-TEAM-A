@@ -46,10 +46,10 @@ class PID:
                 self.integral_error -= error
             return u
         def clip(self,value):
-            if value > 30:
-                return 30, True
-            elif value < -30:
-                return -30, True
+            if value > gain:
+                return gain, True
+            elif value < -gain:
+                return -gain, True
             else:
                 return value, False
 
