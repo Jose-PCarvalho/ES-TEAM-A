@@ -21,8 +21,8 @@ class MotorControl:
     def motor_speed(self,v,w):
         self.uv=self.pid_v.compute(self.v_ref,v)
         self.uw=self.pid_w.compute(self.w_ref, w)
-        self.u1=self.uv+self.uw
-        self.u2=self.uv-self.uw
+        self.u1=self.pid_v.clip(self.uv+self.uw)
+        self.u2=self.pid_v.clip(self.uv-self.uw)
         return self.u1, self.u2
 
 class PID:
@@ -40,10 +40,10 @@ class PID:
                 self.integral_error -= error
             return u
         def clip(self,value):
-            if value > 100:
-                return 100, True
-            elif value < -100:
-                return -100, True
+            if value > 30:
+                return 30, True
+            elif value < -30:
+                return -30, True
             else:
                 return value, False
 
