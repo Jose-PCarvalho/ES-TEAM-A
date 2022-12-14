@@ -97,7 +97,7 @@ def callback(data):
     #print(vel_msg.linear.x)
 
 def timer_callback(event):
-    controller.motor_control(controller.v_ref*gain,controller.w_ref*gain*5)
+    controller.motor_control(controller.v_ref*gain,controller.w_ref*gain*10)
     print(controller.u1,controller.u2)
     #set_fun(controller.u2,controller.u1)
 
