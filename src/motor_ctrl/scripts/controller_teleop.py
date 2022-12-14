@@ -26,8 +26,8 @@ class MotorControl:
     def motor_control(self,uv,uw):
         self.u1=uv+uw
         self.u2=uv-uw
-        self.u1 = self.pid_v.clip(self.u1)
-        self.u2 = self.pid_v.clip(self.u2)
+        self.u1 , _= self.pid_v.clip(self.u1)
+        self.u2 , _ = self.pid_v.clip(self.u2)
         set_fun(self.u2,self.u1)
         return self.u1, self.u2
 
