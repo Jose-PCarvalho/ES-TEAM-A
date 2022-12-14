@@ -57,6 +57,7 @@ def init_motors():
     os.system("echo ubuntu | sudo -S gpio pwm 1 150")
     os.system("echo ubuntu | sudo -S gpio pwm 23 150")
     time.sleep(7)
+    print("motor init")
 
 def set_fun(left,right):
     
@@ -97,7 +98,7 @@ def timer_callback(event):
     controller.u1=controller.v_ref*10+controller.w_ref*100
     controller.u2=controller.w_ref*10-controller.w_ref*100
     print(controller.u1,controller.u2)
-    set_fun(u1,u2)
+    set_fun(controller.u1,controller.u2)
 
 
 def listener():
