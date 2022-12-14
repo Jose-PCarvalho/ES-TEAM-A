@@ -144,7 +144,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-#add_executable(teste src/teste.cpp)
+add_executable(mission1 src/mission1.cpp)
 
 
 
@@ -156,13 +156,13 @@ include_directories(
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-#add_dependencies(teste ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(mission1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(teste
-#  ${catkin_LIBRARIES}
-# )
+target_link_libraries(mission1
+ ${catkin_LIBRARIES}
+)
 
 
 
