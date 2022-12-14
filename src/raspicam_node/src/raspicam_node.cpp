@@ -197,7 +197,7 @@ static void configure_parameters(RASPIVID_STATE& state, ros::NodeHandle& nh) {
   raspicamcontrol_set_defaults(state.camera_parameters);
 
   bool temp;
-  nh.param<bool>("hFlip", temp, false);
+  nh.param<bool>("hFlip", temp, true);
   state.camera_parameters.hflip = temp;  // Hack for bool param => int variable
   nh.param<bool>("vFlip", temp, true);
   state.camera_parameters.vflip = temp;  // Hack for bool param => int variable
