@@ -1,0 +1,8 @@
+<launch>
+
+    <!-- lança imu, pid -->
+    <node pkg="motor_ctrl" name="motor_ctrl" type="imu_odom" output="screen"/>
+    <node pkg="motor_ctrl" name="motor_ctrl" type="pid_controller" output="screen"/>
+    
+
+</launch>

@@ -1,0 +1,5 @@
+<launch>
+
+    <node pkg="motor_ctrl" name="motor_ctrl" type="controller_teleop" output="screen"/>
+
+</launch>
