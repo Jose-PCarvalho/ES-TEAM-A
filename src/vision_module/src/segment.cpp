@@ -365,7 +365,7 @@ void update_image_cont()
     pub.publish(pt_msg);
 }
 
-void callback (const sensor_msgs::CompressedImageConstPtr& cam_msg)
+void callback (const sensor_msgs::ImageConstPtr& cam_msg)
 {
     cv_bridge::CvImagePtr cam, res;
     sensor_msgs::ImagePtr out_msg;
@@ -413,7 +413,7 @@ int main(int argc, char** argv)
 
     sub_params = nh.subscribe("/vision_module/seg_params",1,update_params);
 
-    sub = nh.subscribe("/raspicam_node/image/compressed", 1, callback);    
+    sub = nh.subscribe("/raspicam_node/image", 1, callback);    
 
     while (ros::ok())
     {
