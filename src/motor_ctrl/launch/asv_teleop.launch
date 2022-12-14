@@ -1,5 +1,9 @@
 <launch>
 
+    <arg name="speed" default="30"/>
+
     <node pkg="motor_ctrl" name="motor_ctrl" type="controller_teleop" output="screen"/>
+
+    <param name="/teleop_speed" value="$(arg speed)" />
 
 </launch>
