@@ -103,7 +103,7 @@ def timer_callback(event):
 
 def listener():
     rospy.init_node('control', anonymous=True)
-    #rospy.Subscriber ('/cmd_vel',Twist,callback)    
+    rospy.Subscriber ('/cmd_vel',Twist,callback)    
     timer = rospy.Timer(rospy.Duration(1), timer_callback)
     #print ("Last message published")
 
