@@ -3,6 +3,6 @@
     <!-- lança imu, pid -->
     <include file="$(find motor_ctrl)/launch/asv_pid.launch" />
     <include file="$(find vision_module)/launch/rasp.launch" />
-    
+    <include file="$(find tfmini_ros)/launch/tfmini.launch" />
 
 </launch>

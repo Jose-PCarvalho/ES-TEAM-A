@@ -17,7 +17,7 @@
             <node pkg="vision_module" type="tune" name="tune" output="screen"/>
         </group>
 
-        <param name="/kernel_size" value="11" />
+        <param name="/kernel_size" value="33" />
         
         <rosparam file="$(find vision_module)/cfg/hsv_params.yaml" />
 

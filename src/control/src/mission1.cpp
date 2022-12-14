@@ -49,11 +49,13 @@ int main(int argc, char** argv)
     nh.param<float>("/max_speed", max_speed, 20);
 
     ros::Subscriber lidar_sub, tracker_sub;
+    ROS_INFO("so far so good");
+    
     lidar_sub = nh.subscribe("/", 1, callback_lidar);
-    tracker_sub = nh.subscribe("/tracker", 1, callback_tracker);
+    tracker_sub = nh.subscribe("/vision/tracker", 1, callback_tracker);
 
     ros::Publisher pub;
-    nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+    pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 
     ros::Rate rate(10);
 
