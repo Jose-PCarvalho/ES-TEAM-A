@@ -2,7 +2,7 @@
 
     <arg name="speed" default="30"/>
 
-    <node pkg="motor_ctrl" name="motor_ctrl" type="controller_teleop" output="screen"/>
+    <node pkg="motor_ctrl" name="controller_teleop" type="controller_teleop.py" output="screen"/>
 
     <param name="/teleop_speed" value="$(arg speed)" />
 

@@ -26,6 +26,8 @@ class MotorControl:
     def motor_control(self,uv,uw):
         self.u1=uv+uw
         self.u2=uv-uw
+        self.u1 = self.pid_v.clip(self.u1)
+        self.u2 = self.pid_v.clip(self.u2)
         set_fun(self.u2,self.u1)
         return self.u1, self.u2
 
@@ -97,7 +99,7 @@ def callback(data):
 def timer_callback(event):
     controller.motor_control(controller.v_ref*gain,controller.w_ref*gain*5)
     print(controller.u1,controller.u2)
-    set_fun(controller.u2,controller.u1)
+    #set_fun(controller.u2,controller.u1)
 
 
 def listener():
