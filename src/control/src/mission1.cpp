@@ -15,7 +15,7 @@ int center_threshold;
 float lidar_threshold;
 float lidar_dst;
 
-float max_speed;
+float max_speed=20;
 
 geometry_msgs::Point buoy_pos;
 bool buoy_at_center = false;
@@ -48,10 +48,12 @@ int main(int argc, char** argv)
     nh.param<float>("/lidar_treshold", lidar_threshold, 0.20);
     nh.param<float>("/max_speed", max_speed, 20);
 
+    max_speed = 20;
+
     ros::Subscriber lidar_sub, tracker_sub;
     ROS_INFO("so far so good");
     
-    lidar_sub = nh.subscribe("/", 1, callback_lidar);
+    lidar_sub = nh.subscribe("/tfmini_ros_node/TFmini", 1, callback_lidar);
     tracker_sub = nh.subscribe("/vision/tracker", 1, callback_tracker);
 
     ros::Publisher pub;
@@ -65,6 +67,9 @@ int main(int argc, char** argv)
     {
         ros::spinOnce();
 
+        ROS_INFO("state: %d", state);
+        
+
         // transições
         switch (state)
         {  
@@ -72,6 +77,8 @@ int main(int argc, char** argv)
             {
                 if (buoy_at_center == true)
                     state = 1;
+
+                break;
             }
             case 1: // aproxima suficiente da boia
             {
@@ -82,6 +89,7 @@ int main(int argc, char** argv)
                 {
                     state = 2;
                 }
+                break;
             }
             case 2: // roda ate encontrar boia
             {
@@ -89,10 +97,11 @@ int main(int argc, char** argv)
                 {
                     state = 0;
                 }
+                break;
             } 
 
             default:
-                ;
+                break;
         }
 
         // ações
@@ -101,25 +110,31 @@ int main(int argc, char** argv)
             case 0:
             {
                 cmd_vel.linear.x = 0;
-                cmd_vel.angular.x = max_speed;
+                cmd_vel.angular.x = max_speed/2;
+                break;
             }
             case 1:
             {
-                cmd_vel.linear.x = max_speed;
+                cmd_vel.linear.x = max_speed/2;
                 cmd_vel.angular.x = 0;
+                break;
             }
             case 2:
             {
                 cmd_vel.linear.x = 0;
                 cmd_vel.angular.x = 0;
+                break;
             }
             default:
             {
                 cmd_vel.linear.x = 0;
                 cmd_vel.angular.x = 0; 
+                break;
             }
         }
 
+        ROS_WARN("lin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x/2);
+        
         pub.publish(cmd_vel);
         
         rate.sleep();
