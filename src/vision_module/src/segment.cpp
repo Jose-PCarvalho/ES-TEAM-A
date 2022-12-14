@@ -132,6 +132,8 @@ void update_image_cont()
 
     if (debug)
     {
+        ROS_WARN("trying to show images");
+
         cv_bridge::CvImagePtr mask_ptr(new cv_bridge::CvImage); 
         cv_bridge::CvImagePtr cont_ptr(new cv_bridge::CvImage); 
 
