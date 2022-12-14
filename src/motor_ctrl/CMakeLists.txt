@@ -182,7 +182,7 @@ target_link_libraries(imu_odom
 catkin_install_python(PROGRAMS
   scripts/set_server.py 
   scripts/pid_controller.py
-  scripts/controller_telop.py
+  scripts/controller_teleop.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
