@@ -21,8 +21,12 @@ class MotorControl:
     def motor_speed(self,v,w):
         self.uv=self.pid_v.compute(self.v_ref,v)
         self.uw=self.pid_w.compute(self.w_ref, w)
-        self.u1=self.pid_v.clip(self.uv+self.uw)
-        self.u2=self.pid_v.clip(self.uv-self.uw)
+        self.motor_control(self.uv,self.uw)
+
+    def motor_control(self,uv,uw):
+        self.u1=uv+uw
+        self.u2=uv-uw
+        set_fun(self.u2,self.u1)
         return self.u1, self.u2
 
 class PID:
@@ -91,11 +95,9 @@ def callback(data):
 
 def timer_callback(event):
     print(controller.w_ref)
-    controller.motor_speed(v=-1,w=0)
+    controller.motor_control(controller.v_ref,controller.w_ref)
     #print("Motors: ")
     #print(controller.u1,controller.u2)
-    print(controller.u1,controller.u2)
-    set_fun(controller.u2,controller.u1)
 
 
 def listener():
