@@ -21,7 +21,7 @@ int H_MIN, H_MAX, S_MIN, S_MAX, V_MIN, V_MAX;
 int H_MIN_old, H_MAX_old, S_MIN_old, S_MAX_old, V_MIN_old, V_MAX_old; 
 int kernel_size;
 std::string debug_raw;
-ros::Publisher pub, area_pub;
+ros::Publisher pub, area_pub, mask_pub, contours_pub;
 bool debug;
 cv::Mat img, mask,mask_small,hsv, contours, ccomps, contours_small, original;
 float scale_down = 0.5;
@@ -129,6 +129,31 @@ void update_image_cont()
     pt_msg.y = p.y;
     pt_msg.z = frame_n;
     pub.publish(pt_msg);
+
+    if (debug)
+    {
+        cv_bridge::CvImagePtr mask_ptr(new cv_bridge::CvImage); 
+        cv_bridge::CvImagePtr cont_ptr(new cv_bridge::CvImage); 
+
+        //publishes frame
+        mask_ptr->image = img;
+        mask_ptr->encoding = "bgr8";
+        pub.publish(mask_ptr->toImageMsg()); 
+
+        //publishes frame
+        cv::Mat drawing = cv::Mat::zeros( canny_output.size(), CV_8UC3 );
+        for( size_t i = 0; i< cont.size(); i++ )
+        {
+            cv::Scalar color = cv::Scalar(0, 255, 0 );
+            cv::drawContours( drawing, cont, (int)i, color, 2 );
+        }
+
+        cv::Scalar color = cv::Scalar(0, 255, 0 );
+        cv::circle( drawing, cv::Point(p.x,p.y), 4, color, -1 );
+        cont_ptr->image = drawing;
+        cont_ptr->encoding = "bgr8";
+        pub.publish(cont_ptr->toImageMsg()); 
+    }
 }
 
 void callback (const sensor_msgs::ImageConstPtr& cam_msg)
@@ -165,6 +190,14 @@ int main(int argc, char** argv)
     ros::Subscriber sub, sub_params;
     pub = nh.advertise<geometry_msgs::Point>("/point", 1);
     area_pub = nh.advertise<std_msgs::Float32>("/area", 1);
+
+    if (debug)
+    {
+        contours_pub = nh.advertise<sensor_msgs::Image>("/vision/debug/contours", 1);
+        mask_pub = nh.advertise<sensor_msgs::Image>("/vision/debug/mask", 1);
+    }
+    
+
 
     nh.param<int>("/H_MIN", H_MIN, 0);
     nh.param<int>("/H_MAX", H_MAX, 255);
