@@ -15,7 +15,6 @@
 
         <group if="$(eval arg('debug') ==True)">
             <node pkg="vision_module" type="tune" name="tune" output="screen"/>
-            <param name="/show_original" value="True" />
         </group>
 
         <param name="/kernel_size" value="11" />
