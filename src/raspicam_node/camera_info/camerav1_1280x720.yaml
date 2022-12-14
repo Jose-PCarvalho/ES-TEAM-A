@@ -1,20 +1,41 @@
-image_width: 1280
-image_height: 720
-camera_name: camerav1_1280x720
-camera_matrix:
-  rows: 3
-  cols: 3
-  data: [1266.78359602357, 0, 608.4607470200075, 0, 1267.334024187105, 374.6054937400205, 0, 0, 1]
-distortion_model: plumb_bob
-distortion_coefficients:
-  rows: 1
-  cols: 5
-  data: [0.06107748316798726, -0.2708303958945525, 0.002115970398267557, -0.008895203586217777, 0]
-rectification_matrix:
-  rows: 3
-  cols: 3
-  data: [1, 0, 0, 0, 1, 0, 0, 0, 1]
-projection_matrix:
-  rows: 3
-  cols: 4
-  data: [1260.001586914062, 0, 597.5585547978408, 0, 0, 1275.272827148438, 375.0559350296862, 0, 0, 0, 1, 0]
+!!python/object/new:dynamic_reconfigure.encoding.Config
+dictitems:
+  ISO: 400
+  awb_mode: auto
+  brightness: 47
+  contrast: 0
+  exposure_compensation: 0
+  exposure_mode: auto
+  groups: !!python/object/new:dynamic_reconfigure.encoding.Config
+    dictitems:
+      ISO: 400
+      awb_mode: auto
+      brightness: 47
+      contrast: 0
+      exposure_compensation: 0
+      exposure_mode: auto
+      groups: !!python/object/new:dynamic_reconfigure.encoding.Config
+        state: []
+      hFlip: false
+      id: 0
+      name: Default
+      parameters: !!python/object/new:dynamic_reconfigure.encoding.Config
+        state: []
+      parent: 0
+      saturation: 9
+      sharpness: -30
+      shutter_speed: 0
+      state: true
+      type: ''
+      vFlip: true
+      video_stabilisation: false
+      zoom: 1.0
+    state: []
+  hFlip: false
+  saturation: 9
+  sharpness: -30
+  shutter_speed: 0
+  vFlip: true
+  video_stabilisation: false
+  zoom: 1.0
+state: []
