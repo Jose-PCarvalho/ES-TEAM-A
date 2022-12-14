@@ -95,8 +95,8 @@ def timer_callback(event):
     #controller.motor_speed(v=-1,w=0)
     #print("Motors: ")
     #print(controller.u1,controller.u2)
-    controller.u1=controller.v_ref*100+controller.w_ref*1000
-    controller.u2=controller.w_ref*100-controller.w_ref*1000
+    controller.u1=controller.v_ref*25+controller.w_ref*250
+    controller.u2=controller.w_ref*25-controller.w_ref*250
     print(controller.u1,controller.u2)
     set_fun(controller.u1,controller.u2)
 
