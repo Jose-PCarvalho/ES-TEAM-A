@@ -79,6 +79,7 @@ def set_fun(left,right):
 last_data = ""
 started = False
 controller= MotorControl()
+gain=rospy.get_param('/teleop_speed',30)
 
 def callback(data):
     #vel_msg = Twist()
@@ -94,7 +95,7 @@ def callback(data):
     #print(vel_msg.linear.x)
 
 def timer_callback(event):
-    controller.motor_control(controller.v_ref*30,controller.v_ref*200)
+    controller.motor_control(controller.v_ref*gain,controller.w_ref*gain*5)
     print(controller.u1,controller.u2)
     set_fun(controller.u2,controller.u1)
 
