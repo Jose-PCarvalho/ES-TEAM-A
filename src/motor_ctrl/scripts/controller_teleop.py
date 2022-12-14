@@ -62,7 +62,7 @@ def init_motors():
     os.system("echo ubuntu | sudo -S gpio pwmc 192")
     os.system("echo ubuntu | sudo -S gpio pwm 1 150")
     os.system("echo ubuntu | sudo -S gpio pwm 23 150")
-    time.sleep(7)
+    time.sleep(3)
     print("motor init")
 
 def set_fun(left,right):
