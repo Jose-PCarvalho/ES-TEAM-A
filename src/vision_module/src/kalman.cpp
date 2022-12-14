@@ -30,14 +30,14 @@ void callback (const geometry_msgs::PointConstPtr msg)
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "vision_kalman");
+    ros::init(argc, argv, "kalman");
     ros::NodeHandle nh;
   
     ros::Subscriber sub;
 
-    pub = nh.advertise<geometry_msgs::Point>("/vision/tracker", 1);
+    pub = nh.advertise<geometry_msgs::Point>("/tracker", 1);
 
-    sub = nh.subscribe("/vision/point",1,callback);
+    sub = nh.subscribe("/point",1,callback);
 
     int stateSize = 4;
     int measSize = 2;
@@ -96,6 +96,20 @@ int main(int argc, char** argv)
                 kf.transitionMatrix.at<float>(3) = 1;
 
                 state = kf.predict();
+
+                // cv::Point2d center;
+                // center.x = state.at<float>(0);
+                // center.y = state.at<float>(1);
+
+                // //publica
+                // geometry_msgs::Point msg;
+                // msg.x = (int)center.x;
+                // msg.y = (int)center.y;
+                // msg.z = frame_n;
+
+                // pub.publish(msg);
+
+                
             }
 
             old_frame = frame_n;
@@ -153,7 +167,9 @@ int main(int argc, char** argv)
             msg.y = (int)center.y;
             msg.z = frame_n;
 
-            //ROS_WARN("velocidade x y: %f %f", state.at<float>(2),state.at<float>(3));
+            // ROS_WARN("\n\nstate x y: %f %f", state.at<float>(0),state.at<float>(1));
+            // ROS_WARN("observado x y: %f %f", meas.at<float>(0), meas.at<float>(1));
+            // ROS_WARN("velocidade x y: %f %f", state.at<float>(2),state.at<float>(3));
 
             pub.publish(msg);
             //ROS_INFO("\n\n Detected: %f %f\n Tracked: %d %d", pt.x, pt.y, (int)center.x,(int)center.y);

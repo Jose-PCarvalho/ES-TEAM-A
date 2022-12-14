@@ -27,9 +27,6 @@ void track_cb (const geometry_msgs::PointConstPtr& msg)
 
     got_track = true;
 
-    n_frame = msg->z;
-
-    //ROS_WARN("got track point %d", msg->z);
 }
 
 void detect_cb (const geometry_msgs::PointConstPtr& msg)
@@ -38,8 +35,6 @@ void detect_cb (const geometry_msgs::PointConstPtr& msg)
     detect_y = msg->y;
 
     got_detec = true;
-
-    //ROS_WARN("got detect point %d", msg->z);
 }
 
 void video_cb (const sensor_msgs::CompressedImageConstPtr& msg)
@@ -88,9 +83,6 @@ int main(int argc, char** argv)
             got_track = false;
             got_detec = false;
 
-            //ROS_WARN("displaying");
-            //std::string text = "frame: " + std::to_string(n_frame);
-            //cv::putText(img, text, cv::Point2d(500, 50),cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
             cv::Point2d pt_track(track_x,track_y);
             cv::Point2d pt_detect(detect_x,detect_y);
             cv::circle(img, pt_track, 5, cv::Vec3b(0,255,0),2);
@@ -108,8 +100,7 @@ int main(int argc, char** argv)
             img_bridge->encoding = "bgr8";
             img_bridge->image = img;
 
-            pub.publish(img_bridge->toImageMsg());
-            //cv::imshow("final", small);        
+            pub.publish(img_bridge->toImageMsg());     
         }  
         
         ros::spinOnce();
