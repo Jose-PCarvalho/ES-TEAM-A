@@ -205,6 +205,7 @@ void callback (const geometry_msgs::PointConstPtr msg)
     frame_n = msg->z;
     pt.x = msg->x;
     pt.y = msg->y;
+    //ROS_WARN("centro %f %f", pt.x, pt.y);
 }
 
 int main(int argc, char** argv)
@@ -221,7 +222,6 @@ int main(int argc, char** argv)
     int stateSize = 4;
     int measSize = 2;
     int contrSize = 0;
-
     cv::KalmanFilter kf (stateSize, measSize, contrSize);
 
     cv::Mat state (stateSize, 1 , CV_32F); // [x, y, vx, vy]
@@ -249,7 +249,6 @@ int main(int argc, char** argv)
     kf.processNoiseCov.at<float>(5) = 1e-2;
     kf.processNoiseCov.at<float>(10) = 5.0f;
     kf.processNoiseCov.at<float>(15) = 5.0f;
-
     //measurement covariance matrix R
     cv::setIdentity(kf.measurementNoiseCov, cv::Scalar(1e-2));
 
@@ -258,9 +257,11 @@ int main(int argc, char** argv)
     float dT = (1.0/30.0);
 
     cv::Point2d center;
+    //ros::Rate rate(10);    
 
     while(ros::ok())
     {
+        
         ros::spinOnce();       
 
         if (old_frame < frame_n)
@@ -278,11 +279,13 @@ int main(int argc, char** argv)
             }
 
             old_frame = frame_n;
-
             //update 
             if ((pt.x < 0) || (pt.y < 0)) //nao encontrou
             {
                 not_found++;
+                ROS_INFO("lost %d",not_found);
+                if (not_found > 1000)
+                    found = false;
                 //found = false;
             }
             else
@@ -321,7 +324,6 @@ int main(int argc, char** argv)
                     kf.correct(meas);
                 }
             }
-
             cv::Point2d center;
             center.x = state.at<float>(0);
             center.y = state.at<float>(1);
@@ -332,10 +334,13 @@ int main(int argc, char** argv)
             msg.y = (int)center.y;
             msg.z = frame_n;
 
+            ROS_WARN("tracked: %f %f" , center.x, center.y);
+
             //ROS_WARN("velocidade x y: %f %f", state.at<float>(2),state.at<float>(3));
 
             pub.publish(msg);
             //ROS_INFO("\n\n Detected: %f %f\n Tracked: %d %d", pt.x, pt.y, (int)center.x,(int)center.y);
         }
+        //rate.sleep();
     }
 }

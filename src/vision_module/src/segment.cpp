@@ -258,7 +258,7 @@ int H_MIN, H_MAX, S_MIN, S_MAX, V_MIN, V_MAX;
 int H_MIN_old, H_MAX_old, S_MIN_old, S_MAX_old, V_MIN_old, V_MAX_old; 
 int kernel_size;
 std::string debug_raw;
-ros::Publisher pub, area_pub, mask_pub, contours_pub;
+ros::Publisher pub, area_pub, mask_pub, contours_pub, drawing_pub;
 bool debug;
 cv::Mat img, mask,mask_small,hsv, contours, ccomps, contours_small, ccomps_small;
 float scale_down = 0.5;
@@ -269,10 +269,10 @@ std::vector <float> area;
 
 void eval_debug ()
 {
-    if ((debug_raw == "True") || (debug_raw == "true"))
-        debug = true;
+    if (debug)
+        ROS_INFO("debug mode is enabled");
     else
-        debug = false;
+        ROS_INFO("debug mode is disabled");        
 }
 
 bool param_update()
@@ -331,38 +331,81 @@ void update_image_cont()
 {
     cv::inRange(hsv, cv::Scalar(H_MIN, S_MIN, V_MIN), cv::Scalar(H_MAX, S_MAX, V_MAX), mask);
 
+    cv::blur(hsv,hsv, cv::Size(11,11));
+
     cv::Mat kernel = cv::Mat::ones(kernel_size,kernel_size, CV_8U);
     cv::dilate(mask, img, kernel);
     cv::erode(img,contours,kernel);
 
-    cv::Moments m = cv::moments(contours, true);
+    cv::Mat canny_output;
+    float thresh = 1.5;
+    cv::Canny( contours, canny_output, thresh, thresh*2, 3 );
+    std::vector<std::vector<cv::Point> > cont;
 
-    area.push_back(m.m00);
-    std_msgs::Float32 area_msg;
-    area_msg.data = std::accumulate(area.begin(), area.end(), 0 ) / area.size();
-    area_pub.publish(area_msg);
+    cv::findContours( canny_output, cont, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE );    
+    std::vector<cv::Moments> mu(cont.size() );
+    int count = 0;
+    int biggest_index=0;
+    double biggest_moment = 0;
 
-    cv::Point p(m.m10/m.m00, m.m01/m.m00);
-    cv::circle(contours, p, 5, cv::Scalar(0,0,255), -1);
+    for( size_t i = 0; i < cont.size(); i++ )
+    {
+        mu[i] = moments( cont[i] );
+        if (biggest_moment < mu[i].m00)
+        {
+            biggest_moment = mu[i].m00;
+            biggest_index = i;
+        }
+        count = i;
+    }
 
-    cv_bridge::CvImagePtr mask_bridge(new cv_bridge::CvImage);
-    cv_bridge::CvImagePtr contours_bridge(new cv_bridge::CvImage);
+    cv::Mat drawing = cv::Mat::zeros( canny_output.size(), CV_8UC3 );
+    
 
-    mask_bridge->encoding = "mono8";
-    mask_bridge->image = mask;
+    if (cont.size() > 0)
+    {
+        //ROS_WARN("%d index", biggest_index);
+        double teste = mu[biggest_index].m10 ;
+        cv::Point mc;
+        mc = cv::Point2f( static_cast<float>(mu[biggest_index].m10) / static_cast<float>(mu[biggest_index].m00 + 1e-5), static_cast<float>(mu[biggest_index].m01 / (mu[biggest_index].m00 + 1e-5)) );
+        cv::Scalar color = cv::Scalar(0, 255, 0 );
+        cv::circle( drawing,mc, 4, color, -1 );
 
-    contours_bridge->encoding = "mono8";
-    contours_bridge->image = mask;
+        geometry_msgs::Point pt_msg;
+        //ROS_INFO("centro: %d %d",mc.x, mc.y);
+        
+        pt_msg.x = mc.x;
+        pt_msg.y = mc.y;
+        pt_msg.z = frame_n;
+        pub.publish(pt_msg);
+    }
 
-    mask_pub.publish(mask_bridge->toImageMsg());
-    contours_pub.publish(contours_bridge->toImageMsg());
+    if (debug)
+    {
+        
+        for( size_t i = 0; i< cont.size(); i++ )
+        {
+            cv::Scalar color = cv::Scalar(0, 255, 0 );
+            cv::drawContours( drawing, cont, (int)i, color, 2 );
+        }
 
-    geometry_msgs::Point pt_msg;
-    pt_msg.x = p.x;
-    pt_msg.y = p.y;
-    pt_msg.z = frame_n;
+        cv_bridge::CvImagePtr mask_bridge(new cv_bridge::CvImage);
+        cv_bridge::CvImagePtr contours_bridge(new cv_bridge::CvImage);
+        cv_bridge::CvImagePtr drawing_bridge(new cv_bridge::CvImage);
 
-    pub.publish(pt_msg);
+        mask_bridge->encoding = "mono8";
+        mask_bridge->image = mask;
+
+        contours_bridge->encoding = "mono8";
+        contours_bridge->image = mask;
+
+        contours_bridge->encoding = "bgr8";
+        contours_bridge->image = drawing;
+
+        mask_pub.publish(mask_bridge->toImageMsg());
+        contours_pub.publish(contours_bridge->toImageMsg());
+        drawing_pub.publish(drawing_bridge->toImageMsg());
+    }
 }
 
 void callback (const sensor_msgs::ImageConstPtr& cam_msg)
@@ -398,6 +441,7 @@ int main(int argc, char** argv)
     area_pub = nh.advertise<std_msgs::Float32>("/vision/area", 1);
     contours_pub = nh.advertise<sensor_msgs::Image>("/vision/contours", 1);
     mask_pub = nh.advertise<sensor_msgs::Image>("/vision/mask", 1);
+    drawing_pub = nh.advertise<sensor_msgs::Image>("/vision/mask", 1);
 
     nh.param<int>("/H_MIN", H_MIN, 0);
     nh.param<int>("/H_MAX", H_MAX, 255);
@@ -407,9 +451,10 @@ int main(int argc, char** argv)
     nh.param<int>("/V_MAX", V_MAX, 255);
 
     nh.param<int>("/kernel_size", kernel_size, 3);
-
-    nh.param<bool>("/debug", debug, "False");
-    //eval_debug();
+    ROS_INFO("kernel_size %d",kernel_size);
+    
+    nh.param<bool>("/debug", debug, "false");
+    eval_debug();
 
     sub_params = nh.subscribe("/vision_module/seg_params",1,update_params);
 
@@ -419,16 +464,16 @@ int main(int argc, char** argv)
     {
         if (hsv.channels() >= 3)
         {
-            if (debug)
-            {
-                ROS_INFO("\n\nUsing these parameters:");
-                ROS_INFO("\nH_MIN: %d",H_MIN);
-                ROS_INFO("\nH_MAX: %d",H_MAX);
-                ROS_INFO("\nS_MIN: %d",S_MIN);
-                ROS_INFO("\nS_MAX: %d",S_MAX);
-                ROS_INFO("\nV_MIN: %d",V_MIN);
-                ROS_INFO("\nV_MAX: %d",V_MAX);
-            }
+            // if (debug)
+            // {
+            //     ROS_INFO("\n\nUsing these parameters:");
+            //     ROS_INFO("\nH_MIN: %d",H_MIN);
+            //     ROS_INFO("\nH_MAX: %d",H_MAX);
+            //     ROS_INFO("\nS_MIN: %d",S_MIN);
+            //     ROS_INFO("\nS_MAX: %d",S_MAX);
+            //     ROS_INFO("\nV_MIN: %d",V_MIN);
+            //     ROS_INFO("\nV_MAX: %d",V_MAX);
+            // }
 
             if (param_update())
             {

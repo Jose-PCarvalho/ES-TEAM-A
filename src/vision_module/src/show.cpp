@@ -137,9 +137,8 @@ void track_cb (const geometry_msgs::PointConstPtr& msg)
 
     got_track = true;
 
-    n_frame = msg->z;
 
-    //ROS_WARN("got track point %d", msg->z);
+    //ROS_WARN("got track point %f %f",  track_x, track_y);
 }
 
 void detect_cb (const geometry_msgs::PointConstPtr& msg)
@@ -152,7 +151,7 @@ void detect_cb (const geometry_msgs::PointConstPtr& msg)
     //ROS_WARN("got detect point %d", msg->z);
 }
 
-void video_cb (const sensor_msgs::CompressedImageConstPtr& msg)
+void video_cb (const sensor_msgs::ImageConstPtr& msg)
 {
     cv_bridge::CvImagePtr cam;
 
@@ -185,33 +184,28 @@ int main(int argc, char** argv)
     ros::Publisher pub;
     pub = nh.advertise<sensor_msgs::Image>("/vision/final", 1);
 
-    sub_video = nh.subscribe("/raspicam_node/image/compressed",1,video_cb);
+    sub_video = nh.subscribe("/raspicam_node/image",1,video_cb);
     sub_track = nh.subscribe("/vision/tracker",1,track_cb);
     sub_detect = nh.subscribe("/vision/point",1,detect_cb);
 
     while (ros::ok)
     {
         //if (img.channels() == 3)
-        if (got_img && got_detec && got_track)
+        if (got_img )
         {
-            got_img = false;
-            got_track = false;
-            got_detec = false;
-
-            //ROS_WARN("displaying");
-            //std::string text = "frame: " + std::to_string(n_frame);
-            //cv::putText(img, text, cv::Point2d(500, 50),cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
-            cv::Point2d pt_track(track_x,track_y);
-            cv::Point2d pt_detect(detect_x,detect_y);
-            cv::circle(img, pt_track, 5, cv::Vec3b(0,255,0),2);
-            cv::circle(img, pt_detect, 5, cv::Vec3b(255,0,0),2);
-
-            cv::putText(img, "Detect",cv::Point(pt_detect.x + 10, pt_detect.y), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 1);
-            cv::putText(img, "Track",cv::Point(pt_track.x + 10, pt_track.y -50), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 255, 0), 1);
-
-            cv::Mat small;
-            float scale_down = 0.5;
-            cv::resize(img,small, cv::Size(),scale_down,scale_down, cv::INTER_LINEAR);
+            if (got_track)
+            {
+                cv::Point2d pt_track(track_x,track_y);
+                cv::circle(img, pt_track, 5, cv::Vec3b(0,255,0),2);
+                cv::putText(img, "Track",cv::Point(pt_track.x + 10, pt_track.y -50), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 255, 0), 1);
+            }
+            
+            if (got_detec)
+            {
+                cv::Point2d pt_detect(detect_x,detect_y);
+                cv::circle(img, pt_detect, 5, cv::Vec3b(255,0,0),2);
+                cv::putText(img, "Detect",cv::Point(pt_detect.x + 10, pt_detect.y), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 1);
+            }
 
             cv_bridge::CvImagePtr img_bridge(new cv_bridge::CvImage);
 
@@ -219,7 +213,11 @@ int main(int argc, char** argv)
             img_bridge->image = img;
 
             pub.publish(img_bridge->toImageMsg());
-            //cv::imshow("final", small);        
+            
+            got_img = false;
+            got_track = false;
+            got_detec = false;
+     
         }  
         
         ros::spinOnce();
