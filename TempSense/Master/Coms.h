@@ -42,6 +42,6 @@ class Coms
         float getVoltage();
         float getEnergy();
         long getRunTime();
-        long gerTimeToLive();
+        long getTimeToLive();
 };
 #endif

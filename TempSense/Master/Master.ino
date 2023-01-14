@@ -38,6 +38,6 @@ void loop()
   // Get Runtime
   Serial.println("Run time: "+String(coms.getRunTime())+" s");
   // Get Time to Live
-  Serial.println("Time to Live: "+String(coms.gerTimeToLive())+" s\n");
+  Serial.println("Time to Live: "+String(coms.getTimeToLive())+" s\n");
   delay(10000);
 }

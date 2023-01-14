@@ -85,7 +85,7 @@ float Coms::getCurrent()
 /**
  * @brief get Voltage reading
  * 
- * @return float Voltage red on Volt
+ * @return float Voltage read in Volt
  */
 float Coms::getVoltage()
 {
@@ -115,7 +115,7 @@ long Coms::getRunTime()
  * 
  * @return unsigned int Time estimation in seconds
  */
-long Coms::gerTimeToLive()
+long Coms::getTimeToLive()
 {
   return this->getLongParameter(GET_TIME_TO_LIVE);
 }
