@@ -58,7 +58,7 @@ def talker():
         
         line = data.recv(1024).decode('UTF-8')
         uwb_list = []
-        try:
+        if line is not None:
             uwb_data = json.loads(line)
             rcv_a=False
             rcv_b=False
@@ -77,10 +77,6 @@ def talker():
                     msg.position.x=x
                     msg.position.y=x
                     pub.publish(msg)
-        except Exception as ex:
-            print("xd")
-            print(ex)
-
         rate.sleep()
         
 
