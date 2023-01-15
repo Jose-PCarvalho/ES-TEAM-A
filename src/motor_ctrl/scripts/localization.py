@@ -34,7 +34,7 @@ def get_intersections(r0, r1):
     elif x4>0 and y4>0:
         return x4,y4
     else:
-        return None
+        return None , None
     
 def talker():
     rospy.init_node('trilateration', anonymous=True)
