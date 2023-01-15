@@ -78,6 +78,7 @@ def talker():
                     msg.position.y=x
                     pub.publish(msg)
         except Exception as ex:
+            print("xd")
             print(ex)
 
         rate.sleep()
