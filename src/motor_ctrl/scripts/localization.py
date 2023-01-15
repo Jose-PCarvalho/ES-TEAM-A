@@ -38,7 +38,7 @@ def get_intersections(r0, r1):
     
 def talker():
     rospy.init_node('trilateration', anonymous=True)
-    pub=rospy.Publisher ('/coordinates',Pose)    
+    pub=rospy.Publisher ('/coordinates',Pose,queue_size=1)    
     rate = rospy.Rate(100) # 100hz
 
     hostname = "192.168.1.254"
