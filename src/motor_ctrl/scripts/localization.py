@@ -66,13 +66,13 @@ def talker():
             uwb_list = uwb_data["links"]
             for uwb_anchor in uwb_list:
                 if uwb_anchor['A']=="1313":
-                    a_r=uwb_anchor['R']
+                    a_r=np.float32(uwb_anchor['R'])
                     rcv_a=True
                 elif uwb_anchor['A']=="1314":
-                    b_r=uwb_anchor['R']
+                    b_r=np.float32(uwb_anchor['R'])
                     rcv_b=True
             if (rcv_b and rcv_a) and b_r is not None and a_r is not None:
-                x,y=get_intersections(float(a_r),float(b_r))
+                x,y=get_intersections(a_r,b_r)
                 if x is not None and y is not None:
                     rospy.loginfo(x,y)
                     msg.position.x=x
