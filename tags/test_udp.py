@@ -39,7 +39,7 @@ def get_intersections(r0, r1):
 # Create a UDP socket
 hostname = "192.168.1.253"
 UDP_IP = socket.gethostbyname(hostname)
-UDP_PORT = 8000
+UDP_PORT = 80
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Bind the socket to the port

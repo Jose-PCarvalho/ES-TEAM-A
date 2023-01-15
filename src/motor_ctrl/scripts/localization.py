@@ -43,7 +43,7 @@ def talker():
 
     hostname = "192.168.1.254"
     UDP_IP = socket.gethostbyname(hostname)
-    UDP_PORT = 80
+    UDP_PORT = 8000
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Bind the socket to the port
     sock.bind((UDP_IP, UDP_PORT))
