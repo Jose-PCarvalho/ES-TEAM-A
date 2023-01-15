@@ -57,9 +57,9 @@ def talker():
             mag_msg.magnetic_field_covariance[4] = 0.01
             mag_msg.magnetic_field_covariance[8] = 0.01
 
-            magnetometer_msg.x = mx
-            magnetometer_msg.y = my
-            magnetometer_msg.z = mz
+            magnetometer_msg.x = mx*MagFieldConversion_uT_T
+            magnetometer_msg.y = my*MagFieldConversion_uT_T
+            magnetometer_msg.z = mz*MagFieldConversion_uT_T
             
 
 
