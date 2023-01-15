@@ -6,7 +6,7 @@ import math
 import time
 from mpu9250_jmdev.registers import *
 from mpu9250_jmdev.mpu_9250 import MPU9250
-from sensor_msgs_ext import magnetometer,accelerometer,gyroscope
+from sensor_msgs_ext.msg import magnetometer,accelerometer,gyroscope
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
