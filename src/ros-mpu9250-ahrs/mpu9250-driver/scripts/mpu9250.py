@@ -106,7 +106,7 @@ def talker():
             imu_msg.linear_acceleration_covariance[8] = 10
             accelerometer_msg.x=imu_msg.linear_acceleration.x
             accelerometer_msg.y=imu_msg.linear_acceleration.y
-            accelerometer_msg.z=imu_msg.linear_accelaration.z
+            accelerometer_msg.z=imu_msg.linear_acceleration.z
 
             imu_pub.publish(imu_msg)
             mag_pub.publish(mag_msg)
