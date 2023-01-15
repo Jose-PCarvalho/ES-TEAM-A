@@ -27,7 +27,6 @@ def get_intersections(r0, r1):
         y2 = y0 + a * (y1 - y0) / d
         x3 = x2 + h * (y1 - y0) / d
         y3 = y2 - h * (x1 - x0) / d
-
         x4 = x2 - h * (y1 - y0) / d
         y4 = y2 + h * (x1 - x0) / d
     if x3>0 and y3>0:
