@@ -14,7 +14,7 @@
 char tag_addr[] = "7D:00:22:EA:82:60:3B:9C";
 const char *ssid = "asv";
 const char *password = "12345678";
-const char *host = "192.168.1.253";
+const char *host = "192.168.1.254";
 
 WiFiClient client;
 
@@ -39,18 +39,15 @@ void setup()
     Serial.println("Connected");
     Serial.print("IP Address:");
     Serial.println(WiFi.localIP());
-    bool success = Ping.ping("192.168.1.253", 3);
+    bool success = Ping.ping("192.168.1.254", 3);
     if(!success){
       Serial.println("Ping Failed");
     }
       Serial.println("Ping Success");
-    while(!client.connect(host, 80))
+    while(!client.connect(host, 8000))
     {
-        Serial.println("Success");
-        client.print(String("GET /") + " HTTP/1.1\r\n" +
-                     "Host: " + host + "\r\n" +
-                     "Connection: close\r\n" +
-                     "\r\n");
+        Serial.println("Fail");
+    
     }
 
     delay(1000);

@@ -72,12 +72,14 @@ def talker():
                     rcv_b=True
             if rcv_b and rcv_a:
                 x,y=get_intersections(float(a_r),float(b_r))
-                rospy.loginfo(x,y)
-                msg.position.x=x
-                msg.position.y=x
-                pub.publish(msg)
-        except:
-            print(line)
+                if x is not None and y is not None:
+                    rospy.loginfo(x,y)
+                    msg.position.x=x
+                    msg.position.y=x
+                    pub.publish(msg)
+        except Exception as ex:
+            print(ex)
+
         rate.sleep()
         
 
