@@ -11,6 +11,7 @@ def get_intersections(r0, r1):
     x1=0
     y1=5
     d = np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
+    rospy.loginfo("Entrei")
    #non intersecting
     if d > r0 + r1:
         return None,None
