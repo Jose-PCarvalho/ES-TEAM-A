@@ -13,13 +13,15 @@ def get_intersections(r0, r1):
     d = np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
    #non intersecting
     if d > r0 + r1:
-        return None
+        return None,None
     # One circle within other
     if d < abs(r0 - r1):
-        return None
+        return None,None
     # coincident circles
     if d == 0 and r0 == r1:
-        return None
+        return None,None
+    if r0==0 or r1==0:
+        return None, None
     else:
         a = (r0 ** 2 - r1 ** 2 + d ** 2) / (2 * d)
         h = np.sqrt(r0 ** 2 - a ** 2)
