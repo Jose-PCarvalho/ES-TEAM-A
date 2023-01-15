@@ -35,7 +35,6 @@ void HeartBeat::controller()
     {
         if(runTime>0)
         {
-          Serial.println("Buuzzzzz");
             timer=millis();
             digitalWrite(pin,1);
             state=1;
@@ -46,7 +45,6 @@ void HeartBeat::controller()
     {
         if(millis()-timer>runTime)
         {
-          Serial.println(millis()-timer);
           digitalWrite(pin,false);
             runTime=0;
             state=0;

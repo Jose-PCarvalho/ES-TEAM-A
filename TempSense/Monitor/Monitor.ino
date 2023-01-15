@@ -1,7 +1,6 @@
 #include "Temp.h"
 #include "Energy.h"
 #include "HeartBeat.h"
-#include "Buzzer.h"
 #include "Fan.h"
 #include <Wire.h>
 
@@ -12,7 +11,7 @@
 #define VOLTAGE_PIN         A6
 #define CURRENT_PIN         A7
 // Digital Pins
-#define BUZZER_PIN          3  // Output
+#define BUZZER_PIN          2  // Output
 #define WATER_SENSOR_1      4  // Input
 #define WATER_SENSOR_2      5  // Input
 #define POWER_BOX_RELAY     6  // Output
@@ -25,7 +24,7 @@
 #define R25                 68e3  // ohm
 #define BETA                4.6e3 // ohm
 // Set point
-#define ON_TEMP             35 // Turn fans on at this temperature
+#define ON_TEMP             30 // Turn fans on at this temperature
 #define HYSTERESIS          3  // Turn off when temperature reaches ON_TEMP-HYSTERESIS
 // Voltage resistor divider
 #define RV_HI               17.65e3 // ohm
@@ -53,17 +52,17 @@
 // Period for heart beat
 #define BEAT_TIME           1e3 // in ms
 // Period for Buzzer
-#define BUZZER_TIMER        1e3   // in ms
+#define BUZZER_TIMER        3e3   // in ms
 // For testing purposes
 #define TEST_FUNTIONS
 #define PRINT_TEST_PERIOD   1e3 // in ms
 // Battery alarm
 #define BATT_ALLARM         10.95 // Volt
-#define BATT_ALLARM_OFF     11.1  // Volt
-#define LOW_BAT_WARNING     20    // in ms
+#define BATT_ALLARM_OFF     11.0  // Volt
+#define LOW_BAT_WARNING     200    // in ms
 // High Temp Alarm
 #define HIGH_TEMP           35    // In celcius
-#define HIGH_TEMP_WARNING   1e3   // in ms
+#define HIGH_TEMP_WARNING   2e3   // in ms
 // Constants
 #define NULL_CMD            0
 
@@ -83,7 +82,6 @@ Fan fans[N_FANS];
 Temp sensors[N_TEMP_SENSORS];
 Energy energy;
 HeartBeat heart(LED_BUILTIN);
-Buzzer buzzer(2);
 uint8_t index;
 uint8_t cmd;
 uint8_t sensorIndex;
@@ -145,7 +143,6 @@ bool overTemp()
       return true;
   return false;
 }
-
 /**
  * @brief Setup function
  * 
@@ -170,6 +167,8 @@ void setup()
   //pinMode(AUX_RELAY_2, OUTPUT); // Uncomment when used
   // Initialize all fans
   setRelays();
+  // Buzzer
+  pinMode(BUZZER_PIN, OUTPUT);
   // Init commands
   cmd=NULL_CMD;
   sensorIndex=NULL_CMD;
@@ -183,7 +182,6 @@ void loop()
   stateMachine();
   energy.controller();
   heart.controller();
-  buzzer.controller();
   fans[0].controller();
   fans[1].controller();
   #ifdef TEST_FUNTIONS
@@ -196,35 +194,85 @@ void loop()
  */
 void stateMachine()
 {
+  static uint8_t battState=0;
+  static uint8_t tempState=0;
   static unsigned long curr;
   static unsigned long timer1=millis();
-  static unsigned long timer2=millis();
+  static unsigned long battTimer=millis();
+  static unsigned long tempTimer=millis();
   //
   curr=millis();
-  // State computation
-    
-    if(curr-timer1>BEAT_TIME)
+  // State computation 
+  if(curr-timer1>BEAT_TIME)
+  {
+    timer1=curr;
+    heart.beat(BEAT_TIME/100);
+  }    
+  // Batery monitor
+  if(battState==0)
+  {
+    if(curr-battTimer > BUZZER_TIMER)
     {
-      timer1=curr;
-      heart.beat(BEAT_TIME/100);
-    }    
-  
-    if(curr-timer2 > 3000)
+      battTimer=curr;
+      battState=1;
+    }      
+  }
+  else if(battState==1)
+  {
+    if(readVoltage() < BATT_ALLARM)
     {
-      Serial.println("Buzzer");
-      if(readVoltage() < BATT_ALLARM)
-      {
-        
-        buzzer.beat(LOW_BAT_WARNING);
-      }
-      else if(overTemp())      
-      {
-        buzzer.beat(HIGH_TEMP_WARNING);
-      }
-        
-      timer2=curr;
+      battTimer=curr;
+      battState=2;
     }
-  
+  }
+  else if(battState==2)
+  {
+    if(curr-battTimer>LOW_BAT_WARNING)
+    {      
+      battTimer=curr;
+      battState=3;
+    }
+  }
+  else if(battState==3)
+  {
+    if(curr-battTimer > BUZZER_TIMER)
+    {
+      battTimer=curr;
+      battState=1;
+    }
+    else if(readVoltage() > BATT_ALLARM_OFF)
+    {
+      battTimer=curr;
+      battState=0;
+    }
+  }
+  // Temp Allarm
+  if(tempState==0)
+  {
+    if(curr-tempTimer > BUZZER_TIMER)
+    {
+      tempTimer=curr;
+      tempState=1;
+    }      
+  }
+  else if(tempState==1)
+  {
+    if(overTemp())
+    {
+      tempTimer=curr;
+      tempState=2;
+    }
+  }
+  else if(tempState==2)
+  {
+    if(curr-tempTimer>HIGH_TEMP_WARNING)
+    {      
+      tempTimer=curr;
+      tempState=0;
+    }
+  }
+  // Write outputs
+  digitalWrite(BUZZER_PIN, battState==2||tempState==2);
 }
 /**
  * @brief Set the Sensors object
