@@ -183,6 +183,7 @@ catkin_install_python(PROGRAMS
   scripts/set_server.py 
   scripts/pid_controller.py
   scripts/controller_teleop.py
+  scripts/localization.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
