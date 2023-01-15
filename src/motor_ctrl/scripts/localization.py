@@ -72,6 +72,7 @@ def talker():
                     b_r=np.float32(uwb_anchor['R'])
                     rcv_b=True
             if (rcv_b and rcv_a) and b_r is not None and a_r is not None:
+                rospy.loginfo(a_r)
                 x,y=get_intersections(a_r,b_r)
                 if x is not None and y is not None:
                     rospy.loginfo(x,y)

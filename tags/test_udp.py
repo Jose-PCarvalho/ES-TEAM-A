@@ -66,6 +66,7 @@ while True:
                 rcv_b=True
         print(rcv_a,rcv_b)
         if rcv_b and rcv_a:
+            print(a_r)
             print("metodo2: ",get_intersections(float(a_r),float(b_r)))
 
     except:
