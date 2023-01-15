@@ -58,6 +58,7 @@ def talker():
         
         line = data.recv(1024).decode('UTF-8')
         uwb_list = []
+        rospy.loginfo(line)
         if line is not None:
             uwb_data = json.loads(line)
             rcv_a=False
