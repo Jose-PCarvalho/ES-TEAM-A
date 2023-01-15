@@ -2,17 +2,17 @@ import smbus2 as smbus
 
 class ArduinoComs:
     # Constants
-    self.__N_TEMP_SENSORS    = 4
-    self.__N_WATER_SENSORS   = 2
-    self.__GET_CURRENT       = 1
-    self.__GET_VOLTAGE       = 2
-    self.__GET_ENERGY        = 3
-    self.__GET_RUNTIME       = 4
-    self.__GET_TIME_TO_LIVE  = 5
-    self.__GET_TEMP          = 6
-    self.__GET_WATER         = 7
-    self.__FLOAT_LEN         = 8
-    self.__LONG_LEN          = 11
+    __N_TEMP_SENSORS    = 4
+    __N_WATER_SENSORS   = 2
+    __GET_CURRENT       = 1
+    __GET_VOLTAGE       = 2
+    __GET_ENERGY        = 3
+    __GET_RUNTIME       = 4
+    __GET_TIME_TO_LIVE  = 5
+    __GET_TEMP          = 6
+    __GET_WATER         = 7
+    __FLOAT_LEN         = 8
+    __LONG_LEN          = 11
     # Private Methods
     def __init__(self, bus, arduinoAdress):
         self.__arduinoAdress=arduinoAdress
