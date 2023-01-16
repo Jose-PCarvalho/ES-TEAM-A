@@ -9,7 +9,7 @@
 #include <numeric>
 
 #include <ros/ros.h>
-#include <sensor_msgs/Image.h>
+//#include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
@@ -131,9 +131,9 @@ void update_image_cont()
     pt_msg.z = frame_n;
     pub.publish(pt_msg);
 
-    if (1)
+    if (debug)
     {
-        ROS_INFO("showing");
+        //ROS_INFO("showing");
         
         cv_bridge::CvImagePtr mask_ptr(new cv_bridge::CvImage); 
         cv_bridge::CvImagePtr cont_ptr(new cv_bridge::CvImage); 
@@ -141,7 +141,7 @@ void update_image_cont()
         //publishes frame
         mask_ptr->image = img;
         mask_ptr->encoding = "bgr8";
-        pub.publish(mask_ptr->toImageMsg()); 
+        mask_pub.publish(mask_ptr->toCompressedImageMsg()); 
 
         //publishes frame
         cv::Mat drawing = cv::Mat::zeros( canny_output.size(), CV_8UC3 );
@@ -155,13 +155,13 @@ void update_image_cont()
         cv::circle( drawing, cv::Point(p.x,p.y), 4, color, -1 );
         cont_ptr->image = drawing;
         cont_ptr->encoding = "bgr8";
-        pub.publish(cont_ptr->toImageMsg()); 
+        contours_pub.publish(cont_ptr->toCompressedImageMsg()); 
     }
 }
 
 void callback (const sensor_msgs::CompressedImageConstPtr& cam_msg)
 {
-    ROS_INFO("callback");
+    //ROS_INFO("callback");
     
     cv_bridge::CvImagePtr cam, res;
     sensor_msgs::ImagePtr out_msg;
@@ -195,13 +195,6 @@ int main(int argc, char** argv)
     pub = nh.advertise<geometry_msgs::Point>("/point", 1);
     area_pub = nh.advertise<std_msgs::Float32>("/area", 1);
 
-    
-        contours_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/contours", 1);
-        mask_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/mask", 1);
-    
-    
-
-
     nh.param<int>("/H_MIN", H_MIN, 0);
     nh.param<int>("/H_MAX", H_MAX, 255);
     nh.param<int>("/S_MIN", S_MIN, 0);
@@ -212,6 +205,12 @@ int main(int argc, char** argv)
     nh.param<int>("/kernel_size", kernel_size, 3);
 
     nh.param<bool>("/debug", debug, "False");
+
+    if (debug)
+    {
+        contours_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/contours", 1);
+        mask_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/mask", 1);   
+    }
     //eval_debug();
 
     sub_params = nh.subscribe("/seg_params",1,update_params);

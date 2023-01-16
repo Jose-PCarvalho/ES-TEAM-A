@@ -1,5 +1,5 @@
 <launch>
-  <arg name="enable_raw" default="true"/>
+  <arg name="enable_raw" default="false"/>
   <arg name="enable_imv" default="false"/>
   <arg name="camera_id" default="0"/>
   <arg name="camera_frame_id" default="raspicam"/>
@@ -19,6 +19,6 @@
     <param name="height" value="720"/>
 
     <!-- We are running at 90fps to reduce motion blur -->
-    <param name="framerate" value="90"/>
+    <param name="framerate" value="30"/>
   </node>
 </launch>

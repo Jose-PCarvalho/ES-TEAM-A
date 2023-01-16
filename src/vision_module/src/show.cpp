@@ -117,7 +117,7 @@
 #include <opencv2/imgcodecs.hpp>
 
 #include <ros/ros.h>
-#include <sensor_msgs/Image.h>
+//#include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <geometry_msgs/Point.h>
 #include <cv_bridge/cv_bridge.h>
@@ -182,7 +182,7 @@ int main(int argc, char** argv)
     ros::Subscriber sub_video, sub_track, sub_detect;
     
     ros::Publisher pub;
-    pub = nh.advertise<sensor_msgs::Image>("/vision/final", 1);
+    pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/final", 1);
 
     sub_video = nh.subscribe("/raspicam_node/image",1,video_cb);
     sub_track = nh.subscribe("/vision/tracker",1,track_cb);
