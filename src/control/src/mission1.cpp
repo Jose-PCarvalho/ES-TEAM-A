@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "teste");
     ros::NodeHandle nh;
 
-    nh.param<int>("/center_treshold", center_threshold, 20);
+    nh.param<int>("/center_treshold", center_threshold, 100);
     nh.param<float>("/lidar_treshold", lidar_threshold, 0.20);
     nh.param<float>("/max_speed", max_speed, 15);
 
@@ -133,7 +133,7 @@ int main(int argc, char** argv)
             }
         }
 
-        ROS_WARN("lin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x/2);
+        ROS_WARN("\n\nlin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x);
         
         pub.publish(cmd_vel);
         
