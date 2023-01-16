@@ -138,7 +138,7 @@ void track_cb (const geometry_msgs::PointConstPtr& msg)
     got_track = true;
 
 
-    ROS_WARN("got track point %f %f",  track_x, track_y);
+    //ROS_WARN("got track point %f %f",  track_x, track_y);
 }
 
 void detect_cb (const geometry_msgs::PointConstPtr& msg)
@@ -148,7 +148,7 @@ void detect_cb (const geometry_msgs::PointConstPtr& msg)
 
     got_detec = true;
 
-    ROS_WARN("got detect point %d", msg->z);
+    //ROS_WARN("got detect point %d", msg->z);
 }
 
 void video_cb (const sensor_msgs::CompressedImageConstPtr& msg)
@@ -192,14 +192,14 @@ int main(int argc, char** argv)
             {
                 cv::Point2d pt_track(track_x,track_y);
                 cv::circle(img, pt_track, 5, cv::Vec3b(0,255,0),2);
-                cv::putText(img, "Track",cv::Point(pt_track.x + 10, pt_track.y -50), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 255, 0), 1);
+                cv::putText(img, "Track",cv::Point(pt_track.x + 10, pt_track.y -50), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0, 255, 0), 1);
             }
             
             if (got_detec)
             {
                 cv::Point2d pt_detect(detect_x,detect_y);
                 cv::circle(img, pt_detect, 5, cv::Vec3b(255,0,0),2);
-                cv::putText(img, "Detect",cv::Point(pt_detect.x + 10, pt_detect.y), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 1);
+                cv::putText(img, "Detect",cv::Point(pt_detect.x + 10, pt_detect.y), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0, 0, 255), 1);
             }
 
             // cv_bridge::CvImagePtr img_bridge(new cv_bridge::CvImage);

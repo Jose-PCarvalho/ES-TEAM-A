@@ -143,7 +143,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
   
     ros::Subscriber sub;
-    pub = nh.advertise<vision_module::seg_params>("/vision_module/seg_params", 1);
+    pub = nh.advertise<vision_module::seg_params>("/vision/seg_params", 1);
 
     nh.param<bool>("/debug", debug, "False");
     nh.param<int>("/H_MIN", H_MIN, 0);

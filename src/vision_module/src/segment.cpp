@@ -128,9 +128,10 @@ void update_image_cont()
     area_pub.publish(area_msg);
     
     geometry_msgs::Point pt_msg;
-    pt_msg.x = p.x;
-    pt_msg.y = p.y;
-    pt_msg.z = frame_n;
+    pt_msg.x = (float)p.x;
+    pt_msg.y = (float)p.y;
+    pt_msg.z = (float)frame_n;
+    
     pub.publish(pt_msg);
 
     if (debug)
@@ -198,8 +199,8 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
   
     ros::Subscriber sub, sub_params;
-    pub = nh.advertise<geometry_msgs::Point>("/point", 1);
-    area_pub = nh.advertise<std_msgs::Float32>("/area", 1);
+    pub = nh.advertise<geometry_msgs::Point>("/vision/point", 1);
+    area_pub = nh.advertise<std_msgs::Float32>("/vision/area", 1);
 
     nh.param<int>("/H_MIN", H_MIN, 0);
     nh.param<int>("/H_MAX", H_MAX, 255);
@@ -219,7 +220,7 @@ int main(int argc, char** argv)
     // }
     //eval_debug();
 
-    sub_params = nh.subscribe("/seg_params",1,update_params);
+    sub_params = nh.subscribe("/vision/seg_params",1,update_params);
 
     sub = nh.subscribe("/raspicam_node/image/compressed", 1, callback);    
 
