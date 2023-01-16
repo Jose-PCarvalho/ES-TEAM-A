@@ -26,6 +26,8 @@ int main(int argc, char **argv)
   float dist = 0;
   ROS_INFO_STREAM("Start processing ...");
 
+  ros::Rate rate(30);
+
   while(ros::master::check() && ros::ok())
   {
     ros::spinOnce();
@@ -44,8 +46,9 @@ int main(int argc, char **argv)
     }
     else if(dist == 0.0)
     {
-      ROS_ERROR_STREAM("Data validation error!");
+      //ROS_ERROR_STREAM("Data validation error!");
     }
+    rate.sleep();
   }
 
   tfmini_obj->closePort();
