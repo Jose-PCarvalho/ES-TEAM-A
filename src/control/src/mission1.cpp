@@ -7,15 +7,15 @@
 #include <sensor_msgs/Range.h>
 #include <geometry_msgs/Point.h>
 
-#define HEIGT 720
-#define WIDTH 1280
+#define HEIGT 480
+#define WIDTH 720
 
 int state = 0;
 int center_threshold;
 float lidar_threshold;
 float lidar_dst;
 
-float max_speed=20;
+float max_speed;
 
 geometry_msgs::Point buoy_pos;
 bool buoy_at_center = false;
@@ -46,9 +46,9 @@ int main(int argc, char** argv)
 
     nh.param<int>("/center_treshold", center_threshold, 20);
     nh.param<float>("/lidar_treshold", lidar_threshold, 0.20);
-    nh.param<float>("/max_speed", max_speed, 20);
+    nh.param<float>("/max_speed", max_speed, 15);
 
-    max_speed = 20;
+    //max_speed = 15;
 
     ros::Subscriber lidar_sub, tracker_sub;
     ROS_INFO("so far so good");
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
     ros::Publisher pub;
     pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 
-    ros::Rate rate(10);
+    ros::Rate rate(30);
 
     geometry_msgs::Twist cmd_vel;
 
