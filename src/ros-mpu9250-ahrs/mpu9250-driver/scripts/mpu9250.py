@@ -33,9 +33,7 @@ def talker():
 
     imu_msg = Imu()
     mag_msg = MagneticField()
-    magnetometer_msg = magnetometer()
-    accelerometer_msg = accelerometer()
-    gyroscope_msg = gyroscope()
+
 
     # Apply the settings to the registers and calibrate
     mpu.configure()
