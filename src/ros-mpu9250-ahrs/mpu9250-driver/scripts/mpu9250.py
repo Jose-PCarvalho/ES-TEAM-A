@@ -64,7 +64,7 @@ def talker():
             # Fill mag msg
             mx, my, mz = mpu.readMagnetometerMaster()
             readings=np.array(([mx,my,mz,1]),dtype=float)*MagFieldConversion_uT_T
-            readings_corr=readings*magnetometer_correction
+            readings_corr=np.matmul(readings,magnetometer_correction)
             mag_msg.header.stamp = rospy.get_rostime()
             mag_msg.magnetic_field.x = float(readings_corr[0])
             mag_msg.magnetic_field.y = float(readings_corr[1])
@@ -106,7 +106,7 @@ def talker():
 
             ax, ay, az = mpu.readAccelerometerMaster()
             reading_acc=np.array(([mx,my,mz,1]),dtype=float)*G
-            readings_acc_corr=readings*accelerometer_correction
+            readings_acc_corr=np.matmul(readings,accelerometer_correction)
             imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
             imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
             imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
