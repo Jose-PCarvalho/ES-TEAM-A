@@ -22,7 +22,7 @@
             <node pkg="vision_module" name="display" type="display" output="screen" />
         </group>
 
-        <param name="/kernel_size" value="11" />
+        <param name="/kernel_size" value="5" />
         
         <rosparam file="$(find vision_module)/cfg/hsv_params.yaml" />
 

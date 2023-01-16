@@ -1,7 +1,7 @@
 <launch>
-    <node pkg="control" name="mission1" type="mission1" output="screen"/>
+    <!-- <node pkg="control" name="mission1" type="mission1" output="screen"/> -->
     <!-- lança imu, pid -->
     <include file="$(find motor_ctrl)/launch/asv_pid.launch" />
-    <include file="$(find vision_module)/launch/rasp.launch" />
+    <include file="$(find vision_module)/launch/rasp_low.launch" />
     <include file="$(find tfmini_ros)/launch/tfmini.launch" />
 </launch>
