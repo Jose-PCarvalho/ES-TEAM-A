@@ -16,7 +16,7 @@
     </group>
 
     <!-- Params -->
-    <param name="/lidar_treshold" type="double" value="0.2"/>
+    <param name="/lidar_treshold" type="double" value="0.5"/>
     <param name="/center_treshold" type="int" value="200"/>
     <param name="/max_speed" type="double" value="15"/>
     
