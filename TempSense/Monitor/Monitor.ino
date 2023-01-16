@@ -57,12 +57,14 @@
 #define TEST_FUNTIONS
 #define PRINT_TEST_PERIOD   1e3 // in ms
 // Battery alarm
-#define BATT_ALLARM         10.95 // Volt
-#define BATT_ALLARM_OFF     11.0  // Volt
-#define LOW_BAT_WARNING     200    // in ms
+#define BATT_ALLARM         10.0 // Volt
+#define BATT_ALLARM_OFF     10.5  // Volt
+#define LOW_BAT_WARNING     100    // in ms
 // High Temp Alarm
-#define HIGH_TEMP           35    // In celcius
-#define HIGH_TEMP_WARNING   2e3   // in ms
+#define HIGH_TEMP           38    // In celcius
+#define HIGH_TEMP_WARNING   300   // in ms
+// Water Allarm
+#define WATER_DETECT        2e3   // in ms
 // Constants
 #define NULL_CMD            0
 
@@ -196,10 +198,12 @@ void stateMachine()
 {
   static uint8_t battState=0;
   static uint8_t tempState=0;
+  static uint8_t waterState=0;
   static unsigned long curr;
   static unsigned long timer1=millis();
   static unsigned long battTimer=millis();
   static unsigned long tempTimer=millis();
+  static unsigned long waterTimer=millis();
   //
   curr=millis();
   // State computation 
@@ -271,8 +275,33 @@ void stateMachine()
       tempState=0;
     }
   }
+  // Water Allarm
+  if(waterState==0)
+  {
+    if(curr-waterTimer > BUZZER_TIMER)
+    {
+      waterTimer=curr;
+      waterState=1;
+    }      
+  }
+  else if(waterState==1)
+  {
+    if(readWater(N_WATER_SENSORS))
+    {
+      waterTimer=curr;
+      waterState=2;
+    }
+  }
+  else if(waterState==2)
+  {
+    if(curr-waterTimer>WATER_DETECT)
+    {      
+      waterTimer=curr;
+      waterState=0;
+    }
+  }
   // Write outputs
-  digitalWrite(BUZZER_PIN, battState==2||tempState==2);
+  digitalWrite(BUZZER_PIN, battState==2||tempState==2||waterState==2);
 }
 /**
  * @brief Set the Sensors object
