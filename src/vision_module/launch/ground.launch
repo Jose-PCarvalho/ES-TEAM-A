@@ -3,6 +3,7 @@
     <group>
         <!-- argumentos -->
         <arg name="debug" default="False"/>
+        <arg name="show" default="False"/>
 
         <!-- Nodes -->
         <node pkg="vision_module" name="segment" type="segment" output="screen"/>
@@ -17,7 +18,11 @@
             <node pkg="vision_module" name="display" type="display" output="screen" />
         </group>
 
-        <param name="/kernel_size" value="33" />
+        <group if="$(eval arg('show') ==True)">
+            <node pkg="vision_module" name="display" type="display" output="screen" />
+        </group>
+
+        <param name="/kernel_size" value="11" />
         
         <rosparam file="$(find vision_module)/cfg/hsv_params.yaml" />
 

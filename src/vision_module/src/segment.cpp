@@ -9,7 +9,7 @@
 #include <numeric>
 
 #include <ros/ros.h>
-//#include <sensor_msgs/Image.h>
+#include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
@@ -93,6 +93,8 @@ void update_params (const vision_module::seg_paramsConstPtr msg)
 
 void update_image_cont()
 {
+    //ROS_INFO(" update contours");
+
     cv::inRange(hsv, cv::Scalar(H_MIN, S_MIN, V_MIN), cv::Scalar(H_MAX, S_MAX, V_MAX), mask);
 
     cv::blur(hsv,hsv, cv::Size(11,11));
@@ -133,15 +135,18 @@ void update_image_cont()
 
     if (debug)
     {
-        //ROS_INFO("showing");
+        //ROS_INFO("mostrar");
         
-        cv_bridge::CvImagePtr mask_ptr(new cv_bridge::CvImage); 
-        cv_bridge::CvImagePtr cont_ptr(new cv_bridge::CvImage); 
+        //cv_bridge::CvImagePtr mask_ptr(new cv_bridge::CvImage); 
+        //cv_bridge::CvImagePtr cont_ptr(new cv_bridge::CvImage); 
 
         //publishes frame
-        mask_ptr->image = img;
-        mask_ptr->encoding = "bgr8";
-        mask_pub.publish(mask_ptr->toCompressedImageMsg()); 
+        //mask_ptr->image = img;
+        //mask_ptr->encoding = "bgr8";
+        //mask_pub.publish(mask_ptr->toImageMsg()); 
+
+        cv::imshow("mask", img);
+        
 
         //publishes frame
         cv::Mat drawing = cv::Mat::zeros( canny_output.size(), CV_8UC3 );
@@ -153,16 +158,17 @@ void update_image_cont()
 
         cv::Scalar color = cv::Scalar(0, 255, 0 );
         cv::circle( drawing, cv::Point(p.x,p.y), 4, color, -1 );
-        cont_ptr->image = drawing;
-        cont_ptr->encoding = "bgr8";
-        contours_pub.publish(cont_ptr->toCompressedImageMsg()); 
+        //cont_ptr->image = drawing;
+        //cont_ptr->encoding = "bgr8";
+        //contours_pub.publish(cont_ptr->toCompressedImageMsg()); 
+
+        cv::imshow("contours", drawing);
+        cv::waitKey(1);
     }
 }
 
 void callback (const sensor_msgs::CompressedImageConstPtr& cam_msg)
-{
-    //ROS_INFO("callback");
-    
+{    
     cv_bridge::CvImagePtr cam, res;
     sensor_msgs::ImagePtr out_msg;
 
@@ -206,11 +212,11 @@ int main(int argc, char** argv)
 
     nh.param<bool>("/debug", debug, "False");
 
-    if (debug)
-    {
-        contours_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/contours", 1);
-        mask_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/mask", 1);   
-    }
+    // if (debug)
+    // {
+    //     contours_pub = nh.advertise<sensor_msgs::Image>("/vision/contours", 1);
+    //     mask_pub = nh.advertise<sensor_msgs::Image>("/vision/mask", 1);   
+    // }
     //eval_debug();
 
     sub_params = nh.subscribe("/seg_params",1,update_params);
@@ -329,7 +335,6 @@ int main(int argc, char** argv)
 // void update_image_cont()
 // {
 //     cv::inRange(hsv, cv::Scalar(H_MIN, S_MIN, V_MIN), cv::Scalar(H_MAX, S_MAX, V_MAX), mask);
-
 //     cv::blur(hsv,hsv, cv::Size(11,11));
 
 //     cv::Mat kernel = cv::Mat::ones(kernel_size,kernel_size, CV_8U);
