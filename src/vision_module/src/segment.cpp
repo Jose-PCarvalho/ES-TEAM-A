@@ -9,7 +9,7 @@
 #include <numeric>
 
 #include <ros/ros.h>
-#include <sensor_msgs/Image.h>
+//#include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
@@ -141,7 +141,7 @@ void update_image_cont()
         //publishes frame
         mask_ptr->image = img;
         mask_ptr->encoding = "bgr8";
-        pub.publish(mask_ptr->toImageMsg()); 
+        pub.publish(mask_ptr->toCompressedImageMsg()); 
 
         //publishes frame
         cv::Mat drawing = cv::Mat::zeros( canny_output.size(), CV_8UC3 );
@@ -155,7 +155,7 @@ void update_image_cont()
         cv::circle( drawing, cv::Point(p.x,p.y), 4, color, -1 );
         cont_ptr->image = drawing;
         cont_ptr->encoding = "bgr8";
-        pub.publish(cont_ptr->toImageMsg()); 
+        pub.publish(cont_ptr->toCompressedImageMsg()); 
     }
 }
 
@@ -196,10 +196,8 @@ int main(int argc, char** argv)
     area_pub = nh.advertise<std_msgs::Float32>("/area", 1);
 
     
-        contours_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/contours", 1);
-        mask_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/mask", 1);
-    
-    
+    contours_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/contours", 1);
+    mask_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/mask", 1);   
 
 
     nh.param<int>("/H_MIN", H_MIN, 0);
