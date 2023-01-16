@@ -48,20 +48,20 @@ def talker():
     [0.000000,0.997300, 0.000000, -0.157361] ,
     [0.000000, 0.000000, 0.976097, -0.413201], 
     [0.000000, 0.000000, 0.000000, 1.000000])
-    ,dtype=np.float64)
+    ,dtype=float)
     magnetometer_correction=np.array(( 
     [1.0905702447, 0.0148651853, -0.0760378525, -0.0000042542],
     [0.0148651853, 1.0996978130, -0.0420582264, -0.0000327415] ,
     [0.0760378525, -0.0420582264, 1.2411371730, 0.0000024692], 
     [0.0000000000, 0.0000000000, 0.0000000000, 1.0000000000])
-    ,dtype=np.float64)
+    ,dtype=float)
     
 
     rospy.loginfo("IMU STARTED")
     while not rospy.is_shutdown():
             # Fill mag msg
             mx, my, mz = mpu.readMagnetometerMaster()
-            readings=np.array(([mx,my,mz,1]),dtype=np.float64)*MagFieldConversion_uT_T
+            readings=np.array(([mx,my,mz,1]),dtype=float)*MagFieldConversion_uT_T
             readings_corr=readings*magnetometer_correction
             mag_msg.header.stamp = rospy.get_rostime()
             mag_msg.magnetic_field.x = readings_corr[0]
@@ -103,7 +103,7 @@ def talker():
 
 
             ax, ay, az = mpu.readAccelerometerMaster()
-            reading_acc=np.array(([mx,my,mz,1]),dtype=np.float64)*G
+            reading_acc=np.array(([mx,my,mz,1]),dtype=float)*G
             readings_acc_corr=readings*accelerometer_correction
             imu_msg.linear_acceleration.x = readings_acc_corr[0]
             imu_msg.linear_acceleration.y = readings_acc_corr[1]
