@@ -42,31 +42,33 @@ def talker():
     mpu.calibrate()
     mpu.calibrateMPU6500()
     mpu.abias = [0, 0, 0]
+    mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
+    mpu.mbias = [0, 0, 0] # Set magnetometer hard iron distortion
     mpu.configure()
     accelerometer_correction=np.array(( 
     [1.000011, 0.000000, 0.000000, -0.271920],
     [0.000000,0.997300, 0.000000, -0.157361] ,
     [0.000000, 0.000000, 0.976097, -0.413201], 
     [0.000000, 0.000000, 0.000000, 1.000000])
-    ,dtype=np.float64)
+    ,dtype=float)
     magnetometer_correction=np.array(( 
     [1.0905702447, 0.0148651853, -0.0760378525, -0.0000042542],
     [0.0148651853, 1.0996978130, -0.0420582264, -0.0000327415] ,
     [0.0760378525, -0.0420582264, 1.2411371730, 0.0000024692], 
     [0.0000000000, 0.0000000000, 0.0000000000, 1.0000000000])
-    ,dtype=np.float64)
+    ,dtype=float)
     
 
     rospy.loginfo("IMU STARTED")
     while not rospy.is_shutdown():
             # Fill mag msg
             mx, my, mz = mpu.readMagnetometerMaster()
-            readings=np.array(([mx,my,mz,1]),dtype=np.float64)*MagFieldConversion_uT_T
+            readings=np.array(([mx,my,mz,1]),dtype=float)*MagFieldConversion_uT_T
             readings_corr=readings*magnetometer_correction
             mag_msg.header.stamp = rospy.get_rostime()
-            mag_msg.magnetic_field.x = readings_corr[0]
-            mag_msg.magnetic_field.y = readings_corr[1]
-            mag_msg.magnetic_field.z = readings_corr[2]
+            mag_msg.magnetic_field.x = float(readings_corr[0])
+            mag_msg.magnetic_field.y = float(readings_corr[1])
+            mag_msg.magnetic_field.z = float(readings_corr[2])
             mag_msg.magnetic_field_covariance[0] = 0.01
             mag_msg.magnetic_field_covariance[4] = 0.01
             mag_msg.magnetic_field_covariance[8] = 0.01
@@ -103,11 +105,11 @@ def talker():
 
 
             ax, ay, az = mpu.readAccelerometerMaster()
-            reading_acc=np.array(([mx,my,mz,1]),dtype=np.float64)*G
+            reading_acc=np.array(([mx,my,mz,1]),dtype=float)*G
             readings_acc_corr=readings*accelerometer_correction
-            imu_msg.linear_acceleration.x = readings_acc_corr[0]
-            imu_msg.linear_acceleration.y = readings_acc_corr[1]
-            imu_msg.linear_acceleration.z = readings_acc_corr[2]
+            imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
+            imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
+            imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
             imu_msg.linear_acceleration_covariance[0] = 0.1
             imu_msg.linear_acceleration_covariance[4] = 0.1
             imu_msg.linear_acceleration_covariance[8] = 0.1
