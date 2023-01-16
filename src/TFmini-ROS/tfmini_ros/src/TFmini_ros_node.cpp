@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     {
       //ROS_ERROR_STREAM("Data validation error!");
     }
-    rate.sleep();
+    //rate.sleep();
   }
 
   tfmini_obj->closePort();
