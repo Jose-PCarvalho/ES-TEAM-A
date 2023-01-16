@@ -94,7 +94,6 @@ def talker():
             #orientation_list = [imu_msg.orientation.x, imu_msg.orientation.y,imu_msg.orientation.z,imu_msg.orientation.w]
             #(roll, pitch, yaw) = euler_from_quaternion (orientation_list)
             #rospy.loginfo(imu_msg.orientation.x)
-
             gx, gy, gz = mpu.readGyroscopeMaster()
             imu_msg.angular_velocity.x = math.radians(gx)
             imu_msg.angular_velocity.y = math.radians(gy)
@@ -102,19 +101,15 @@ def talker():
             imu_msg.angular_velocity_covariance[0] = 0.03
             imu_msg.angular_velocity_covariance[4] = 0.03
             imu_msg.angular_velocity_covariance[8] = 0.03
-
-
             ax, ay, az = mpu.readAccelerometerMaster()
             reading_acc=np.array(([mx,my,mz,1]),dtype=float)*G
-            readings_acc_corr=np.matmul(readings,accelerometer_correction)
+            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction)
             imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
             imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
             imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
             imu_msg.linear_acceleration_covariance[0] = 0.1
             imu_msg.linear_acceleration_covariance[4] = 0.1
             imu_msg.linear_acceleration_covariance[8] = 0.1
-
-
             imu_pub.publish(imu_msg)
             mag_pub.publish(mag_msg)
             rate.sleep()
