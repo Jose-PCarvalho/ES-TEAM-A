@@ -1,5 +1,6 @@
 #include <TFmini.h>
 #include <ros/ros.h>
+#include <unistd.h>
 
 //#define DEBUG
 
@@ -110,6 +111,7 @@ namespace benewake
     {
       while(true)
       {
+        usleep(100000);
         if(readData(dataBuf, 2))
         {
           if(dataBuf[0] == 0x59 && dataBuf[1] == 0x59)
