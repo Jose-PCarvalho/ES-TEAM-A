@@ -27,17 +27,24 @@ mpu = MPU9250(
 def talker():
     imu_pub = rospy.Publisher('imu/data_raw', Imu, queue_size=1)
     mag_pub = rospy.Publisher('imu/mag', MagneticField, queue_size=1)
+    acc_pub =rospy.Publisher('/imu/accelerometer',queue_size=1)
+    magn_pub =rospy.Publisher('/imu/magnetometer',queue_size=1)
+    gyro_pub =rospy.Publisher('/imu/gyroscope',queue_size=1)
     
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(100) # 10hz
 
     imu_msg = Imu()
     mag_msg = MagneticField()
+    mag_calib_msg=magnetometer()
+    acc_msg=accelerometer()
+    gyro_msg=gyroscope()
 
 
     # Apply the settings to the registers and calibrate
     mpu.configure()
-    mpu.calibrate()
+    '''
+        mpu.calibrate()
     mpu.calibrateMPU6500()
     mpu.abias = [0, 0, 0]
     mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
@@ -54,7 +61,7 @@ def talker():
     [0.0148651853, 1.0996978130, -0.0420582264, -0.0000327415] ,
     [0.0760378525, -0.0420582264, 1.2411371730, 0.0000024692], 
     [0.0000000000, 0.0000000000, 0.0000000000, 1.0000000000])
-    ,dtype=float)
+    ,dtype=float)'''
     
 
     rospy.loginfo("IMU STARTED")
@@ -62,14 +69,19 @@ def talker():
             # Fill mag msg
             mx, my, mz = mpu.readMagnetometerMaster()
             readings=np.array(([mx,my,mz,1]),dtype=float)*MagFieldConversion_uT_T
-            readings_corr=np.matmul(readings,magnetometer_correction)
+            #readings_corr=np.matmul(readings,magnetometer_correction)
             mag_msg.header.stamp = rospy.get_rostime()
-            mag_msg.magnetic_field.x = float(readings_corr[0])
-            mag_msg.magnetic_field.y = float(readings_corr[1])
-            mag_msg.magnetic_field.z = float(readings_corr[2])
+            #mag_msg.magnetic_field.x = float(readings_corr[0])
+            #mag_msg.magnetic_field.y = float(readings_corr[1])
+            #mag_msg.magnetic_field.z = float(readings_corr[2])
             mag_msg.magnetic_field_covariance[0] = 0.01
             mag_msg.magnetic_field_covariance[4] = 0.01
             mag_msg.magnetic_field_covariance[8] = 0.01
+            mag_calib_msg.x=mx*MagFieldConversion_uT_T
+            mag_calib_msg.y=my*MagFieldConversion_uT_T
+            mag_calib_msg.z=mz*MagFieldConversion_uT_T
+
+
             
             # create imu msg
             q0 = 1.0 #W
@@ -101,15 +113,26 @@ def talker():
             imu_msg.angular_velocity_covariance[8] = 0.03
             ax, ay, az = mpu.readAccelerometerMaster()
             reading_acc=np.array(([ax,ay,az,1]),dtype=float)*G
-            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction)
-            imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
-            imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
-            imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
+            #readings_acc_corr=np.matmul(reading_acc,accelerometer_correction)
+            #imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
+            #imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
+            #imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
+            gyro_msg.x=gx
+            gyro_msg.y=gy
+            gyro_msg.z=gz
+
+            acc_msg.x=ax
+            acc_msg.y=ay
+            acc_msg.z=az
+
             imu_msg.linear_acceleration_covariance[0] = 0.1
             imu_msg.linear_acceleration_covariance[4] = 0.1
             imu_msg.linear_acceleration_covariance[8] = 0.1
-            imu_pub.publish(imu_msg)
+            #imu_pub.publish(imu_msg)
             mag_pub.publish(mag_msg)
+            gyro_pub.publish(gyro_msg)
+            acc_pub.publish(acc_msg)
+        
             rate.sleep()
 
 if __name__ == '__main__':
