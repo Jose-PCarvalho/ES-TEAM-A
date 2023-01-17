@@ -12,7 +12,8 @@
 
 int state = 0;
 int center_threshold;
-float lidar_threshold;
+float lidar_threshold_low;
+float lidar_threshold_high;
 float lidar_dst;
 
 float max_speed;
@@ -45,7 +46,8 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
 
     nh.param<int>("/center_treshold", center_threshold, 100);
-    nh.param<float>("/lidar_treshold", lidar_threshold, 0.20);
+    nh.param<float>("/lidar_treshold_low", lidar_threshold_low, 0.50);
+    nh.param<float>("/lidar_treshold_high", lidar_threshold_high, 1.50);
     nh.param<float>("/max_speed", max_speed, 15);
 
     //max_speed = 15;
@@ -54,7 +56,7 @@ int main(int argc, char** argv)
     ROS_INFO("so far so good");
     
     lidar_sub = nh.subscribe("/tfmini_ros_node/TFmini", 1, callback_lidar);
-    tracker_sub = nh.subscribe("/vision/tracker", 1, callback_tracker);
+    tracker_sub = nh.subscribe("/vision/point", 1, callback_tracker);
 
     ros::Publisher pub;
     pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
@@ -85,15 +87,15 @@ int main(int argc, char** argv)
                 if (buoy_at_center == false)
                     state = 0;
 
-                if (lidar_dst < lidar_threshold)
+                if (lidar_dst < lidar_threshold_low)
                 {
                     state = 2;
                 }
                 break;
             }
-            case 2: // roda ate encontrar boia
+            case 2: // anda de marcha atras
             {
-                if (there_is_buoy == false)
+                if (lidar_dst > lidar_threshold_high)
                 {
                     state = 0;
                 }
@@ -116,13 +118,13 @@ int main(int argc, char** argv)
             case 1:
             {
                 cmd_vel.linear.x = max_speed/2;
-                cmd_vel.angular.x = 0;
+                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold/3 ;
                 break;
             }
             case 2:
             {
-                cmd_vel.linear.x = 0;
-                cmd_vel.angular.x = 0;
+                cmd_vel.linear.x = -max_speed;
+                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold/3;
                 break;
             }
             default:
