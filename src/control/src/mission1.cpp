@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string.h>
-
+#include <stdlib.h>
 #include <ros/ros.h>
 
 #include <geometry_msgs/Twist.h>
@@ -82,18 +82,29 @@ int main(int argc, char** argv)
 
                 break;
             }
-            case 1: // aproxima suficiente da boia
+            case 1: // enquadra com a boia
+            {
+                if (buoy_at_center == false)
+                    state = 0;
+
+                if (abs(720/2-buoy_pos.x)<center_threshold/3)
+                {
+                    state = 2;
+                }
+                break;
+            }
+            case 2: // aproxima da boia
             {
                 if (buoy_at_center == false)
                     state = 0;
 
                 if (lidar_dst < lidar_threshold_low)
                 {
-                    state = 2;
+                    state = 3;
                 }
                 break;
             }
-            case 2: // anda de marcha atras
+            case 4: // anda de marcha atras
             {
                 if (lidar_dst > lidar_threshold_high)
                 {
@@ -116,15 +127,21 @@ int main(int argc, char** argv)
                 break;
             }
             case 1:
-            {
-                cmd_vel.linear.x = max_speed/2;
-                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold/3 ;
+            { 
+                cmd_vel.linear.x =0;
+                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold;
                 break;
             }
             case 2:
             {
                 cmd_vel.linear.x = -max_speed;
-                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold/3;
+                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
+                break;
+            }
+            case 3:
+            {
+                cmd_vel.linear.x = -max_speed;
+                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
                 break;
             }
             default:
