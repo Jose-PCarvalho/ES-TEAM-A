@@ -13,7 +13,7 @@ int main(int argc, char **argv)
   std::system("echo ubuntu | sudo -S gpio write 5 1");
 
   nh.param("serial_port", portName, std::string("/dev/ttyUSB0"));
-  nh.param("baud_rate", baud_rate, 9600);
+  nh.param("baud_rate", baud_rate, 115200);
 
   tfmini_obj = new benewake::TFmini(portName, baud_rate);
   ros::Publisher pub_range = nh.advertise<sensor_msgs::Range>(id, 1, true);
@@ -25,8 +25,6 @@ int main(int argc, char **argv)
   TFmini_range.header.frame_id = id;
   float dist = 0;
   ROS_INFO_STREAM("Start processing ...");
-
-  ros::Rate rate(30);
 
   while(ros::master::check() && ros::ok())
   {
@@ -46,9 +44,8 @@ int main(int argc, char **argv)
     }
     else if(dist == 0.0)
     {
-      //ROS_ERROR_STREAM("Data validation error!");
+      ROS_ERROR_STREAM("Data validation error!");
     }
-    //rate.sleep();
   }
 
   tfmini_obj->closePort();
