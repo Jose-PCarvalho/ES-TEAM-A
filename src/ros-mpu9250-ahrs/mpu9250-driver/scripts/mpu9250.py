@@ -27,9 +27,9 @@ mpu = MPU9250(
 def talker():
     imu_pub = rospy.Publisher('imu/data_raw', Imu, queue_size=1)
     mag_pub = rospy.Publisher('imu/mag', MagneticField, queue_size=1)
-    acc_pub =rospy.Publisher('/imu/accelerometer',queue_size=1)
-    magn_pub =rospy.Publisher('/imu/magnetometer',queue_size=1)
-    gyro_pub =rospy.Publisher('/imu/gyroscope',queue_size=1)
+    acc_pub =rospy.Publisher('/imu/accelerometer',accelerometer,queue_size=1)
+    magn_pub =rospy.Publisher('/imu/magnetometer',magnetometer,queue_size=1)
+    gyro_pub =rospy.Publisher('/imu/gyroscope',gyroscope,queue_size=1)
     
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(100) # 10hz
@@ -129,7 +129,7 @@ def talker():
             imu_msg.linear_acceleration_covariance[4] = 0.1
             imu_msg.linear_acceleration_covariance[8] = 0.1
             #imu_pub.publish(imu_msg)
-            mag_pub.publish(mag_msg)
+            magn_pub.publish(mag_msg)
             gyro_pub.publish(gyro_msg)
             acc_pub.publish(acc_msg)
         
