@@ -70,8 +70,8 @@ def set_fun(left,right):
     print("\nSettings " , left, " ", right )
     cmd = "echo ubuntu | sudo -S gpio pwm 1 %d" 
     cmd = cmd %(150+left*0.4)
-    os.system(cmd)
-    cmd = "echo ubuntu | sudo -S gpio pwm 23 %d" 
+    #os.system(cmd)
+    cmd =  cmd + "; echo ubuntu | sudo -S gpio pwm 23 %d" 
     cmd = cmd %(150+right*0.4)
     os.system(cmd)
     
