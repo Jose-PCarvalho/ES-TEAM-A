@@ -1,13 +1,5 @@
 #include <TFmini.h>
 
-ros::Publisher pub_range;
-sensor_msgs::Range TFmini_range;
-
-void timerCallback(const ros::TimerEvent& event)
-{
-  pub_range.publish(TFmini_range);
-}
-
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "tfmini_ros_node");
@@ -24,7 +16,8 @@ int main(int argc, char **argv)
   nh.param("baud_rate", baud_rate, 115200);
 
   tfmini_obj = new benewake::TFmini(portName, baud_rate);
-  pub_range = nh.advertise<sensor_msgs::Range>(id, 1, true);
+  ros::Publisher pub_range = nh.advertise<sensor_msgs::Range>(id, 1, true);
+  sensor_msgs::Range TFmini_range;
   TFmini_range.radiation_type = sensor_msgs::Range::INFRARED;
   TFmini_range.field_of_view = 0.04;
   TFmini_range.min_range = 0.3;
@@ -32,8 +25,6 @@ int main(int argc, char **argv)
   TFmini_range.header.frame_id = id;
   float dist = 0;
   ROS_INFO_STREAM("Start processing ...");
-
-  ros::Timer timer = nh.createTimer(ros::Duration(0.033),timerCallback);
 
   while(ros::master::check() && ros::ok())
   {
@@ -53,9 +44,8 @@ int main(int argc, char **argv)
     }
     else if(dist == 0.0)
     {
-      //ROS_ERROR_STREAM("Data validation error!");
+      ROS_ERROR_STREAM("Data validation error!");
     }
-    //rate.sleep();
   }
 
   tfmini_obj->closePort();
