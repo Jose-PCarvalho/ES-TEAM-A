@@ -19,7 +19,7 @@
     <param name="/lidar_treshold_low" type="double" value="0.5"/>
     <param name="/lidar_treshold_high" type="double" value="1.2"/>
     <param name="/center_treshold" type="int" value="150"/>
-    <param name="/max_speed" type="double" value="10"/>
+    <param name="/max_speed" type="double" value="15"/>
     
 
 </launch>
