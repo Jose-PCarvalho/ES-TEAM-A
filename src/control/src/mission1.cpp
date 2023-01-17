@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "teste");
     ros::NodeHandle nh;
 
-    nh.param<int>("/center_treshold", center_threshold, 100);
+    nh.param<int>("/center_treshold", center_threshold, 200);
     nh.param<float>("/lidar_treshold_low", lidar_threshold_low, 0.50);
     nh.param<float>("/lidar_treshold_high", lidar_threshold_high, 1.50);
     nh.param<float>("/max_speed", max_speed, 15);
@@ -135,13 +135,13 @@ int main(int argc, char** argv)
             case 2:
             {
                 cmd_vel.linear.x = max_speed/2;
-                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*1/6;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
                 break;
             }
             case 3:
             {
-                cmd_vel.linear.x = -max_speed;
-                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*1/6;
+                cmd_vel.linear.x = -max_speed/2;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
                 break;
             }
             default:
