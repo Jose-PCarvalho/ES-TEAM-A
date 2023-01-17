@@ -122,6 +122,7 @@ void update_image_cont()
     cv::Moments m = cv::moments(contours, true);
     cv::Point p(m.m10/m.m00, m.m01/m.m00);
     area.push_back(m.m00);
+    area.clear();
 
     std_msgs::Float32 area_msg;
     area_msg.data = std::accumulate(area.begin(), area.end(), 0 ) / area.size();
