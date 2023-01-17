@@ -1,21 +1,22 @@
 #include <iostream>
 #include <string.h>
-
+#include <stdlib.h>
 #include <ros/ros.h>
 
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Range.h>
 #include <geometry_msgs/Point.h>
 
-#define HEIGT 720
-#define WIDTH 1280
+#define HEIGT 480
+#define WIDTH 720
 
 int state = 0;
 int center_threshold;
-float lidar_threshold;
+float lidar_threshold_low;
+float lidar_threshold_high;
 float lidar_dst;
 
-float max_speed=20;
+float max_speed;
 
 geometry_msgs::Point buoy_pos;
 bool buoy_at_center = false;
@@ -44,22 +45,23 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "teste");
     ros::NodeHandle nh;
 
-    nh.param<int>("/center_treshold", center_threshold, 20);
-    nh.param<float>("/lidar_treshold", lidar_threshold, 0.20);
-    nh.param<float>("/max_speed", max_speed, 20);
+    nh.param<int>("/center_treshold", center_threshold, 100);
+    nh.param<float>("/lidar_treshold_low", lidar_threshold_low, 0.50);
+    nh.param<float>("/lidar_treshold_high", lidar_threshold_high, 1.50);
+    nh.param<float>("/max_speed", max_speed, 15);
 
-    max_speed = 20;
+    //max_speed = 15;
 
     ros::Subscriber lidar_sub, tracker_sub;
     ROS_INFO("so far so good");
     
     lidar_sub = nh.subscribe("/tfmini_ros_node/TFmini", 1, callback_lidar);
-    tracker_sub = nh.subscribe("/vision/tracker", 1, callback_tracker);
+    tracker_sub = nh.subscribe("/vision/point", 1, callback_tracker);
 
     ros::Publisher pub;
     pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 
-    ros::Rate rate(10);
+    ros::Rate rate(30);
 
     geometry_msgs::Twist cmd_vel;
 
@@ -80,20 +82,31 @@ int main(int argc, char** argv)
 
                 break;
             }
-            case 1: // aproxima suficiente da boia
+            case 1: // enquadra com a boia
             {
                 if (buoy_at_center == false)
                     state = 0;
 
-                if (lidar_dst < lidar_threshold)
+                if (abs(720/2-buoy_pos.x)<center_threshold/3)
                 {
                     state = 2;
                 }
                 break;
             }
-            case 2: // roda ate encontrar boia
+            case 2: // aproxima da boia
             {
-                if (there_is_buoy == false)
+                if (buoy_at_center == false)
+                    state = 0;
+
+                if (lidar_dst < lidar_threshold_low)
+                {
+                    state = 3;
+                }
+                break;
+            }
+            case 3: // anda de marcha atras
+            {
+                if (lidar_dst > lidar_threshold_high || buoy_at_center==false)
                 {
                     state = 0;
                 }
@@ -114,15 +127,21 @@ int main(int argc, char** argv)
                 break;
             }
             case 1:
-            {
-                cmd_vel.linear.x = max_speed/2;
-                cmd_vel.angular.x = 0;
+            { 
+                cmd_vel.linear.x =0;
+                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold;
                 break;
             }
             case 2:
             {
-                cmd_vel.linear.x = 0;
-                cmd_vel.angular.x = 0;
+                cmd_vel.linear.x = max_speed/2;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*1/3;
+                break;
+            }
+            case 3:
+            {
+                cmd_vel.linear.x = -max_speed/2;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*1/3;
                 break;
             }
             default:
@@ -133,7 +152,7 @@ int main(int argc, char** argv)
             }
         }
 
-        ROS_WARN("lin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x/2);
+        ROS_WARN("\n\nlin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x);
         
         pub.publish(cmd_vel);
         

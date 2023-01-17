@@ -151,11 +151,9 @@ void detect_cb (const geometry_msgs::PointConstPtr& msg)
     //ROS_WARN("got detect point %d", msg->z);
 }
 
-void video_cb (const sensor_msgs::ImageConstPtr& msg)
+void video_cb (const sensor_msgs::CompressedImageConstPtr& msg)
 {
     cv_bridge::CvImagePtr cam;
-
-    cv_bridge::CvImagePtr teste;
 
     try
     {
@@ -170,21 +168,18 @@ void video_cb (const sensor_msgs::ImageConstPtr& msg)
     img = cam->image;
 
     got_img = true;
-
-    //ROS_WARN("got img point");
 }
 
 int main(int argc, char** argv)
 {
+    ROS_WARN("showing kalman tracker result");
+
     ros::init(argc, argv, "vision_display");
     ros::NodeHandle nh;
   
     ros::Subscriber sub_video, sub_track, sub_detect;
-    
-    ros::Publisher pub;
-    pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/final", 1);
 
-    sub_video = nh.subscribe("/raspicam_node/image",1,video_cb);
+    sub_video = nh.subscribe("/raspicam_node/image/compressed",1,video_cb);
     sub_track = nh.subscribe("/vision/tracker",1,track_cb);
     sub_detect = nh.subscribe("/vision/point",1,detect_cb);
 
@@ -197,22 +192,22 @@ int main(int argc, char** argv)
             {
                 cv::Point2d pt_track(track_x,track_y);
                 cv::circle(img, pt_track, 5, cv::Vec3b(0,255,0),2);
-                cv::putText(img, "Track",cv::Point(pt_track.x + 10, pt_track.y -50), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 255, 0), 1);
+                cv::putText(img, "Track",cv::Point(pt_track.x + 10, pt_track.y -50), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0, 255, 0), 1);
             }
             
             if (got_detec)
             {
                 cv::Point2d pt_detect(detect_x,detect_y);
                 cv::circle(img, pt_detect, 5, cv::Vec3b(255,0,0),2);
-                cv::putText(img, "Detect",cv::Point(pt_detect.x + 10, pt_detect.y), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 1);
+                cv::putText(img, "Detect",cv::Point(pt_detect.x + 10, pt_detect.y), cv::FONT_HERSHEY_DUPLEX, 0.5, CV_RGB(0, 0, 255), 1);
             }
 
-            cv_bridge::CvImagePtr img_bridge(new cv_bridge::CvImage);
-
-            img_bridge->encoding = "bgr8";
-            img_bridge->image = img;
-
-            pub.publish(img_bridge->toImageMsg());
+            // cv_bridge::CvImagePtr img_bridge(new cv_bridge::CvImage);
+            // img_bridge->encoding = "bgr8";
+            // img_bridge->image = img;
+            // pub.publish(img_bridge->toImageMsg());
+            cv::imshow("tracker", img);
+            cv::waitKey(1);
             
             got_img = false;
             got_track = false;

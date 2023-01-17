@@ -9,7 +9,7 @@
 #include <numeric>
 
 #include <ros/ros.h>
-//#include <sensor_msgs/Image.h>
+#include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
@@ -93,6 +93,8 @@ void update_params (const vision_module::seg_paramsConstPtr msg)
 
 void update_image_cont()
 {
+    //ROS_INFO(" update contours");
+
     cv::inRange(hsv, cv::Scalar(H_MIN, S_MIN, V_MIN), cv::Scalar(H_MAX, S_MAX, V_MAX), mask);
 
     cv::blur(hsv,hsv, cv::Size(11,11));
@@ -126,22 +128,26 @@ void update_image_cont()
     area_pub.publish(area_msg);
     
     geometry_msgs::Point pt_msg;
-    pt_msg.x = p.x;
-    pt_msg.y = p.y;
-    pt_msg.z = frame_n;
+    pt_msg.x = (float)p.x;
+    pt_msg.y = (float)p.y;
+    pt_msg.z = (float)frame_n;
+    
     pub.publish(pt_msg);
 
     if (debug)
     {
-        //ROS_INFO("showing");
+        //ROS_INFO("mostrar");
         
-        cv_bridge::CvImagePtr mask_ptr(new cv_bridge::CvImage); 
-        cv_bridge::CvImagePtr cont_ptr(new cv_bridge::CvImage); 
+        //cv_bridge::CvImagePtr mask_ptr(new cv_bridge::CvImage); 
+        //cv_bridge::CvImagePtr cont_ptr(new cv_bridge::CvImage); 
 
         //publishes frame
-        mask_ptr->image = img;
-        mask_ptr->encoding = "bgr8";
-        mask_pub.publish(mask_ptr->toCompressedImageMsg()); 
+        //mask_ptr->image = img;
+        //mask_ptr->encoding = "bgr8";
+        //mask_pub.publish(mask_ptr->toImageMsg()); 
+
+        cv::imshow("mask", img);
+        
 
         //publishes frame
         cv::Mat drawing = cv::Mat::zeros( canny_output.size(), CV_8UC3 );
@@ -153,16 +159,17 @@ void update_image_cont()
 
         cv::Scalar color = cv::Scalar(0, 255, 0 );
         cv::circle( drawing, cv::Point(p.x,p.y), 4, color, -1 );
-        cont_ptr->image = drawing;
-        cont_ptr->encoding = "bgr8";
-        contours_pub.publish(cont_ptr->toCompressedImageMsg()); 
+        //cont_ptr->image = drawing;
+        //cont_ptr->encoding = "bgr8";
+        //contours_pub.publish(cont_ptr->toCompressedImageMsg()); 
+
+        cv::imshow("contours", drawing);
+        cv::waitKey(1);
     }
 }
 
 void callback (const sensor_msgs::CompressedImageConstPtr& cam_msg)
-{
-    //ROS_INFO("callback");
-    
+{    
     cv_bridge::CvImagePtr cam, res;
     sensor_msgs::ImagePtr out_msg;
 
@@ -192,8 +199,8 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
   
     ros::Subscriber sub, sub_params;
-    pub = nh.advertise<geometry_msgs::Point>("/point", 1);
-    area_pub = nh.advertise<std_msgs::Float32>("/area", 1);
+    pub = nh.advertise<geometry_msgs::Point>("/vision/point", 1);
+    area_pub = nh.advertise<std_msgs::Float32>("/vision/area", 1);
 
     nh.param<int>("/H_MIN", H_MIN, 0);
     nh.param<int>("/H_MAX", H_MAX, 255);
@@ -206,14 +213,14 @@ int main(int argc, char** argv)
 
     nh.param<bool>("/debug", debug, "False");
 
-    if (debug)
-    {
-        contours_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/contours", 1);
-        mask_pub = nh.advertise<sensor_msgs::CompressedImage>("/vision/mask", 1);   
-    }
+    // if (debug)
+    // {
+    //     contours_pub = nh.advertise<sensor_msgs::Image>("/vision/contours", 1);
+    //     mask_pub = nh.advertise<sensor_msgs::Image>("/vision/mask", 1);   
+    // }
     //eval_debug();
 
-    sub_params = nh.subscribe("/seg_params",1,update_params);
+    sub_params = nh.subscribe("/vision/seg_params",1,update_params);
 
     sub = nh.subscribe("/raspicam_node/image/compressed", 1, callback);    
 
@@ -329,7 +336,6 @@ int main(int argc, char** argv)
 // void update_image_cont()
 // {
 //     cv::inRange(hsv, cv::Scalar(H_MIN, S_MIN, V_MIN), cv::Scalar(H_MAX, S_MAX, V_MAX), mask);
-
 //     cv::blur(hsv,hsv, cv::Size(11,11));
 
 //     cv::Mat kernel = cv::Mat::ones(kernel_size,kernel_size, CV_8U);
