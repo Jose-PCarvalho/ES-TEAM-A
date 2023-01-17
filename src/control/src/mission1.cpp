@@ -123,7 +123,7 @@ int main(int argc, char** argv)
             case 0:
             {
                 cmd_vel.linear.x = 0;
-                cmd_vel.angular.x = max_speed/2;
+                cmd_vel.angular.x = max_speed/4;
                 break;
             }
             case 1:
@@ -135,13 +135,13 @@ int main(int argc, char** argv)
             case 2:
             {
                 cmd_vel.linear.x = max_speed/2;
-                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*1/3;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*1/6;
                 break;
             }
             case 3:
             {
-                cmd_vel.linear.x = -max_speed/2;
-                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*1/3;
+                cmd_vel.linear.x = -max_speed;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*1/6;
                 break;
             }
             default:
