@@ -115,8 +115,6 @@ def talker():
             ax, ay, az = mpu.readAccelerometerMaster()
             reading_acc=np.array(([ax,ay,az,1]),dtype=float)
             readings_acc_corr=np.matmul(reading_acc,accelerometer_correction)*G
-            print("corrigido: ",readings_acc_corr)
-            print("medido:", reading_acc)
             imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
             imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
             imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
