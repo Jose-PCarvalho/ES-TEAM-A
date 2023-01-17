@@ -104,7 +104,7 @@ int main(int argc, char** argv)
                 }
                 break;
             }
-            case 4: // anda de marcha atras
+            case 3: // anda de marcha atras
             {
                 if (lidar_dst > lidar_threshold_high)
                 {
