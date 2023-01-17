@@ -12,6 +12,8 @@ class Fan
         uint8_t state;
         uint8_t pin;
         uint8_t senseIndex[MAX_SENSORS];
+        uint8_t tempOn[MAX_SENSORS];
+        uint8_t tempOff[MAX_SENSORS];
         uint8_t usedSensors;
         float onTemp;
         float offTemp;

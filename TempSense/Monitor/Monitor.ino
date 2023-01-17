@@ -2,6 +2,7 @@
 #include "Energy.h"
 #include "HeartBeat.h"
 #include "Fan.h"
+#include "Morse.h"
 #include <Wire.h>
 
 #define N_TEMP_SENSORS      4
@@ -24,7 +25,7 @@
 #define R25                 68e3  // ohm
 #define BETA                4.6e3 // ohm
 // Set point
-#define ON_TEMP             30 // Turn fans on at this temperature
+const uint8_t ON_TEMP[4]={25, 30, 50, 50}; // Turn fans on at this temperature
 #define HYSTERESIS          3  // Turn off when temperature reaches ON_TEMP-HYSTERESIS
 // Voltage resistor divider
 #define RV_HI               17.65e3 // ohm
@@ -55,16 +56,16 @@
 #define BUZZER_TIMER        3e3   // in ms
 // For testing purposes
 #define TEST_FUNTIONS
-#define PRINT_TEST_PERIOD   1e3 // in ms
+#define PRINT_TEST_PERIOD   6e6 // in ms
 // Battery alarm
 #define BATT_ALLARM         10.0 // Volt
 #define BATT_ALLARM_OFF     10.5  // Volt
-#define LOW_BAT_WARNING     100    // in ms
+#define LOW_BAT_WARNING     "."
 // High Temp Alarm
-#define HIGH_TEMP           38    // In celcius
-#define HIGH_TEMP_WARNING   300   // in ms
+const uint8_t HIGH_TEMP[4]={30, 45, 60, 60}; // Turn fans on at this temperature
+#define HIGH_TEMP_WARNING   ".-."   // in ms
 // Water Allarm
-#define WATER_DETECT        2e3   // in ms
+#define WATER_DETECT        "---/---"   // in ms
 // Constants
 #define NULL_CMD            0
 
@@ -84,9 +85,11 @@ Fan fans[N_FANS];
 Temp sensors[N_TEMP_SENSORS];
 Energy energy;
 HeartBeat heart(LED_BUILTIN);
+Morse morse(BUZZER_PIN);
 uint8_t index;
 uint8_t cmd;
 uint8_t sensorIndex;
+char debugMsg='\0';
 // Aux functions /////////
 // Setup functions
 void setSensors();
@@ -141,7 +144,7 @@ bool overTemp()
 {
   uint8_t index=0;
   for(index=0; index < N_TEMP_SENSORS; index++)
-    if(sensors[index].calcTemp() > HIGH_TEMP)
+    if(sensors[index].calcTemp() > HIGH_TEMP[index])
       return true;
   return false;
 }
@@ -186,9 +189,15 @@ void loop()
   heart.controller();
   fans[0].controller();
   fans[1].controller();
+  morse.controller();
   #ifdef TEST_FUNTIONS
     testFunctions();
   #endif
+  if(debugMsg!='\0')
+  {
+    Serial.print(debugMsg);
+    debugMsg='\0';
+  }
 }
 /**
  * @brief 
@@ -216,92 +225,52 @@ void stateMachine()
   if(battState==0)
   {
     if(curr-battTimer > BUZZER_TIMER)
-    {
-      battTimer=curr;
       battState=1;
-    }      
   }
   else if(battState==1)
   {
     if(readVoltage() < BATT_ALLARM)
     {
-      battTimer=curr;
+      morse.setMsg(LOW_BAT_WARNING);
       battState=2;
-    }
+    }      
   }
   else if(battState==2)
   {
-    if(curr-battTimer>LOW_BAT_WARNING)
-    {      
-      battTimer=curr;
-      battState=3;
-    }
-  }
-  else if(battState==3)
-  {
     if(curr-battTimer > BUZZER_TIMER)
-    {
-      battTimer=curr;
       battState=1;
-    }
     else if(readVoltage() > BATT_ALLARM_OFF)
-    {
-      battTimer=curr;
       battState=0;
-    }
   }
   // Temp Allarm
   if(tempState==0)
   {
     if(curr-tempTimer > BUZZER_TIMER)
-    {
-      tempTimer=curr;
       tempState=1;
-    }      
   }
   else if(tempState==1)
   {
     if(overTemp())
     {
-      tempTimer=curr;
-      tempState=2;
-    }
-  }
-  else if(tempState==2)
-  {
-    if(curr-tempTimer>HIGH_TEMP_WARNING)
-    {      
-      tempTimer=curr;
+      morse.setMsg(HIGH_TEMP_WARNING);
       tempState=0;
     }
+      
   }
   // Water Allarm
   if(waterState==0)
   {
     if(curr-waterTimer > BUZZER_TIMER)
-    {
-      waterTimer=curr;
       waterState=1;
-    }      
   }
   else if(waterState==1)
   {
     if(readWater(N_WATER_SENSORS))
     {
-      waterTimer=curr;
+      morse.setMsg(WATER_DETECT);
       waterState=2;
     }
   }
-  else if(waterState==2)
-  {
-    if(curr-waterTimer>WATER_DETECT)
-    {      
-      waterTimer=curr;
-      waterState=0;
-    }
-  }
-  // Write outputs
-  digitalWrite(BUZZER_PIN, battState==2||tempState==2||waterState==2);
 }
 /**
  * @brief Set the Sensors object
@@ -393,6 +362,7 @@ void receiveHandler(int notUsed)
     cmd=Wire.read();
   else
     sensorIndex=Wire.read();
+  debugMsg='*';
 }
 /**
  * @brief Handler for i2c requests
@@ -415,10 +385,11 @@ void requestHandler()
   else if(cmd==GET_WATER)
     sendFloat(readWater(sensorIndex));
   else
-    sendFloat(-1000);
+    sendFloat(111);
   // Clear cmd
   cmd=NULL_CMD;
   sensorIndex=NULL_CMD;
+  debugMsg='#';
 }
 /**
  * @brief Wrap non static element in a static function for Fan class
@@ -443,16 +414,19 @@ void setRelays()
   fans[1].setPin(CONTROL_BOX_RELAY);
   fans[1].setLogic(false);
   // Power Box Fan
-  fans[0].setOnTemp(ON_TEMP);
-  fans[0].setOffTemp(ON_TEMP-HYSTERESIS);
-  // Uses sensor 0 and 1 for the fans
+  fans[0].setOnTemp(ON_TEMP[0]);
+  fans[0].setOffTemp(ON_TEMP[0]-HYSTERESIS);
   fans[0].setSensorIndex(0);
+  fans[0].setOnTemp(ON_TEMP[2]);
+  fans[0].setOffTemp(ON_TEMP[0]-HYSTERESIS);
   fans[0].setSensorIndex(2);
+  fans[0].setOnTemp(ON_TEMP[3]);
+  fans[0].setOffTemp(ON_TEMP[0]-HYSTERESIS);
   fans[0].setSensorIndex(3);
   fans[0].setCalcTempFunc(staticWrapper);
   // Control Box Temp 
-  fans[1].setOnTemp(ON_TEMP);
-  fans[1].setOffTemp(ON_TEMP-HYSTERESIS);
+  fans[1].setOnTemp(ON_TEMP[1]);
+  fans[1].setOffTemp(ON_TEMP[1]-HYSTERESIS);
   // Uses sensor 0 and 1 for the fans
   fans[1].setSensorIndex(1);
   fans[1].setCalcTempFunc(staticWrapper);

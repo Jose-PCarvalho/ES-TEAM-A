@@ -47,7 +47,7 @@ void Fan::setLogic(bool logic)
  */
 void Fan::setOnTemp(float temp)
 {
-    onTemp=temp;
+    tempOn[usedSensors]=temp;
 }
 /**
  * @brief Set temperature to turn off the fan
@@ -56,7 +56,7 @@ void Fan::setOnTemp(float temp)
  */
 void Fan::setOffTemp(float temp)
 {
-    offTemp=temp;
+    tempOff[usedSensors]=temp;
 }
 /**
  * @brief Set the Sensor Index 
@@ -99,7 +99,7 @@ void Fan::controller()
     if(state==0)
     {
         for(index=0; index < usedSensors &&  millis()-timer > ON_OFF_TIME; index++)
-          if(calcTemp(senseIndex[index]) > onTemp)
+          if(calcTemp(senseIndex[index]) > tempOn[index])
           {
               // Turn fan on
               timer=millis();
@@ -109,7 +109,7 @@ void Fan::controller()
     else if(state==1)
     {
       for(index=0; index < usedSensors &&  millis()-timer > ON_OFF_TIME; index++)
-        if(calcTemp(senseIndex[index]) < offTemp && millis()-timer > ON_OFF_TIME)
+        if(calcTemp(senseIndex[index]) < tempOff[index] && millis()-timer > ON_OFF_TIME)
         {
             // Turn fan off
             timer=millis();
