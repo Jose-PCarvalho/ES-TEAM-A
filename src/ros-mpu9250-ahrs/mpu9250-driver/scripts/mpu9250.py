@@ -114,7 +114,7 @@ def talker():
             imu_msg.angular_velocity_covariance[8] = 0.03
             ax, ay, az = mpu.readAccelerometerMaster()
             reading_acc=np.array(([ax,ay,az,1]),dtype=float)
-            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction)
+            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction)*G
             print("corrigido: ",readings_acc_corr)
             print("medido:", reading_acc)
             imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
