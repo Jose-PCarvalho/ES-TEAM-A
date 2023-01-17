@@ -129,7 +129,7 @@ int main(int argc, char** argv)
             case 1:
             { 
                 cmd_vel.linear.x =0;
-                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold;
+                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold/3;
                 break;
             }
             case 2:
