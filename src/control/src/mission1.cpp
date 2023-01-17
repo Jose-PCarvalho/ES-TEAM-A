@@ -106,7 +106,7 @@ int main(int argc, char** argv)
             }
             case 3: // anda de marcha atras
             {
-                if (lidar_dst > lidar_threshold_high || !buoy_at_center)
+                if (lidar_dst > lidar_threshold_high || buoy_at_center==false)
                 {
                     state = 0;
                 }
@@ -135,13 +135,13 @@ int main(int argc, char** argv)
             case 2:
             {
                 cmd_vel.linear.x = max_speed/2;
-                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
                 break;
             }
             case 3:
             {
                 cmd_vel.linear.x = -max_speed/3;
-                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
                 break;
             }
             default:
