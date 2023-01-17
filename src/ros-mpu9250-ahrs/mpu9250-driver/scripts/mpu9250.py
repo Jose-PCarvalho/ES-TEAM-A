@@ -130,6 +130,7 @@ def talker():
             imu_msg.linear_acceleration_covariance[4] = 0.1
             imu_msg.linear_acceleration_covariance[8] = 0.1
             imu_pub.publish(imu_msg)
+            mag_pub.publish(mag_pub)
             magn_pub.publish(mag_calib_msg)
             gyro_pub.publish(gyro_msg)
             acc_pub.publish(acc_msg)
