@@ -1,5 +1,13 @@
 #include <TFmini.h>
 
+ros::Publisher pub_range;
+sensor_msgs::Range TFmini_range;
+
+void timerCallback(const ros::TimerEvent& event)
+{
+  pub_range.publish(TFmini_range);
+}
+
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "tfmini_ros_node");
@@ -16,8 +24,7 @@ int main(int argc, char **argv)
   nh.param("baud_rate", baud_rate, 115200);
 
   tfmini_obj = new benewake::TFmini(portName, baud_rate);
-  ros::Publisher pub_range = nh.advertise<sensor_msgs::Range>(id, 1, true);
-  sensor_msgs::Range TFmini_range;
+  pub_range = nh.advertise<sensor_msgs::Range>(id, 1, true);
   TFmini_range.radiation_type = sensor_msgs::Range::INFRARED;
   TFmini_range.field_of_view = 0.04;
   TFmini_range.min_range = 0.3;
@@ -26,7 +33,7 @@ int main(int argc, char **argv)
   float dist = 0;
   ROS_INFO_STREAM("Start processing ...");
 
-  ros::Rate rate(30);
+  ros::Timer timer = nh.createTimer(ros::Duration(0.033),timerCallback);
 
   while(ros::master::check() && ros::ok())
   {
