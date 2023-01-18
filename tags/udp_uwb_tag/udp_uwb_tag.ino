@@ -31,23 +31,25 @@ void setup()
     WiFi.mode(WIFI_STA);
     WiFi.setSleep(false);
     WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED)
+    for(uint8_t cont=0; WiFi.status() != WL_CONNECTED; cont++)
     {
         delay(500);
         Serial.print(".");
+        if(cont==10)
+          ESP.restart();
     }
     Serial.println("Connected");
     Serial.print("IP Address:");
     Serial.println(WiFi.localIP());
-    bool success = Ping.ping("192.168.1.254", 3);
+    bool success = Ping.ping(host, 3);
     if(!success){
       Serial.println("Ping Failed");
     }
       Serial.println("Ping Success");
     while(!client.connect(host, 8000))
     {
-        Serial.println("Fail");
-    
+      Serial.println("Failed to connect to server");
+      delay(250);    
     }
 
     delay(1000);
@@ -73,7 +75,7 @@ void loop()
         make_link_json(uwb_data, &all_json);
         //Serial.println(uwb_data->next->range[0]);
         send_udp(&all_json);
-        runtime = millis();
+        runtime = millis();        
     }
 }
 
@@ -111,9 +113,13 @@ void inactiveDevice(DW1000Device *device)
 
 void send_udp(String *msg_json)
 { 
-    if (client.connected())
+    if(client.connected())
     {
         client.print(*msg_json);
         Serial.println("UDP send");
     }
+    else if(!client.connect(host, 8000))
+        Serial.println("Fail Reconect");
+    else
+        Serial.println("Reconected");
 }
