@@ -78,7 +78,7 @@ def talker():
                 x,y=get_intersections(a_r,b_r)
                 if x is not None and y is not None:
                     msg.position.x=x
-                    msg.position.y=x
+                    msg.position.y=y
                     pub.publish(msg)
         rate.sleep()
         
