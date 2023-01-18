@@ -4,6 +4,14 @@
 
     <arg name="disable_motors" default="False"/>
 
+    <node pkg="control" name="mission1" type="mission1" output="screen"/>
+    <!-- Params -->
+    <param name="/lidar_treshold_low" type="double" value="0.5"/>
+    <param name="/lidar_treshold_high" type="double" value="1.2"/>
+    <param name="/area_treshold" type="double" value="250"/>
+    <param name="/center_treshold" type="int" value="200"/>
+    <param name="/max_speed" type="double" value="15"/>
+
     <group if="$(eval arg('disable_motors') == False)">
         <include file="$(find motor_ctrl)/launch/asv_pid.launch" />
     </group>
