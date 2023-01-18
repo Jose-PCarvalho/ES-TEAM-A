@@ -43,8 +43,7 @@ def talker():
 
     # Apply the settings to the registers and calibrate
     mpu.configure()
-    #mpu.calibrate()
-    mpu.calibrateMPU6500()
+    mpu.calibrate()
     mpu.abias = [0, 0, 0]
     mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
     mpu.mbias = [0, 0, 0] # Set magnetometer hard iron distortion
