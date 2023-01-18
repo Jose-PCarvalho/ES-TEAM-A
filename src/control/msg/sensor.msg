@@ -1,0 +1,9 @@
+String Temp_sens
+String Temp_ALL
+String Water_sens
+String Water_ALL
+String I
+String V
+String E
+String Run_Time
+String TTL

@@ -1,17 +1,19 @@
+#!/usr/bin/env python
+import rospy
 import smbus2 as smbus
-import time
+from sensor.msg import String
 
 class ArduinoComs:
     # Constants
     __N_TEMP_SENSORS    = 4
     __N_WATER_SENSORS   = 2
-    __GET_CURRENT       = 0x01
-    __GET_VOLTAGE       = 0x02
-    __GET_ENERGY        = 0x03
-    __GET_RUNTIME       = 0x04
-    __GET_TIME_TO_LIVE  = 0x05
-    __GET_TEMP          = 0x06
-    __GET_WATER         = 0x07
+    __GET_CURRENT       = 1
+    __GET_VOLTAGE       = 2
+    __GET_ENERGY        = 3
+    __GET_RUNTIME       = 4
+    __GET_TIME_TO_LIVE  = 5
+    __GET_TEMP          = 6
+    __GET_WATER         = 7
     __FLOAT_LEN         = 8
     __LONG_LEN          = 11
     # Private Methods
@@ -19,7 +21,7 @@ class ArduinoComs:
         self.__arduinoAdress=arduinoAdress
         self.__bus=smbus.SMBus(bus)
 
-    def __getFloatParameter(self, code):
+    def __getFloatParameter(self,code):
         '''
             Get a float parameter from Arduino
             Arguments:
@@ -29,9 +31,9 @@ class ArduinoComs:
         '''
         self.__sendCommand(code)
         resp=self.__requestParameter(self.__FLOAT_LEN)
-        return float(resp)    
+        return resp    
     
-    def __getLongParameter(self, code):
+    def __getLongParameter(self,code):
         '''
             Get an int parameter from Arduino
             Arguments:
@@ -43,7 +45,7 @@ class ArduinoComs:
         resp=self.__requestParameter(self.__LONG_LEN)
         return int(resp)
 
-    def __requestParameter(self, len):
+    def __requestParameter(self,len):
         '''
             Request data from Arduino
             Arguments:
@@ -51,24 +53,21 @@ class ArduinoComs:
             Returns:
                 A string with the bytes read
         '''
-        print(self.__arduinoAdress)
-        data='1'
-        #for byte in range(len):
-            #data+=chr(self.__bus.read_byte(self.__arduinoAdress))
+        data=''
+        for _ in range(len):
+            data+=chr(self.__bus.read_byte(self.__arduinoAdress))
         return data
 
-    def __sendCommand(self, code):
+    def __sendCommand(self,code):
         '''
             Send a command to Arduino
             Arguments:
                 code: The code to be sent
         '''
-        print(self.__arduinoAdress, code)
         self.__bus.write_byte(self.__arduinoAdress, code)
-        time.sleep(0.01)# Arduino is slow
 
     # Public Methods    
-    def getTempX(self, sensor):
+    def getTempX(self,sensor):
         '''
             Get temperature from sensor x
             Arguments:
@@ -90,7 +89,7 @@ class ArduinoComs:
             readings.append(self.getTempX(sensor))
         return readings
 
-    def getWaterX(self, sensor):
+    def getWaterX(self,sensor):
         '''
             Read water sensor
             Arguments:
@@ -142,7 +141,7 @@ class ArduinoComs:
         '''
         return self.__getFloatParameter(self.__GET_RUNTIME)
 
-    def getTimeToLive(self):
+    def getTimeToLive(self):        
         '''
             Get estyimated time to live, based on run time, 
             energy consumed and total available energy
@@ -151,4 +150,49 @@ class ArduinoComs:
         '''
         return self.__getFloatParameter(self.__GET_TIME_TO_LIVE)
 
-    
+
+
+Sensor_number = 0
+obj = ArduinoComs(1,80)
+
+Temp_sens = obj.getTempX(Sensor_number)
+Temp_ALL = obj.getTempAll()
+
+Water_sens = obj.getWaterX(Sensor_number)
+Water_ALL = obj.getWaterAll()
+
+I = obj.getCurrent()
+V = obj.getVoltage()
+E = obj.getEnergy()
+Run_Time = obj.getRunTime()
+TTL = obj.getTimeToLive()
+
+
+def talker():
+    pub = rospy.Publisher('chatter', String, queue_size=10)
+    rospy.init_node('ArduinoComs', anonymous=True)
+    rate = rospy.Rate(10) # 10hz
+    while not rospy.is_shutdown():
+        #rospy.loginfo(hello_str)
+        pub.publish(Temp_sens)
+        pub.publish(Temp_ALL)
+        pub.publish(Water_sens)
+        pub.publish(Water_ALL)
+        pub.publish(I)
+        pub.publish(V)
+        pub.publish(E)
+        pub.publish(Run_Time)
+        pub.publish(TTL)
+        rate.sleep()
+
+if __name__ == '__main__':
+    try:
+        talker()
+    except rospy.ROSInterruptException:
+        pass
+
+#print(obj.__getattribute__(obj.bus))
+
+#reading = obj.getTimeToLive()
+#print(reading)
+
