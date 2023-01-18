@@ -37,7 +37,7 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
 
   // **** get paramters
   if (!nh_private_.getParam ("stateless", stateless_))
-    stateless_ = false;
+    stateless_ = true;
   if (!nh_private_.getParam ("use_mag", use_mag_))
    use_mag_ = true;
   if (!nh_private_.getParam ("publish_tf", publish_tf_))
