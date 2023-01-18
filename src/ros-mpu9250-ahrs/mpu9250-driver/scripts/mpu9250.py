@@ -24,13 +24,27 @@ mpu = MPU9250(
     mfs=AK8963_BIT_16,
     mode=AK8963_MODE_C100HZ)
 
+def callback(data):
+    global started
+    
+
+    if started:
+        orientation_list = [data.orientation.x, data.orientation.y,data.orientation.z,data.orientation.w]
+        (roll, pitch, yaw) = euler_from_quaternion (orientation_list)
+        print(roll,pitch,yaw)
+    
+    if (not started):
+        started = True
+    #print(vel_msg.linear.x)
+
 def talker():
     imu_pub = rospy.Publisher('imu/data_raw', Imu, queue_size=1)
     mag_pub = rospy.Publisher('imu/mag', MagneticField, queue_size=1)
     acc_pub =rospy.Publisher('/imu/accelerometer',accelerometer,queue_size=1)
     magn_pub =rospy.Publisher('/imu/magnetometer',magnetometer,queue_size=1)
     gyro_pub =rospy.Publisher('/imu/gyroscope',gyroscope,queue_size=1)
-    
+    rospy.Subscriber ('/cmd_vel',Imu,callback)  
+    started=False
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(100) # 10hz
 
