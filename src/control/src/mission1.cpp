@@ -6,6 +6,7 @@
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Range.h>
 #include <geometry_msgs/Point.h>
+#include <std_msgs/Int8.h>
 
 #define HEIGT 480
 #define WIDTH 720
@@ -58,12 +59,14 @@ int main(int argc, char** argv)
     lidar_sub = nh.subscribe("/tfmini_ros_node/TFmini", 1, callback_lidar);
     tracker_sub = nh.subscribe("/vision/point", 1, callback_tracker);
 
-    ros::Publisher pub;
+    ros::Publisher pub, state_pub;
+    state_pub = nh.advertise<std_msgs::Int8>("/mission/state",1);
     pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 
     ros::Rate rate(30);
 
     geometry_msgs::Twist cmd_vel;
+    std_msgs::Int8 state_msg;
 
     while (ros::ok())
     {
@@ -123,13 +126,13 @@ int main(int argc, char** argv)
             case 0:
             {
                 cmd_vel.linear.x = 0;
-                cmd_vel.angular.x = max_speed/4;
+                cmd_vel.angular.x = max_speed/3;
                 break;
             }
             case 1:
             { 
                 cmd_vel.linear.x =0;
-                cmd_vel.angular.x = (720/2-buoy_pos.x)*max_speed/center_threshold;
+                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold/1.5;
                 break;
             }
             case 2:
@@ -140,7 +143,7 @@ int main(int argc, char** argv)
             }
             case 3:
             {
-                cmd_vel.linear.x = -max_speed/2;
+                cmd_vel.linear.x = -max_speed/1.5;
                 cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
                 break;
             }
@@ -151,6 +154,9 @@ int main(int argc, char** argv)
                 break;
             }
         }
+
+        state_msg.data = state;
+        state_pub.publish(state_msg);
 
         ROS_WARN("\n\nlin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x);
         

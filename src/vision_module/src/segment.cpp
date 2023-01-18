@@ -126,6 +126,7 @@ void update_image_cont()
     std_msgs::Float32 area_msg;
     area_msg.data = std::accumulate(area.begin(), area.end(), 0 ) / area.size();
     area_pub.publish(area_msg);
+    area.clear();
     
     geometry_msgs::Point pt_msg;
     pt_msg.x = (float)p.x;
