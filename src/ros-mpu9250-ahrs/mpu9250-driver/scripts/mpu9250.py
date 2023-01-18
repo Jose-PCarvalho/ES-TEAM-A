@@ -70,8 +70,8 @@ def talker():
     while not rospy.is_shutdown():
             # Fill mag msg
             mx, my, mz = mpu.readMagnetometerMaster()
-            readings=np.array(([mx,my,mz,1]),dtype=float)*MagFieldConversion_uT_T
-            readings_corr=np.matmul(readings,magnetometer_correction)
+            readings=np.array(([mx,my,mz]),dtype=float)*MagFieldConversion_uT_T
+            readings_corr=np.matmul(readings,magnetometer_correction[0:3,0:3])+magnetometer_correction[0:3,3]
             mag_msg.header.stamp = rospy.get_rostime()
             mag_msg.magnetic_field.x = float(readings_corr[0])
             mag_msg.magnetic_field.y = float(readings_corr[1])
@@ -118,8 +118,8 @@ def talker():
             imu_msg.angular_velocity_covariance[4] = 0.03
             imu_msg.angular_velocity_covariance[8] = 0.03
             ax, ay, az = mpu.readAccelerometerMaster()
-            reading_acc=np.array(([ax,ay,az,1]),dtype=float)
-            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction)*G
+            reading_acc=np.array(([ax,ay,az]),dtype=float)
+            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction[0:3,0:3])*G+accelerometer_correction[0:3,3]
             imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
             imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
             imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
