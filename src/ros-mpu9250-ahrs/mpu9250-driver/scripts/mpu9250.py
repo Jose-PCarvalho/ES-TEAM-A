@@ -58,11 +58,11 @@ def talker():
 
     # Apply the settings to the registers and calibrate
     mpu.configure()
-    mpu.calibrate()
-    mpu.abias = [0, 0, 0]
-    mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
-    mpu.mbias = [0, 0, 0] # Set magnetometer hard iron distortion
-    mpu.configure()
+    #mpu.calibrate()
+    #mpu.abias = [0, 0, 0]
+    #mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
+    #mpu.mbias = [0, 0, 0] # Set magnetometer hard iron distortion
+    #mpu.configure()
     accelerometer_correction=np.array(( 
     [0.998744, 0.000000, 0.000000, -0.263538],
     [0.000000, 0.996921, 0.000000, -0.161967] ,
@@ -139,9 +139,9 @@ def talker():
             acc_msg.y=ay
             acc_msg.z=az
 
-            imu_msg.linear_acceleration_covariance[0] = 0.1
-            imu_msg.linear_acceleration_covariance[4] = 0.1
-            imu_msg.linear_acceleration_covariance[8] = 0.1
+            imu_msg.linear_acceleration_covariance[0] = 0.01
+            imu_msg.linear_acceleration_covariance[4] = 0.01
+            imu_msg.linear_acceleration_covariance[8] = 0.01
             imu_pub.publish(imu_msg)
             mag_pub.publish(mag_msg)
             magn_pub.publish(mag_calib_msg)
