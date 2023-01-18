@@ -51,7 +51,7 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("remove_gravity_vector", remove_gravity_vector_))
     remove_gravity_vector_= true;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
-    publish_debug_topics_= false;
+    publish_debug_topics_= true;
 
   std::string world_frame;
   if (!nh_private_.getParam ("world_frame", world_frame))
