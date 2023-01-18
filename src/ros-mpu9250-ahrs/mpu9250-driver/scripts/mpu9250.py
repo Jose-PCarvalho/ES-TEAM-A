@@ -118,22 +118,19 @@ def talker():
             imu_msg.angular_velocity_covariance[4] = 0.03
             imu_msg.angular_velocity_covariance[8] = 0.03
             ax, ay, az = mpu.readAccelerometerMaster()
-            reading_acc=np.array(([ax,ay,az]),dtype=float)
-            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction[0:3,0:3])*G+accelerometer_correction[0:3,3]
+            reading_acc=np.array(([ax*G,ay*G,az*G]),dtype=float)
+            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction[0:3,0:3])+accelerometer_correction[0:3,3]
             imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
             imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
             imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
 
-            imu_msg.linear_acceleration.x = ax*G
-            imu_msg.linear_acceleration.y = ay*G
-            imu_msg.linear_acceleration.z = az*G
             gyro_msg.x=gx
             gyro_msg.y=gy
             gyro_msg.z=gz
 
-            acc_msg.x=ax*G
-            acc_msg.y=ay*G
-            acc_msg.z=az*G
+            acc_msg.x=ax
+            acc_msg.y=ay
+            acc_msg.z=az
 
             imu_msg.linear_acceleration_covariance[0] = 0.1
             imu_msg.linear_acceleration_covariance[4] = 0.1
