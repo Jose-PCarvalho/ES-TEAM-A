@@ -8,8 +8,8 @@
 #include <geometry_msgs/Point.h>
 #include <std_msgs/Int8.h>
 
-#define HEIGT 480
-#define WIDTH 720
+#define HEIGT 308
+#define WIDTH 410
 
 int state = 0;
 int center_threshold;

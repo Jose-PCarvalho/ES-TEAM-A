@@ -1,5 +1,5 @@
 <launch>
 
-	<include file="$(find raspicam_node)/launch/camerav1_1280x720.launch"/>
+	<include file="$(find raspicam_node)/launch/super_low.launch"/>
     
 </launch>   
