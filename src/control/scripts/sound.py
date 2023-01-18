@@ -18,7 +18,7 @@ rospack = rospkg.RosPack()
 path_fixed= rospack.get_path('control')
 path_list=[]
 path_list.append(path_fixed+'/scripts/antonio.mp3')
-path_list.append(path_fixed+'pipipi.mp3')
+path_list.append(path_fixed+'/scripts/pipipi.mp3')
 
 def callback(data):
     global flag
