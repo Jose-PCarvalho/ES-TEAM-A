@@ -10,6 +10,6 @@
         <include file="$(find motor_ctrl)/launch/asv_pid.launch" />
     </group>
     
-    <include file="$(find vision_module)/launch/rasp_low_res.launch" />
+    <include file="$(find vision_module)/launch/super_low.launch" />
     <include file="$(find tfmini_ros)/launch/tfmini.launch" />
 </launch>
