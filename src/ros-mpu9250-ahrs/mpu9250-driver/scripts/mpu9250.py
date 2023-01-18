@@ -43,7 +43,7 @@ def talker():
     acc_pub =rospy.Publisher('/imu/accelerometer',accelerometer,queue_size=1)
     magn_pub =rospy.Publisher('/imu/magnetometer',magnetometer,queue_size=1)
     gyro_pub =rospy.Publisher('/imu/gyroscope',gyroscope,queue_size=1)
-    rospy.Subscriber ('/cmd_vel',Imu,callback)  
+    rospy.Subscriber ('/imu/data',Imu,callback)  
     started=False
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(100) # 10hz
