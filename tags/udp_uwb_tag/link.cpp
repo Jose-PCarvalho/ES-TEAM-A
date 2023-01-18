@@ -154,7 +154,7 @@ void make_link_json(struct MyLink *p, String *s)
     {
         temp = temp->next;
         char link_json[50];
-        sprintf(link_json, "{\"A\":\"%X\",\"R\":\"%.1f\"}", temp->anchor_addr, temp->range[0]);
+        sprintf(link_json, "{\"A\":\"%X\",\"R\":\"%.5f\"}", temp->anchor_addr, temp->range[0]);
         *s += link_json;
         if (temp->next != NULL)
         {
