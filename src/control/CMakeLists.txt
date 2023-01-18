@@ -177,7 +177,7 @@ target_link_libraries(mission1
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/sound.py.py 
+  scripts/sound.py
   # scripts/pid_controller.py
   # scripts/controller_telop.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
