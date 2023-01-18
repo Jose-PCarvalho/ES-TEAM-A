@@ -38,13 +38,14 @@ def callback(data):
     #print(vel_msg.linear.x)
 
 def talker():
+    global started
     imu_pub = rospy.Publisher('imu/data_raw', Imu, queue_size=1)
     mag_pub = rospy.Publisher('imu/mag', MagneticField, queue_size=1)
     acc_pub =rospy.Publisher('/imu/accelerometer',accelerometer,queue_size=1)
     magn_pub =rospy.Publisher('/imu/magnetometer',magnetometer,queue_size=1)
     gyro_pub =rospy.Publisher('/imu/gyroscope',gyroscope,queue_size=1)
-    rospy.Subscriber ('/imu/data',Imu,callback)  
     started=False
+    rospy.Subscriber ('/imu/data',Imu,callback)  
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(100) # 10hz
 
