@@ -81,14 +81,7 @@ def talker():
             mag_msg.magnetic_field_covariance[8] = 0.01
             mag_calib_msg.x=mx*MagFieldConversion_uT_T
             mag_calib_msg.y=my*MagFieldConversion_uT_T
-            mag_calib_msg.z=mz*MagFieldConversion_uT_T
-
-            mag_msg.magnetic_field.x=mx*MagFieldConversion_uT_T
-            mag_msg.magnetic_field.y=my*MagFieldConversion_uT_T
-            mag_msg.magnetic_field.z=mz*MagFieldConversion_uT_T
-
-
-            
+            mag_calib_msg.z=mz*MagFieldConversion_uT_T            
             # create imu msg
             q0 = 1.0 #W
             q1 = 0.0 #X
