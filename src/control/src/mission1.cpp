@@ -72,7 +72,7 @@ int main(int argc, char** argv)
     {
         ros::spinOnce();
 
-        ROS_INFO("state: %d", state);
+        //ROS_INFO("state: %d", state);
         
 
         // transições
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
         state_msg.data = state;
         state_pub.publish(state_msg);
 
-        ROS_WARN("\n\nlin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x);
+        //ROS_WARN("\n\nlin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x);
         
         pub.publish(cmd_vel);
         
