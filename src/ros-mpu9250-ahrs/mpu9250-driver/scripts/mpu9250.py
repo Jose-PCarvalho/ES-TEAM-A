@@ -83,6 +83,10 @@ def talker():
             mag_calib_msg.y=my*MagFieldConversion_uT_T
             mag_calib_msg.z=mz*MagFieldConversion_uT_T
 
+            mag_msg.x=mx*MagFieldConversion_uT_T
+            mag_msg.y=my*MagFieldConversion_uT_T
+            mag_msg.z=mz*MagFieldConversion_uT_T
+
 
             
             # create imu msg
@@ -119,6 +123,10 @@ def talker():
             imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
             imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
             imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
+
+            imu_msg.linear_acceleration.x = ax*G
+            imu_msg.linear_acceleration.y = ay*G
+            imu_msg.linear_acceleration.z = az*G
             gyro_msg.x=gx
             gyro_msg.y=gy
             gyro_msg.z=gz
