@@ -31,7 +31,7 @@ def callback(data):
     if started:
         orientation_list = [data.orientation.x, data.orientation.y,data.orientation.z,data.orientation.w]
         (roll, pitch, yaw) = euler_from_quaternion (orientation_list)
-        print(roll,pitch,yaw)
+        print(yaw)
     
     if (not started):
         started = True
