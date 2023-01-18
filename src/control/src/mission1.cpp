@@ -126,7 +126,7 @@ int main(int argc, char** argv)
             case 0:
             {
                 cmd_vel.linear.x = 0;
-                cmd_vel.angular.x = max_speed/3;
+                cmd_vel.angular.x = max_speed/2;
                 break;
             }
             case 1:

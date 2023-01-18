@@ -96,15 +96,15 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
 
   // **** register publishers
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(
-    ros::names::resolve("imu") + "/data", 5);
+    ros::names::resolve("imu") + "/data", 1);
 
   if (publish_debug_topics_)
   {
     rpy_filtered_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-      ros::names::resolve("imu") + "/rpy/filtered", 5);
+      ros::names::resolve("imu") + "/rpy/filtered", 1);
 
     rpy_raw_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-      ros::names::resolve("imu") + "/rpy/raw", 5);
+      ros::names::resolve("imu") + "/rpy/raw", 1);
   }
 
   // **** register subscribers
