@@ -122,9 +122,9 @@ def talker():
             gyro_msg.y=gy
             gyro_msg.z=gz
 
-            acc_msg.x=ax
-            acc_msg.y=ay
-            acc_msg.z=az
+            acc_msg.x=ax*G
+            acc_msg.y=ay*G
+            acc_msg.z=az*G
 
             imu_msg.linear_acceleration_covariance[0] = 0.1
             imu_msg.linear_acceleration_covariance[4] = 0.1
