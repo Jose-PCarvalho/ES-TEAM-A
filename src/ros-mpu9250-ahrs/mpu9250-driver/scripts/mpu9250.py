@@ -83,9 +83,9 @@ def talker():
             mag_calib_msg.y=my*MagFieldConversion_uT_T
             mag_calib_msg.z=mz*MagFieldConversion_uT_T
 
-            mag_msg.x=mx*MagFieldConversion_uT_T
-            mag_msg.y=my*MagFieldConversion_uT_T
-            mag_msg.z=mz*MagFieldConversion_uT_T
+            mag_msg.magnetic_field.x=mx*MagFieldConversion_uT_T
+            mag_msg.magnetic_field.y=my*MagFieldConversion_uT_T
+            mag_msg.magnetic_field.z=mz*MagFieldConversion_uT_T
 
 
             
