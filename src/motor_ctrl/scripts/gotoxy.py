@@ -107,7 +107,7 @@ def talker():
             msg.angular.x=w
             msg.linear.x=v
         elif state==3:
-            w=np.clip(-10*transform_to_pipi(theta_target-yaw),-7.5,7,5)
+            w=np.clip(-12*transform_to_pipi(theta_target-yaw),-7.5,7.5)
             v=8*np.sqrt((yt-yr)**2+(xt-xr)**2)
             msg.angular.x=w
             msg.linear.x=v
