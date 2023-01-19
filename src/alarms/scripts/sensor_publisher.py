@@ -163,6 +163,7 @@ class ArduinoComs:
 
 ac = ArduinoComs(1,0x08)
 msg = sensors()
+pub = rospy.Publisher ('/alarms/data',sensors, 1,queue_size=1)  
 
 def getData():
     global msg
@@ -183,7 +184,6 @@ def getData():
 
 def talker():
     rospy.init_node('alarms', anonymous=True)
-    pub = rospy.Publisher ('/alarms/data',sensors, 1,queue_size=1)  
     rate = rospy.Rate(1)  
     
     while not rospy.is_shutdown():
