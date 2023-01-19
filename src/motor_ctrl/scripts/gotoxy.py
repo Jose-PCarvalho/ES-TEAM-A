@@ -58,10 +58,10 @@ def talker():
                 state=2
 
         if state==0:
-            w=np.clip(2*(theta_target-yaw),-15,15)
+            w=np.clip(5*(theta_target-yaw),-15,15)
             msg.angular.x=w
         elif state==1:
-            w=np.clip(2*(theta_target-yaw),-7.5,7.5)
+            w=np.clip(5*(theta_target-yaw),-7.5,7.5)
             msg.angular.x=w
         pub.publish(msg)
         rate.sleep()
