@@ -162,11 +162,10 @@ class ArduinoComs:
         return self.__getFloatParameter(self.__GET_TIME_TO_LIVE)
 
 ac = ArduinoComs(1,0x08)
-msg = sensors()
-pub = rospy.Publisher ('/alarms/data',sensors, 1,queue_size=1)  
+pub = rospy.Publisher ('/alarms/data',sensors, queue_size=1)  
 
 def getData():
-    global msg
+    msg = sensors()
     msg.water_power = ac.getWaterX(ac.PWR_WATER_SENSOR)
     msg.water_control = ac.getWaterX(ac.CTRL_WATER_SENSOR)
     msg.power_box_temp = ac.getTempX(ac.BATT_TEMP_INDEX)
