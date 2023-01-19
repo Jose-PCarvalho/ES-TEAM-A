@@ -56,6 +56,11 @@ def talker():
             print("Theta Target:", theta_target, "Theta", yaw)
             if np.rad2deg(np.abs(theta_target-yaw)) < 5:
                 state=2
+            elif np.rad2deg(np.abs(theta_target-yaw)) < 12:
+                state=0
+        elif state==2:
+            if np.rad2deg(np.abs(theta_target-yaw)) > 15:
+                state=0
 
         if state==0:
             w=np.clip(12*(theta_target-yaw),-15,15)
