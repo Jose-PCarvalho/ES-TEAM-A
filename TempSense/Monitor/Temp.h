@@ -14,6 +14,10 @@ class Temp
     float rser;    
     float beta;
     uint8_t sensePin;
+    //
+    float vmeas;
+    float rmeas;
+    float denum;
 
   public:
     Temp();

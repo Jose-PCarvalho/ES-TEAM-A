@@ -3,7 +3,7 @@
 #ifndef Morse_H
 #define Morse_H
 
-#define DIT_DURATION    66
+#define DIT_DURATION    80
 
 class Morse
 {
