@@ -85,7 +85,7 @@ def talker():
         elif state==2:
             if np.rad2deg(np.abs(theta_target-yaw)) > 15:
                 state=0
-            if np.sqrt((yt-xr)^2+(xt-xr)^2)<0.5:
+            if np.sqrt((yt-xr)**2+(xt-xr)**2)<0.5:
                 state=3
         
 
