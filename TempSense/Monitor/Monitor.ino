@@ -45,6 +45,12 @@ const uint8_t ON_TEMP[4]={25, 30, 50, 50}; // Turn fans on at this temperature
 #define GET_TIME_TO_LIVE    5
 #define GET_TEMP            6
 #define GET_WATER           7
+#define SPECIAL_CMD         8
+// Special Commands
+#define SILENCE_ALLARM      0
+#define TEST_TEMP           1
+#define TEST_WATER          2
+#define TEST_VOLTAGE        3
 // Data
 #define FLOAT_LEN           8
 #define FLOAT_DEC           4
@@ -68,6 +74,7 @@ const uint8_t HIGH_TEMP[4]={30, 45, 60, 60}; // Turn fans on at this temperature
 // Constants
 #define NULL_CMD            0
 #define I2C_TIMEOUT         3e3
+#define SILENCE_TIME        6e5
 
 const String tempSensorNames[4]={
   "Bats",
@@ -90,10 +97,13 @@ uint8_t cmd;
 uint8_t sensorIndex;
 char buff[FLOAT_LEN];
 unsigned long curr;
-float spentPerc;
 long runTimeSec;
 float temps[MAX_SENSORS];
+float voltage;
+float current;
+float timeToLiveBuff;
 String debugMsg="Initial";
+bool silenceAlarm=false;
 // Aux functions /////////
 // Setup functions
 void setSensors();
@@ -227,17 +237,34 @@ void stateMachine()
     heart.beat(BEAT_TIME/100);
     // Update Temperatures (stack array requiered)
     for(uint8_t index=0; index<N_TEMP_SENSORS; index++)
-      temps[index]=sensors[index].calcTemp();      
+      temps[index]=sensors[index].calcTemp();   
+    // Update Voltage and Current
+    voltage=readVoltage();
+    current=readCurrent();
+    // Update time to live
+    timeToLiveBuff=timeToLive();
   }    
   // Batery monitor
   if(battState==0)
   {
-    if(curr-battTimer > BUZZER_TIMER)
+    if(silenceAlarm)
+    {
+      battTimer=curr;
+      silenceAlarm=false;
+      battState=3;
+    }
+    else if(curr-battTimer > BUZZER_TIMER)
       battState=1;
   }
   else if(battState==1)
   {
-    if(readVoltage() < BATT_ALLARM)
+    if(silenceAlarm)
+    {
+      battTimer=curr;
+      silenceAlarm=false;
+      battState=3;
+    }
+    else if(readVoltage() < BATT_ALLARM)
     {
       morse.setMsg(LOW_BAT_WARNING);
       battState=2;
@@ -245,39 +272,92 @@ void stateMachine()
   }
   else if(battState==2)
   {
-    if(curr-battTimer > BUZZER_TIMER)
+    if(silenceAlarm)
+    {
+      battTimer=curr;
+      silenceAlarm=false;
+      battState=3;
+    }
+    else if(curr-battTimer > BUZZER_TIMER)
       battState=1;
     else if(readVoltage() > BATT_ALLARM_OFF)
       battState=0;
   }
+  else if(battState==3)
+  {
+    if(curr-battTimer>SILENCE_TIME)
+    {
+      battTimer=curr;
+      battState=0;
+    }      
+  }
   // Temp Allarm
   if(tempState==0)
   {
-    if(curr-tempTimer > BUZZER_TIMER)
+    if(silenceAlarm)
+    {
+      tempTimer=curr;
+      silenceAlarm=false;
+      tempState=2;
+    }
+    else if(curr-tempTimer > BUZZER_TIMER)
       tempState=1;
   }
   else if(tempState==1)
   {
-    if(overTemp())
+    if(silenceAlarm)
+    {
+      tempTimer=curr;
+      silenceAlarm=false;
+      tempState=2;
+    }
+    else if(overTemp())
     {
       morse.setMsg(HIGH_TEMP_WARNING);
       tempState=0;
-    }
-      
+    }      
+  }
+  else if(tempState==2)
+  {
+    if(curr-tempTimer>SILENCE_TIME)
+    {
+      tempTimer=curr;
+      tempState=0;
+    }      
   }
   // Water Allarm
   if(waterState==0)
   {
-    if(curr-waterTimer > BUZZER_TIMER)
+    if(silenceAlarm)
+    {
+      waterTimer=curr;
+      silenceAlarm=false;
+      waterState=2;
+    }
+    else if(curr-waterTimer > BUZZER_TIMER)
       waterState=1;
   }
   else if(waterState==1)
   {
-    if(readWater(N_WATER_SENSORS))
+    if(silenceAlarm)
     {
-      morse.setMsg(WATER_DETECT);
+      waterTimer=curr;
+      silenceAlarm=false;
       waterState=2;
     }
+    else if(readWater(N_WATER_SENSORS))
+    {
+      morse.setMsg(WATER_DETECT);
+      waterState=0;
+    }
+  }
+  else if(waterState==2)
+  {
+    if(curr-waterTimer>SILENCE_TIME)
+    {
+      waterTimer=curr;
+      waterState=0;
+    }      
   }
   // I2C timeout
   if(i2cState==0)
@@ -348,10 +428,10 @@ void sendLong(long value)
 float readCurrent()
 {
   // Read pin voltage
-  float voltage = (float)map(analogRead(CURRENT_PIN), 0, 1023, 0, VCC*1e5);
+  float volt = (float)map(analogRead(CURRENT_PIN), 0, 1023, 0, VCC*1e5);
   // Sensed voltage
-  voltage = voltage/1e5 - VCC/2.0 + 0.025; // Includes vontage conmpensation
-  return 1e3*voltage/CURR_RATIO;
+  volt = volt/1e5 - VCC/2.0 + 0.1; // Includes vontage conmpensation
+  return 1e3*volt/CURR_RATIO;
 }
 /**
  * @brief Read voltage
@@ -361,10 +441,10 @@ float readCurrent()
 float readVoltage()
 {
   // Read pin voltage
-  float voltage = (float)map(analogRead(VOLTAGE_PIN), 0, 1023, 0, VCC*1e5);
-  voltage = voltage/1.0e5;
+  float volt = (float)map(analogRead(VOLTAGE_PIN), 0, 1023, 0, VCC*1e5);
+  volt = volt/1.0e5;
   // Sense voltage
-  return voltage*(RV_LO+RV_HI)/RV_LO;
+  return volt*(RV_LO+RV_HI)/RV_LO;
 }
 /**
  * @brief Compute Time To Live based on the energy spent, the total capacity
@@ -374,7 +454,7 @@ float readVoltage()
  */
 float timeToLive()
 {
-  spentPerc = energy.energySpent()/TOTAL_CAPACITY;
+  float spentPerc = energy.energySpent()/TOTAL_CAPACITY;
   runTimeSec = curr/1e3;
   return (float)runTimeSec*(1-spentPerc)/spentPerc;
 }
@@ -393,6 +473,20 @@ void receiveHandler(int notUsed)
   else if(sensorIndex==NULL_CMD)
   {
     sensorIndex=Wire.read();
+    // Command request
+    if(cmd==SPECIAL_CMD)
+    {
+      if(sensorIndex==SILENCE_ALLARM)
+        silenceAlarm=true;
+      else if(sensorIndex==TEST_WATER)
+        morse.setMsg(WATER_DETECT);
+      else if(sensorIndex==TEST_VOLTAGE)
+        morse.setMsg(LOW_BAT_WARNING);
+      else if(sensorIndex==TEST_TEMP)
+        morse.setMsg(HIGH_TEMP_WARNING);
+      cmd=NULL_CMD;
+      sensorIndex=NULL_CMD;
+    }
     //debugMsg="Received index "+String(sensorIndex);
   }
   else
@@ -409,15 +503,15 @@ void receiveHandler(int notUsed)
 void requestHandler()
 {
   if(cmd==GET_VOLTAGE)
-    sendFloat(readVoltage());
+    sendFloat(voltage);
   else if(cmd==GET_CURRENT)
-    sendFloat(readCurrent());
+    sendFloat(current);
   else if(cmd==GET_ENERGY)
     sendFloat(energy.energySpent());
   else if(cmd==GET_RUNTIME)
     sendFloat(curr/60.0e3);
   else if(cmd==GET_TIME_TO_LIVE)
-    sendFloat(timeToLive()/60.0);
+    sendFloat(timeToLiveBuff/60.0);
   else if(cmd==GET_TEMP)
     sendFloat(temps[sensorIndex]);
   else if(cmd==GET_WATER)

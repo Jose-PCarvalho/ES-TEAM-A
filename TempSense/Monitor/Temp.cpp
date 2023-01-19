@@ -63,11 +63,11 @@ void Temp::setPin(uint8_t pin)
 float Temp::calcTemp()
 {
   // Compute voltage at the analog input
-  vmeas=VCC*(float)analogRead(sensePin)/MAX_VAL;
+  float vmeas=VCC*(float)analogRead(sensePin)/MAX_VAL;
   // Compute resistence of NTC
-  rmeas=vmeas*rser/(VCC-vmeas);
+  float rmeas=vmeas*rser/(VCC-vmeas);
   // Calculate the inverse of the temperature in kelvin
-  denum=log(rmeas/r25)/beta + 1.0/298.15;
+  float denum=log(rmeas/r25)/beta + 1.0/298.15;
   // Compute temperature in Celcius
   return 1.0/denum - 273.15;
 }
