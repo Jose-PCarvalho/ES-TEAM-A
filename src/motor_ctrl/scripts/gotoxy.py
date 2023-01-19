@@ -1,12 +1,34 @@
 import rospy
 from geometry_msgs.msg import Vector3Stamped,Pose,Twist
 import numpy as np
+from math import fabs, pi
 
 yaw=0
 yaw_inicial=0
 started=False
 xr=0
 yr=0
+
+def transform_to_pipi(input_angle):
+    revolutions = int((input_angle + np.sign(input_angle) * pi) / (2 * pi))
+
+    p1 = truncated_remainder(input_angle + np.sign(input_angle) * pi, 2 * pi)
+    p2 = (np.sign(np.sign(input_angle)
+                  + 2 * (np.sign(fabs((truncated_remainder(input_angle + pi, 2 * pi))
+                                      / (2 * pi))) - 1))) * pi
+
+    output_angle = p1 - p2
+
+    return output_angle
+
+def truncated_remainder(dividend, divisor):
+    divided_number = dividend / divisor
+    divided_number = \
+        -int(-divided_number) if divided_number < 0 else int(divided_number)
+
+    remainder = dividend - divisor * divided_number
+
+    return remainder
 
 
 def yaw_callback(data):
@@ -19,7 +41,7 @@ def yaw_callback(data):
         return 
     yaw=data.vector.z-yaw_inicial
     yaw=-yaw
-    yaw=np.unwrap(yaw)
+    yaw=transform_to_pipi(yaw)
 
 
 def pose_callback(data):
@@ -65,10 +87,10 @@ def talker():
                 state=0
 
         if state==0:
-            w=np.clip(12*np.unwrap(theta_target-yaw),-15,15)
+            w=np.clip(12*transform_to_pipi(theta_target-yaw),-15,15)
             msg.angular.x=w
         elif state==1:
-            w=np.clip(12*np.unwrap(theta_target-yaw),-7.5,7.5)
+            w=np.clip(12*transform_to_pipi(theta_target-yaw),-7.5,7.5)
             msg.angular.x=w
         pub.publish(msg)
         rate.sleep()
