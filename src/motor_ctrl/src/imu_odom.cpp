@@ -21,7 +21,7 @@ void callback (const sensor_msgs::ImuConstPtr &msg)
     new_imu_data = *msg;
 
     geometry_msgs::Twist twist_msg;
-
+    
     twist_msg.angular.x = new_imu_data.angular_velocity.x;
     twist_msg.angular.y = new_imu_data.angular_velocity.y;
     twist_msg.angular.z = new_imu_data.angular_velocity.z;
