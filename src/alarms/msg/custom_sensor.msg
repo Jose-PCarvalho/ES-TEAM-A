@@ -1,0 +1,12 @@
+float32 power_box_temp
+float32 control_box_temp
+bool water_power
+bool water_control
+float32 voltage
+float32 power
+float32 current
+float32 runtime
+float32 time_to_live
+float32 energy_consumed
+float32 esc_temp_bombordo
+float32 esc_temp_estibordo

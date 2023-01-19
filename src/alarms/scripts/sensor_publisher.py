@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+import rospy
+from alarms.msg import custom_sensor as sensors
 import smbus2 as smbus
 import time
 
@@ -12,7 +15,6 @@ class ArduinoComs:
     __GET_TIME_TO_LIVE  = 5
     __GET_TEMP          = 6
     __GET_WATER         = 7
-    __SPECIAL_CMD       = 8
     __FLOAT_LEN         = 8
     __LONG_LEN          = 11
     BATT_TEMP_INDEX     = 0
@@ -21,10 +23,6 @@ class ArduinoComs:
     ESCB_TEMP_INDEX     = 3
     CTRL_WATER_SENSOR   = 0
     PWR_WATER_SENSOR    = 1
-    SILENCE_ALLARM      = 0
-    TEST_TEMP           = 1
-    TEST_WATER          = 2
-    TEST_VOLTAGE        = 3
     # Private Methods
     def __init__(self, bus, arduinoAdress):
         self.__arduinoAdress=arduinoAdress
@@ -163,13 +161,38 @@ class ArduinoComs:
         '''
         return self.__getFloatParameter(self.__GET_TIME_TO_LIVE)
 
-    def sendCmd(self, code):
-        '''
-            Get estyimated time to live, based on run time, 
-            energy consumed and total available energy
-            Arguments: 
-                Command to be sent
-        '''
-        self.__sendCommand(self.__SPECIAL_CMD)
-        self.__sendCommand(code)
+ac = ArduinoComs(1,0x08)
+pub = rospy.Publisher ('/alarms/data',sensors, queue_size=1)  
+
+def getData():
+    msg = sensors()
+    msg.water_power = ac.getWaterX(ac.PWR_WATER_SENSOR)
+    msg.water_control = ac.getWaterX(ac.CTRL_WATER_SENSOR)
+    msg.power_box_temp = ac.getTempX(ac.BATT_TEMP_INDEX)
+    msg.control_box_temp = ac.getTempX(ac.RASP_TEMP_INDEX)
+    msg.esc_temp_bombordo = ac.getTempX(ac.ESCB_TEMP_INDEX)
+    msg.esc_temp_estibordo = ac.getTempX(ac.ESCE_TEMP_INDEX)
+    msg.voltage = ac.getVoltage()
+    msg.current = ac.getCurrent()
+    msg.power = msg.current * msg.voltage
+    msg.time_to_live = ac.getTimeToLive()
+    msg.energy_consumed = ac.getEnergy()
+    msg.runtime = ac.getRunTime()
+    pub.publish(msg)
+    
+
+def talker():
+    rospy.init_node('alarms', anonymous=True)
+    rate = rospy.Rate(1)  
+    
+    while not rospy.is_shutdown():
+        getData()
+        rate.sleep()    
+
+if __name__ == '__main__':
+    try:
+        talker()
+    except rospy.ROSInterruptException:
+        pass
+    
     
