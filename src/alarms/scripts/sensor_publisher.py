@@ -178,16 +178,16 @@ def getData():
     msg.time_to_live = ac.getTimeToLive()
     msg.energy_consumed = ac.getEnergy()
     msg.runtime = ac.getRunTime()
+    #pub.publish(msg)
+    print(msg,msg.water_control)
 
 def talker():
     rospy.init_node('alarms', anonymous=True)
-    pub = rospy.Publisher ('/alarms/data',sensors, 1)  
+    pub = rospy.Publisher ('/alarms/data',sensors, 1,queue_size=1)  
     rate = rospy.Rate(1)  
     
     while not rospy.is_shutdown():
-        msg = getData()
-        #pub.publish(msg)
-        print(msg)
+        getData()
         rate.sleep()    
 
 if __name__ == '__main__':
