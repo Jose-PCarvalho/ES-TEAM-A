@@ -15,7 +15,7 @@ def yaw_callback(data):
     global yaw_inicial
     if not started:
         started=True
-        yaw_inicial=data.vector.x
+        yaw_inicial=data.vector.z
         return 
     yaw=data.vector.z-yaw_inicial
 
@@ -59,10 +59,10 @@ def talker():
 
         if state==0:
             w=np.clip(2*(theta_target-yaw),-15,15)
-            msg.angular.z=w
+            msg.angular.x=w
         elif state==1:
             w=np.clip(2*(theta_target-yaw),-7.5,7.5)
-            msg.angular.z=w
+            msg.angular.x=w
         pub.publish(msg)
         rate.sleep()
 
