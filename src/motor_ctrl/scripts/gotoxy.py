@@ -102,6 +102,10 @@ def talker():
             v=10
             msg.angular.x=w
             msg.linear.x=v
+        elif state==3:
+            msg.angular.x=0
+            msg.linear.x=0
+            
         pub.publish(msg)
         rate.sleep()
 
