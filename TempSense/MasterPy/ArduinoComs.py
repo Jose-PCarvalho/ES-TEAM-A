@@ -5,13 +5,13 @@ class ArduinoComs:
     # Constants
     __N_TEMP_SENSORS    = 4
     __N_WATER_SENSORS   = 2
-    __GET_CURRENT       = 0x01
-    __GET_VOLTAGE       = 0x02
-    __GET_ENERGY        = 0x03
-    __GET_RUNTIME       = 0x04
-    __GET_TIME_TO_LIVE  = 0x05
-    __GET_TEMP          = 0x06
-    __GET_WATER         = 0x07
+    __GET_CURRENT       = 0x1
+    __GET_VOLTAGE       = 0x2
+    __GET_ENERGY        = 0x3
+    __GET_RUNTIME       = 0x4
+    __GET_TIME_TO_LIVE  = 0x5
+    __GET_TEMP          = 0x6
+    __GET_WATER         = 0x7
     __FLOAT_LEN         = 8
     __LONG_LEN          = 11
     # Private Methods
@@ -29,7 +29,7 @@ class ArduinoComs:
         '''
         self.__sendCommand(code)
         resp=self.__requestParameter(self.__FLOAT_LEN)
-        return float(resp)    
+        return resp#float(resp)    
     
     def __getLongParameter(self, code):
         '''
@@ -41,7 +41,7 @@ class ArduinoComs:
         '''
         self.__sendCommand(code)
         resp=self.__requestParameter(self.__LONG_LEN)
-        return int(resp)
+        return resp#int(resp)
 
     def __requestParameter(self, len):
         '''
@@ -52,9 +52,15 @@ class ArduinoComs:
                 A string with the bytes read
         '''
         print(self.__arduinoAdress)
-        data='1'
         #for byte in range(len):
-            #data+=chr(self.__bus.read_byte(self.__arduinoAdress))
+        data=[]
+        try:
+            data=self.__bus.read_i2c_block_data(self.__arduinoAdress, 0x00, len)
+            print(data)
+        except:
+            print('IO ERROR')
+            time.sleep(0.1)
+        data=[chr(d) for d in data]
         return data
 
     def __sendCommand(self, code):
@@ -65,7 +71,7 @@ class ArduinoComs:
         '''
         print(self.__arduinoAdress, code)
         self.__bus.write_byte(self.__arduinoAdress, code)
-        time.sleep(0.01)# Arduino is slow
+        time.sleep(0.1)# Arduino is slow
 
     # Public Methods    
     def getTempX(self, sensor):
