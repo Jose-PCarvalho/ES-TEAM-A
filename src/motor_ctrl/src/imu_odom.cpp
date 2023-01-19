@@ -23,7 +23,6 @@ void callback (const sensor_msgs::ImuConstPtr &msg)
 
     geometry_msgs::Twist twist_msg;
     
-
     twist_msg.angular.x = new_imu_data.angular_velocity.x;
     twist_msg.angular.y = new_imu_data.angular_velocity.y;
     twist_msg.angular.z = new_imu_data.angular_velocity.z;
@@ -35,7 +34,7 @@ void callback (const sensor_msgs::ImuConstPtr &msg)
     twist_msg.linear.y = old_msg.linear.y+(new_imu_data.linear_acceleration.y - old_imu_data.linear_acceleration.y) * diff_time;
     twist_msg.linear.z = old_msg.linear.z+(new_imu_data.linear_acceleration.z - old_imu_data.linear_acceleration.z) * diff_time;
     old_msg=twist_msg;
-
+    ROS_INFO("Publiquei");
     pub.publish(twist_msg);
 }
 
@@ -44,12 +43,13 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "imu_odom");
     ros::NodeHandle nh;
     ros::Subscriber sub;
-    sub = nh.subscribe("/imu_data", 1, callback);
+    ROS_INFO("OLA");
+    sub = nh.subscribe("/imu/data", 1, callback);
     pub = nh.advertise<geometry_msgs::Twist>("/vel_estimate", 1);
 
     nh.param<float>("/freq", freq, 10);
 
-    ros::Rate rate(10);
+    ros::Rate rate(100);
 
     while(ros::ok())
     {
