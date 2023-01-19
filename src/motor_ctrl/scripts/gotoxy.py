@@ -87,10 +87,10 @@ def talker():
                 state=0
 
         if state==0:
-            w=np.clip(12*transform_to_pipi(theta_target-yaw),-15,15)
+            w=np.clip(-12*transform_to_pipi(theta_target-yaw),-15,15)
             msg.angular.x=w
         elif state==1:
-            w=np.clip(12*transform_to_pipi(theta_target-yaw),-7.5,7.5)
+            w=np.clip(-12*transform_to_pipi(theta_target-yaw),-7.5,7.5)
             msg.angular.x=w
         pub.publish(msg)
         rate.sleep()
