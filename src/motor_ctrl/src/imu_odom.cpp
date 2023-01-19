@@ -43,12 +43,13 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "imu_odom");
     ros::NodeHandle nh;
     ros::Subscriber sub;
-    sub = nh.subscribe("/imu_data", 1, callback);
+    ROS_INFO("OLA");
+    sub = nh.subscribe("/imu/data", 1, callback);
     pub = nh.advertise<geometry_msgs::Twist>("/vel_estimate", 1);
 
     nh.param<float>("/freq", freq, 10);
 
-    ros::Rate rate(1'0);
+    ros::Rate rate(100);
 
     while(ros::ok())
     {
