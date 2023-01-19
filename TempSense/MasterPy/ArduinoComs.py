@@ -31,7 +31,7 @@ class ArduinoComs:
         self.__arduinoAdress=arduinoAdress
         self.__bus=smbus.SMBus(bus)
 
-    def __getFloatParameter(self, code):
+    def __getFloatParameter(self, code, depth=0):
         '''
             Get a float parameter from Arduino
             Arguments:
@@ -41,7 +41,13 @@ class ArduinoComs:
         '''
         self.__sendCommand(code)
         resp=self.__requestParameter(self.__FLOAT_LEN)
-        return float(resp)    
+        try:
+            resp=float(resp)
+        except:
+            resp=self.__getFloatParameter(code, depth+1)
+            if depth>3:
+                return 0
+        return resp    
     
     def __getLongParameter(self, code):
         '''
