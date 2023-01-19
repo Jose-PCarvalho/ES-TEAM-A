@@ -22,8 +22,8 @@ def yaw_callback(data):
 
 def pose_callback(data):
     global xr,yr
-    xr=data.y
-    yr=data.x
+    xr=data.position.y
+    yr=data.position.x
     
 
 
