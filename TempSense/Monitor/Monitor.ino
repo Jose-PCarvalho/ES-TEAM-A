@@ -273,6 +273,7 @@ void stateMachine()
     else if(readVoltage() < BATT_ALLARM)
     {
       morse.setMsg(LOW_BAT_WARNING);
+      battTimer=curr;
       battState=2;
     }      
   }
@@ -654,8 +655,8 @@ void setRelays()
   fans[1].setSensorIndex(1);
   fans[1].setCalcTempFunc(staticWrapper);
 
-  // not used
-  // not used
+  digitalWrite(AUX_RELAY_1, true); // Not used
+  digitalWrite(AUX_RELAY_2, true); // Not used  
 }
 /**
  * @brief Read Water sensor
