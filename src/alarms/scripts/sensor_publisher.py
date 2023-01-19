@@ -178,8 +178,8 @@ def getData():
     msg.time_to_live = ac.getTimeToLive()
     msg.energy_consumed = ac.getEnergy()
     msg.runtime = ac.getRunTime()
-    #pub.publish(msg)
-    print(msg,msg.water_control)
+    pub.publish(msg)
+    
 
 def talker():
     rospy.init_node('alarms', anonymous=True)
