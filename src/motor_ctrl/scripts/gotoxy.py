@@ -15,9 +15,9 @@ def yaw_callback(data):
     global yaw_inicial
     if not started:
         started=True
-        yaw_inicial=data.z
+        yaw_inicial=data.vector.z
         return 
-    yaw=data.z-yaw_inicial
+    yaw=data.vector.z-yaw_inicial
 
 
 def pose_callback(data):
