@@ -51,6 +51,7 @@ const uint8_t ON_TEMP[4]={25, 30, 50, 50}; // Turn fans on at this temperature
 #define TEST_TEMP           1
 #define TEST_WATER          2
 #define TEST_VOLTAGE        3
+#define TEST_PERIPHERALS    4
 // Data
 #define FLOAT_LEN           8
 #define FLOAT_DEC           4
@@ -61,7 +62,7 @@ const uint8_t ON_TEMP[4]={25, 30, 50, 50}; // Turn fans on at this temperature
 #define BUZZER_TIMER        3e3   // in ms
 // For testing purposes
 #define TEST_FUNTIONS
-#define PRINT_TEST_PERIOD   10e3 // in ms
+#define PRINT_TEST_PERIOD   1e3 // in ms
 // Battery alarm
 #define BATT_ALLARM         9.0 // Volt
 #define BATT_ALLARM_OFF     9.5  // Volt
@@ -73,8 +74,9 @@ const uint8_t HIGH_TEMP[4]={30, 45, 60, 60}; // Turn fans on at this temperature
 #define WATER_DETECT        "---/---"   // in ms
 // Constants
 #define NULL_CMD            0
-#define I2C_TIMEOUT         3e3
-#define SILENCE_TIME        6e5
+#define I2C_TIMEOUT         3e3 // in ms
+#define SILENCE_TIME        6e5 // in ms
+#define RUN_TIME_TEST_PERI  5e3 // in ms
 
 const String tempSensorNames[4]={
   "Bats",
@@ -104,6 +106,7 @@ float current;
 float timeToLiveBuff;
 String debugMsg="Initial";
 bool silenceAlarm=false;
+bool testPeriferals=false;
 // Aux functions /////////
 // Setup functions
 void setSensors();
@@ -182,8 +185,8 @@ void setup()
   // Set up relays
   pinMode(POWER_BOX_RELAY, OUTPUT);
   pinMode(CONTROL_BOX_RELAY, OUTPUT);
-  //pinMode(AUX_RELAY_1, OUTPUT); // Uncomment when used
-  //pinMode(AUX_RELAY_2, OUTPUT); // Uncomment when used
+  pinMode(AUX_RELAY_1, OUTPUT); // Not used
+  pinMode(AUX_RELAY_2, OUTPUT); // Not used
   // Initialize all fans
   setRelays();
   // Buzzer
@@ -219,15 +222,18 @@ void loop()
  */
 void stateMachine()
 {
+  static uint8_t counter;
   static uint8_t battState=0;
   static uint8_t tempState=0;
   static uint8_t waterState=0;
   static uint8_t i2cState=0;
+  static uint8_t peripheralsState=0;
   static unsigned long timer1=millis();
   static unsigned long battTimer=millis();
   static unsigned long tempTimer=millis();
   static unsigned long waterTimer=millis();
   static unsigned long timeout=millis();
+  static unsigned long peripheralsTimer=millis();
   //
   curr=millis();
   // State computation 
@@ -267,6 +273,7 @@ void stateMachine()
     else if(readVoltage() < BATT_ALLARM)
     {
       morse.setMsg(LOW_BAT_WARNING);
+      battTimer=curr;
       battState=2;
     }      
   }
@@ -374,11 +381,94 @@ void stateMachine()
     {
       Serial.println("Timeout on I2C reverting cmd to NULL_CMD");
       cmd=NULL_CMD;
+      sensorIndex=NULL_CMD;
       timeout=curr;
       i2cState=0;
     }
     else if(cmd==NULL_CMD)
       i2cState=0;
+  }
+  // Test Peripherals
+  if(peripheralsState==0)
+  {
+    if(testPeriferals)
+    {
+      morse.setMsg("... - .- .-. -");
+      peripheralsTimer=curr;
+      peripheralsState=1;
+    }
+  }
+  // Power Box Relay
+  else if(peripheralsState==1)
+  {
+    if(curr-peripheralsTimer>RUN_TIME_TEST_PERI)
+    {
+      // Stop controllers
+      for(counter=0; counter<N_FANS; counter++)
+        fans[counter].runController(false);
+      morse.runController(false);
+      //
+      digitalWrite(CONTROL_BOX_RELAY, true);
+      digitalWrite(AUX_RELAY_1, true);
+      digitalWrite(AUX_RELAY_2, true);
+      //
+      digitalWrite(POWER_BOX_RELAY, false);
+      peripheralsTimer=curr;
+      peripheralsState=2;
+    }
+  }
+  // Control Box
+  else if(peripheralsState==2)
+  {
+    if(curr-peripheralsTimer>RUN_TIME_TEST_PERI)
+    {
+      digitalWrite(POWER_BOX_RELAY, true);
+      digitalWrite(CONTROL_BOX_RELAY, false);
+      peripheralsTimer=curr;
+      peripheralsState=3;
+    }
+  }
+  // Aux Relay 1
+  else if(peripheralsState==3)
+  {
+    if(curr-peripheralsTimer>RUN_TIME_TEST_PERI)
+    {
+      digitalWrite(CONTROL_BOX_RELAY, true);
+      digitalWrite(AUX_RELAY_1, false);
+      peripheralsTimer=curr;
+      peripheralsState=4;
+    }
+  }
+  // Aux Relay 2
+  else if(peripheralsState==4)
+  {
+    if(curr-peripheralsTimer>RUN_TIME_TEST_PERI)
+    {
+      digitalWrite(AUX_RELAY_1, true);
+      digitalWrite(AUX_RELAY_2, false);
+      peripheralsTimer=curr;
+      peripheralsState=5;
+    }
+  }
+  // Finish Tests
+  else if(peripheralsState==5)
+  {
+    if(curr-peripheralsTimer>RUN_TIME_TEST_PERI)
+    {
+      // Run Controllers
+      for(counter=0; counter<N_FANS; counter++)
+        fans[counter].runController(true);
+      morse.runController(true);
+      //
+      // Controller enebled for fan 1
+      // Controller enabled for fan 2
+      digitalWrite(AUX_RELAY_1, true);
+      digitalWrite(AUX_RELAY_2, true);
+      testPeriferals=false;
+      morse.setMsg("-");
+      peripheralsTimer=curr;
+      peripheralsState=0;
+    }
   }
 }
 /**
@@ -430,7 +520,7 @@ float readCurrent()
   // Read pin voltage
   float volt = (float)map(analogRead(CURRENT_PIN), 0, 1023, 0, VCC*1e5);
   // Sensed voltage
-  volt = volt/1e5 - VCC/2.0 + 0.1; // Includes vontage conmpensation
+  volt = volt/1e5 - VCC/2.0 + 0.013; // Includes vontage conmpensation
   return 1e3*volt/CURR_RATIO;
 }
 /**
@@ -484,6 +574,8 @@ void receiveHandler(int notUsed)
         morse.setMsg(LOW_BAT_WARNING);
       else if(sensorIndex==TEST_TEMP)
         morse.setMsg(HIGH_TEMP_WARNING);
+      else if(sensorIndex==TEST_PERIPHERALS)
+        testPeriferals=true;
       cmd=NULL_CMD;
       sensorIndex=NULL_CMD;
     }
@@ -563,8 +655,8 @@ void setRelays()
   fans[1].setSensorIndex(1);
   fans[1].setCalcTempFunc(staticWrapper);
 
-  // not used
-  // not used
+  digitalWrite(AUX_RELAY_1, true); // Not used
+  digitalWrite(AUX_RELAY_2, true); // Not used  
 }
 /**
  * @brief Read Water sensor

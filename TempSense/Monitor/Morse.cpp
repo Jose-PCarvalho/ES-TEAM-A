@@ -17,6 +17,7 @@ Morse::Morse(uint8_t pin)
     this->pin=pin;
     pinMode(pin, OUTPUT);
     digitalWrite(pin, LOW);
+    stopController=false;
 }
 /**
 * @brief Destroy the Heart Beat:: Heart Beat object
@@ -37,12 +38,23 @@ void Morse::setMsg(String morseMsg)
     codeLen=msg.length();
 }
 /**
+ * @brief Run or stop controller state machine
+ * 
+ * @param run If true run controller, else stop
+ */
+void  Morse::runController(bool run)
+{
+    stopController=!run;
+}
+/**
 * @brief Main controller for morse. 
 * Must be called every loop
 * 
 */
 void Morse::controller()
 {
+    if(stopController)
+        return;
     curr=millis();
     if(state==0)
     {

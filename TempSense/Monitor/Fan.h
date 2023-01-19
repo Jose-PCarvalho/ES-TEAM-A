@@ -21,6 +21,7 @@ class Fan
         bool fanOn;
         bool positiveLogic;
         unsigned long timer;
+        bool stopController;
     public:
         Fan();
         ~Fan();
@@ -31,6 +32,7 @@ class Fan
         void setOffTemp(float temp);
         void setSensorIndex(uint8_t index);
         void setCalcTempFunc(float (*calcTempFunc)(uint8_t));
+        void runController(bool run);
         //
         bool getFanStatus();
         //
