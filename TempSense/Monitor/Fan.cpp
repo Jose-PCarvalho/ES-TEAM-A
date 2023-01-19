@@ -14,6 +14,7 @@ Fan::Fan()
     offTemp=0;
     timer=0;
     usedSensors=0;
+    stopController=false;
 }
 /**
  * @brief Destroy the Fan:: Fan object
@@ -90,11 +91,22 @@ bool Fan::getFanStatus()
     return fanOn;
 }
 /**
+ * @brief Run or stop controller state machine
+ * 
+ * @param run If true run controller, else stop
+ */
+void Fan::runController(bool run)
+{
+    stopController=!run;
+}
+/**
  * @brief State machine to control the Fan
  * 
  */
 void Fan::controller()
 {
+  if(stopController)
+    return;
     uint8_t index;
     if(state==0)
     {

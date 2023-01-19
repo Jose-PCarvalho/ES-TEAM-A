@@ -16,11 +16,14 @@ class Morse
         unsigned long signalDuration;
         uint8_t index;
         uint8_t codeLen;
+        bool stopController;
     public:
         Morse(uint8_t pin);
         ~Morse();
         //
         void setMsg(String morseMsg);
+        void runController(bool run);
+        //
         void controller();
 };
 #endif
