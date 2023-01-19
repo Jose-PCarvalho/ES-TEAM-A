@@ -86,8 +86,12 @@ def talker():
             print( np.sqrt((yt-yr)**2+(xt-xr)**2),xr,yr)
             if np.rad2deg(np.abs(theta_target-yaw)) > 15:
                 state=0
-            elif np.sqrt((yt-yr)**2+(xt-xr)**2)<0.5:
+            elif np.sqrt((yt-yr)**2+(xt-xr)**2)<1:
                 state=3
+        elif state==3:
+            if np.sqrt((yt-yr)**2+(xt-xr)**2)<0.5:
+                state=4
+
         
 
 
@@ -103,8 +107,10 @@ def talker():
             msg.angular.x=w
             msg.linear.x=v
         elif state==3:
-            msg.angular.x=0
-            msg.linear.x=0
+            w=np.clip(-10*transform_to_pipi(theta_target-yaw),-7.5,7,5)
+            v=8*np.sqrt((yt-yr)**2+(xt-xr)**2)
+            msg.angular.x=w
+            msg.linear.x=v
             
         pub.publish(msg)
         rate.sleep()
