@@ -36,8 +36,7 @@ const uint8_t ON_TEMP[4]={25, 30, 50, 50}; // Turn fans on at this temperature
 #define RC_LO               9.89e3 // ohm
 // I2C 
 // Pins
-#define INO_ADDR            8
-#define PI_ADDR             9
+#define INO_ADDR            0x8
 // Commands
 #define GET_CURRENT         1
 #define GET_VOLTAGE         2
@@ -56,18 +55,19 @@ const uint8_t ON_TEMP[4]={25, 30, 50, 50}; // Turn fans on at this temperature
 #define BUZZER_TIMER        3e3   // in ms
 // For testing purposes
 #define TEST_FUNTIONS
-#define PRINT_TEST_PERIOD   6e6 // in ms
+#define PRINT_TEST_PERIOD   10e3 // in ms
 // Battery alarm
-#define BATT_ALLARM         10.0 // Volt
-#define BATT_ALLARM_OFF     10.5  // Volt
-#define LOW_BAT_WARNING     "."
+#define BATT_ALLARM         9.0 // Volt
+#define BATT_ALLARM_OFF     9.5  // Volt
+#define LOW_BAT_WARNING     ".."
 // High Temp Alarm
 const uint8_t HIGH_TEMP[4]={30, 45, 60, 60}; // Turn fans on at this temperature
-#define HIGH_TEMP_WARNING   ".-."   // in ms
+#define HIGH_TEMP_WARNING   "..--"   // in ms
 // Water Allarm
 #define WATER_DETECT        "---/---"   // in ms
 // Constants
 #define NULL_CMD            0
+#define I2C_TIMEOUT         3e3
 
 const String tempSensorNames[4]={
   "Bats",
@@ -86,10 +86,14 @@ Temp sensors[N_TEMP_SENSORS];
 Energy energy;
 HeartBeat heart(LED_BUILTIN);
 Morse morse(BUZZER_PIN);
-uint8_t index;
 uint8_t cmd;
 uint8_t sensorIndex;
-char debugMsg='\0';
+char buff[FLOAT_LEN];
+unsigned long curr;
+float spentPerc;
+long runTimeSec;
+float temps[MAX_SENSORS];
+String debugMsg="Initial";
 // Aux functions /////////
 // Setup functions
 void setSensors();
@@ -99,7 +103,7 @@ void stateMachine();
 void senFloat(float value);
 float readCurrent();
 float readVoltage();
-long timeToLive();
+float timeToLive();
 void receiveHandler(int notUsed);
 void requestHandler();
 float readWater(uint8_t sensor);
@@ -193,10 +197,10 @@ void loop()
   #ifdef TEST_FUNTIONS
     testFunctions();
   #endif
-  if(debugMsg!='\0')
+  if(debugMsg!="")
   {
-    Serial.print(debugMsg);
-    debugMsg='\0';
+    Serial.println(debugMsg);
+    debugMsg="";
   }
 }
 /**
@@ -208,11 +212,12 @@ void stateMachine()
   static uint8_t battState=0;
   static uint8_t tempState=0;
   static uint8_t waterState=0;
-  static unsigned long curr;
+  static uint8_t i2cState=0;
   static unsigned long timer1=millis();
   static unsigned long battTimer=millis();
   static unsigned long tempTimer=millis();
   static unsigned long waterTimer=millis();
+  static unsigned long timeout=millis();
   //
   curr=millis();
   // State computation 
@@ -220,6 +225,9 @@ void stateMachine()
   {
     timer1=curr;
     heart.beat(BEAT_TIME/100);
+    // Update Temperatures (stack array requiered)
+    for(uint8_t index=0; index<N_TEMP_SENSORS; index++)
+      temps[index]=sensors[index].calcTemp();      
   }    
   // Batery monitor
   if(battState==0)
@@ -271,6 +279,27 @@ void stateMachine()
       waterState=2;
     }
   }
+  // I2C timeout
+  if(i2cState==0)
+  {
+    if(cmd!=NULL_CMD)
+    {
+      timeout=curr;
+      i2cState=1;
+    }
+  }
+  else if(i2cState==1)
+  {
+    if(curr-timeout>I2C_TIMEOUT)
+    {
+      Serial.println("Timeout on I2C reverting cmd to NULL_CMD");
+      cmd=NULL_CMD;
+      timeout=curr;
+      i2cState=0;
+    }
+    else if(cmd==NULL_CMD)
+      i2cState=0;
+  }
 }
 /**
  * @brief Set the Sensors object
@@ -298,7 +327,6 @@ void setSensors()
  */
 void sendFloat(float value)
 {
-  char buff[FLOAT_LEN];  
   dtostrf(value, FLOAT_LEN, FLOAT_DEC, buff);
   Wire.write(buff);
 }
@@ -309,7 +337,6 @@ void sendFloat(float value)
  */
 void sendLong(long value)
 {
-  char buff[LONG_LEN];
   String(value).toCharArray(buff, LONG_LEN);
   Wire.write(buff);
 }
@@ -343,12 +370,12 @@ float readVoltage()
  * @brief Compute Time To Live based on the energy spent, the total capacity
  * and the runtime
  * 
- * @return long Estimated time to no energy in seconds
+ * @return float Estimated time to no energy in seconds
  */
-long timeToLive()
+float timeToLive()
 {
-  float spentPerc = energy.energySpent()/TOTAL_CAPACITY;
-  long runTimeSec = millis()/1e3;
+  spentPerc = energy.energySpent()/TOTAL_CAPACITY;
+  runTimeSec = curr/1e3;
   return (float)runTimeSec*(1-spentPerc)/spentPerc;
 }
 /**
@@ -358,11 +385,22 @@ long timeToLive()
  */
 void receiveHandler(int notUsed)
 {   
-  if(cmd!=NULL_CMD)
+  if(cmd==NULL_CMD)
+  {
     cmd=Wire.read();
-  else
+    //debugMsg="Received cmd "+String(cmd);
+  }    
+  else if(sensorIndex==NULL_CMD)
+  {
     sensorIndex=Wire.read();
-  debugMsg='*';
+    //debugMsg="Received index "+String(sensorIndex);
+  }
+  else
+  {
+    //debugMsg="Discard "+String(Wire.read());
+    while(Wire.available())
+    Wire.read();
+  }
 }
 /**
  * @brief Handler for i2c requests
@@ -377,19 +415,19 @@ void requestHandler()
   else if(cmd==GET_ENERGY)
     sendFloat(energy.energySpent());
   else if(cmd==GET_RUNTIME)
-    sendLong(millis()/1e3);
+    sendFloat(curr/60.0e3);
   else if(cmd==GET_TIME_TO_LIVE)
-    sendLong(timeToLive());
+    sendFloat(timeToLive()/60.0);
   else if(cmd==GET_TEMP)
-    sendFloat(sensors[sensorIndex].calcTemp());
+    sendFloat(temps[sensorIndex]);
   else if(cmd==GET_WATER)
     sendFloat(readWater(sensorIndex));
   else
-    sendFloat(111);
+    sendFloat(-100);
+  //debugMsg="Responding for cmd "+String(cmd)+" index "+String(sensorIndex);
   // Clear cmd
   cmd=NULL_CMD;
   sensorIndex=NULL_CMD;
-  debugMsg='#';
 }
 /**
  * @brief Wrap non static element in a static function for Fan class
