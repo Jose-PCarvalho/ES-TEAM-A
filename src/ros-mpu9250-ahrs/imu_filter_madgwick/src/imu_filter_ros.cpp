@@ -37,7 +37,7 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
 
   // **** get paramters
   if (!nh_private_.getParam ("stateless", stateless_))
-    stateless_ = false;
+    stateless_ = true;
   if (!nh_private_.getParam ("use_mag", use_mag_))
    use_mag_ = true;
   if (!nh_private_.getParam ("publish_tf", publish_tf_))
@@ -51,7 +51,7 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("remove_gravity_vector", remove_gravity_vector_))
     remove_gravity_vector_= true;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
-    publish_debug_topics_= false;
+    publish_debug_topics_= true;
 
   std::string world_frame;
   if (!nh_private_.getParam ("world_frame", world_frame))
@@ -96,15 +96,15 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
 
   // **** register publishers
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(
-    ros::names::resolve("imu") + "/data", 5);
+    ros::names::resolve("imu") + "/data", 1);
 
   if (publish_debug_topics_)
   {
     rpy_filtered_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-      ros::names::resolve("imu") + "/rpy/filtered", 5);
+      ros::names::resolve("imu") + "/rpy/filtered", 1);
 
     rpy_raw_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-      ros::names::resolve("imu") + "/rpy/raw", 5);
+      ros::names::resolve("imu") + "/rpy/raw", 1);
   }
 
   // **** register subscribers

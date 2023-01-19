@@ -24,13 +24,28 @@ mpu = MPU9250(
     mfs=AK8963_BIT_16,
     mode=AK8963_MODE_C100HZ)
 
+def callback(data):
+    global started
+    
+
+    if started:
+        orientation_list = [data.orientation.x, data.orientation.y,data.orientation.z,data.orientation.w]
+        (roll, pitch, yaw) = euler_from_quaternion (orientation_list)
+        #print(yaw)
+    
+    if (not started):
+        started = True
+    #print(vel_msg.linear.x)
+
 def talker():
+    global started
     imu_pub = rospy.Publisher('imu/data_raw', Imu, queue_size=1)
     mag_pub = rospy.Publisher('imu/mag', MagneticField, queue_size=1)
     acc_pub =rospy.Publisher('/imu/accelerometer',accelerometer,queue_size=1)
     magn_pub =rospy.Publisher('/imu/magnetometer',magnetometer,queue_size=1)
     gyro_pub =rospy.Publisher('/imu/gyroscope',gyroscope,queue_size=1)
-    
+    started=False
+    rospy.Subscriber ('/imu/data',Imu,callback)  
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(100) # 10hz
 
@@ -43,18 +58,18 @@ def talker():
 
     # Apply the settings to the registers and calibrate
     mpu.configure()
-    #mpu.calibrate()
-    #mpu.calibrateMPU6500()
-    #mpu.abias = [0, 0, 0]
-    #mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
-    #mpu.mbias = [0, 0, 0] # Set magnetometer hard iron distortion
-    #mpu.configure()
+    # mpu.calibrate()
+    # mpu.abias = [0, 0, 0]
+    # mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
+    # mpu.mbias = [0, 0, 0] # Set magnetometer hard iron distortion
+    # mpu.configure()
     accelerometer_correction=np.array(( 
-    [9.789323, 0.000000, 0.000000, -0.283535],
-    [0.000000, 9.779135, 0.000000, -0.165564] ,
-    [0.000000, 0.000000, 0.976097, -0.413201], 
+    [0.998744, 0.000000, 0.000000, -0.263538],
+    [0.000000, 0.996921, 0.000000, -0.161967] ,
+    [0.000000, 0.000000, 0.977497, -0.400898], 
     [0.000000, 0.000000, 0.000000, 1.000000])
     ,dtype=float)
+
     magnetometer_correction=np.array(( 
     [1.1195446759, 0.0062936393, -0.0300943755, -0.0000068429],
     [0.0062936393, 1.1400680969, 0.0074760178, -0.0000369644] ,
@@ -69,8 +84,8 @@ def talker():
     while not rospy.is_shutdown():
             # Fill mag msg
             mx, my, mz = mpu.readMagnetometerMaster()
-            readings=np.array(([mx,my,mz,1]),dtype=float)*MagFieldConversion_uT_T
-            readings_corr=np.matmul(readings,magnetometer_correction)
+            readings=np.array(([mx,my,mz]),dtype=float)*MagFieldConversion_uT_T
+            readings_corr=np.matmul(readings,magnetometer_correction[0:3,0:3])+magnetometer_correction[0:3,3]
             mag_msg.header.stamp = rospy.get_rostime()
             mag_msg.magnetic_field.x = float(readings_corr[0])
             mag_msg.magnetic_field.y = float(readings_corr[1])
@@ -80,10 +95,7 @@ def talker():
             mag_msg.magnetic_field_covariance[8] = 0.01
             mag_calib_msg.x=mx*MagFieldConversion_uT_T
             mag_calib_msg.y=my*MagFieldConversion_uT_T
-            mag_calib_msg.z=mz*MagFieldConversion_uT_T
-
-
-            
+            mag_calib_msg.z=mz*MagFieldConversion_uT_T            
             # create imu msg
             q0 = 1.0 #W
             q1 = 0.0 #X
@@ -113,11 +125,12 @@ def talker():
             imu_msg.angular_velocity_covariance[4] = 0.03
             imu_msg.angular_velocity_covariance[8] = 0.03
             ax, ay, az = mpu.readAccelerometerMaster()
-            reading_acc=np.array(([ax,ay,az,1]),dtype=float)
-            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction)*G
+            reading_acc=np.array(([ax*G,ay*G,az*G]),dtype=float)
+            readings_acc_corr=np.matmul(reading_acc,accelerometer_correction[0:3,0:3])+accelerometer_correction[0:3,3]
             imu_msg.linear_acceleration.x = float(readings_acc_corr[0])
             imu_msg.linear_acceleration.y = float(readings_acc_corr[1])
             imu_msg.linear_acceleration.z = float(readings_acc_corr[2])
+
             gyro_msg.x=gx
             gyro_msg.y=gy
             gyro_msg.z=gz
@@ -126,11 +139,11 @@ def talker():
             acc_msg.y=ay
             acc_msg.z=az
 
-            imu_msg.linear_acceleration_covariance[0] = 0.1
-            imu_msg.linear_acceleration_covariance[4] = 0.1
-            imu_msg.linear_acceleration_covariance[8] = 0.1
+            imu_msg.linear_acceleration_covariance[0] = 0.01
+            imu_msg.linear_acceleration_covariance[4] = 0.01
+            imu_msg.linear_acceleration_covariance[8] = 0.01
             imu_pub.publish(imu_msg)
-            mag_pub.publish(mag_pub)
+            mag_pub.publish(mag_msg)
             magn_pub.publish(mag_calib_msg)
             gyro_pub.publish(gyro_msg)
             acc_pub.publish(acc_msg)

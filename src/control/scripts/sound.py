@@ -5,6 +5,8 @@ import os
 import time
 from std_msgs.msg import Int8
 import rospkg
+import random
+
 
 # flag =True
 
@@ -12,13 +14,16 @@ import rospkg
 #     global flag
 #     #print("timer")
 #     flag = True
+rospack = rospkg.RosPack()
+path_fixed= rospack.get_path('control')
+path_list=[]
+path_list.append(path_fixed+'/scripts/antonio.mp3')
+path_list.append(path_fixed+'/scripts/pipipi.mp3')
 
 def callback(data):
     global flag
     if data.data == 3:
-        rospack = rospkg.RosPack()
-        path = rospack.get_path('control')
-        path = path + '/scripts/sound.mp3'
+        path = np.random.choice(path_list)
         playsound(path)
         time.sleep(10)
         # if (flag == True):

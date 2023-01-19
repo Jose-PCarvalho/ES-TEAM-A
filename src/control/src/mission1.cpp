@@ -8,8 +8,8 @@
 #include <geometry_msgs/Point.h>
 #include <std_msgs/Int8.h>
 
-#define HEIGT 480
-#define WIDTH 720
+#define HEIGT 308
+#define WIDTH 410
 
 int state = 0;
 int center_threshold;
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
     {
         ros::spinOnce();
 
-        ROS_INFO("state: %d", state);
+        //ROS_INFO("state: %d", state);
         
 
         // transições
@@ -90,7 +90,7 @@ int main(int argc, char** argv)
                 if (buoy_at_center == false)
                     state = 0;
 
-                if (abs(720/2-buoy_pos.x)<center_threshold/3)
+                if (abs(WIDTH/2-buoy_pos.x)<center_threshold/3)
                 {
                     state = 2;
                 }
@@ -126,25 +126,25 @@ int main(int argc, char** argv)
             case 0:
             {
                 cmd_vel.linear.x = 0;
-                cmd_vel.angular.x = max_speed/3;
+                cmd_vel.angular.x = max_speed/2;
                 break;
             }
             case 1:
             { 
                 cmd_vel.linear.x =0;
-                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold/1.5;
+                cmd_vel.angular.x = -(WIDTH/2-buoy_pos.x)*max_speed/center_threshold/2;
                 break;
             }
             case 2:
             {
                 cmd_vel.linear.x = max_speed/2;
-                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
+                cmd_vel.angular.x = -(WIDTH/2-buoy_pos.x)*max_speed/center_threshold*2/3;
                 break;
             }
             case 3:
             {
                 cmd_vel.linear.x = -max_speed/1.5;
-                cmd_vel.angular.x = -(720/2-buoy_pos.x)*max_speed/center_threshold*2/3;
+                cmd_vel.angular.x = -(WIDTH/2-buoy_pos.x)*max_speed/center_threshold*2/3;
                 break;
             }
             default:
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
         state_msg.data = state;
         state_pub.publish(state_msg);
 
-        ROS_WARN("\n\nlin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x);
+        //ROS_WARN("\n\nlin: %f ang %f",cmd_vel.linear.x, cmd_vel.angular.x);
         
         pub.publish(cmd_vel);
         

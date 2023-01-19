@@ -1,20 +1,15 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(control)
+cmake_minimum_required(VERSION 3.1)
+project(alarms)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+
+set(CMAKE_CXX_STANDARD 14) # use C++14
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,--no-as-needed")  # https://github.com/raspberrypi/userland/issues/178
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
   rospy
-  sensor_msgs
-  cv_bridge
-  image_transport
-  std_msgs
-  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -53,7 +48,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 # add_message_files(
 #   FILES
-#    sensor.msg
 #   speeds.msg
 #   #Message2.msg
 # )
@@ -68,7 +62,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # add_service_files(
 #   FILES
-#   #set_motors.srv
+#   set_motors.srv
 # )
 
 # generate_messages(
@@ -109,14 +103,8 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES ex1
   CATKIN_DEPENDS 
-  roscpp 
   rospy
-  sensor_msgs
-  cv_bridge
-  image_transport
-  message_runtime
-  
-#  DEPENDS system_lib
+  #  DEPENDS system_lib
 )
 
 
@@ -126,11 +114,11 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-  include
-  ${OpenCV_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}
-)
+# include_directories(
+#   include
+#   ${OpenCV_INCLUDE_DIRS}
+#   ${catkin_INCLUDE_DIRS}
+# )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -145,8 +133,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(mission1 src/mission1.cpp)
-
+# add_executable(teste src/teste.cpp)
+# add_executable(imu_odom src/imu_odom.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -157,15 +145,18 @@ add_executable(mission1 src/mission1.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(mission1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(teste ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(imu_odom ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(mission1
- ${catkin_LIBRARIES}
-)
+# target_link_libraries(teste
+#  ${catkin_LIBRARIES}
+# )
 
-
+# target_link_libraries(imu_odom
+#  ${catkin_LIBRARIES}
+# )
 
 
 #############
@@ -178,10 +169,7 @@ target_link_libraries(mission1
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/sound.py
-  scripts/ArduinoComs.py
-  # scripts/pid_controller.py
-  # scripts/controller_telop.py
+  scripts/alarms.py 
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -212,7 +200,6 @@ catkin_install_python(PROGRAMS
 #   # myfile2
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
-
 
 #############
 ## Testing ##
