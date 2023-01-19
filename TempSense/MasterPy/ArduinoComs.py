@@ -12,6 +12,7 @@ class ArduinoComs:
     __GET_TIME_TO_LIVE  = 5
     __GET_TEMP          = 6
     __GET_WATER         = 7
+    __SPECIAL_CMD       = 8
     __FLOAT_LEN         = 8
     __LONG_LEN          = 11
     BATT_TEMP_INDEX     = 0
@@ -20,6 +21,10 @@ class ArduinoComs:
     ESCB_TEMP_INDEX     = 3
     CTRL_WATER_SENSOR   = 0
     PWR_WATER_SENSOR    = 1
+    SILENCE_ALLARM      = 0
+    TEST_TEMP           = 1
+    TEST_WATER          = 2
+    TEST_VOLTAGE        = 3
     # Private Methods
     def __init__(self, bus, arduinoAdress):
         self.__arduinoAdress=arduinoAdress
@@ -158,4 +163,13 @@ class ArduinoComs:
         '''
         return self.__getFloatParameter(self.__GET_TIME_TO_LIVE)
 
+    def sendCmd(self, code):
+        '''
+            Get estyimated time to live, based on run time, 
+            energy consumed and total available energy
+            Arguments: 
+                Command to be sent
+        '''
+        self.__sendCommand(self.__SPECIAL_CMD)
+        self.__sendCommand(code)
     
