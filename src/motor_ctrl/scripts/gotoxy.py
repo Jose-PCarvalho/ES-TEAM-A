@@ -18,6 +18,7 @@ def yaw_callback(data):
         yaw_inicial=data.vector.z
         return 
     yaw=data.vector.z-yaw_inicial
+    yaw=-yaw
 
 
 def pose_callback(data):
