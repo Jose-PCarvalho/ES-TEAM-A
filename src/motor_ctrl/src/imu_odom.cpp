@@ -30,11 +30,12 @@ void callback (const sensor_msgs::ImuConstPtr &msg)
     ros::Time time_new = new_imu_data.header.stamp;
     ros::Time time_old = old_imu_data.header.stamp;
     double diff_time = (time_new - time_old).toSec();
-    twist_msg.linear.x = old_msg.linear.x+(new_imu_data.linear_acceleration.x - old_imu_data.linear_acceleration.x) * diff_time;
-    twist_msg.linear.y = old_msg.linear.y+(new_imu_data.linear_acceleration.y - old_imu_data.linear_acceleration.y) * diff_time;
-    twist_msg.linear.z = old_msg.linear.z+(new_imu_data.linear_acceleration.z - old_imu_data.linear_acceleration.z) * diff_time;
+    //ROS_INFO("diff time %f",diff_time);
+    twist_msg.linear.x = old_msg.linear.x+(new_imu_data.linear_acceleration.x) * diff_time;
+    twist_msg.linear.y = old_msg.linear.y+(new_imu_data.linear_acceleration.y) * diff_time;
+    twist_msg.linear.z = 0;
     old_msg=twist_msg;
-    ROS_INFO("Publiquei");
+    //ROS_INFO("Publiquei");
     pub.publish(twist_msg);
 }
 
@@ -43,7 +44,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "imu_odom");
     ros::NodeHandle nh;
     ros::Subscriber sub;
-    ROS_INFO("OLA");
+    // ROS_INFO("OLA");
     sub = nh.subscribe("/imu/data", 1, callback);
     pub = nh.advertise<geometry_msgs::Twist>("/vel_estimate", 1);
 
