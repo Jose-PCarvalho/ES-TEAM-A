@@ -5,15 +5,21 @@ class ArduinoComs:
     # Constants
     __N_TEMP_SENSORS    = 4
     __N_WATER_SENSORS   = 2
-    __GET_CURRENT       = 0x1
-    __GET_VOLTAGE       = 0x2
-    __GET_ENERGY        = 0x3
-    __GET_RUNTIME       = 0x4
-    __GET_TIME_TO_LIVE  = 0x5
-    __GET_TEMP          = 0x6
-    __GET_WATER         = 0x7
+    __GET_CURRENT       = 1
+    __GET_VOLTAGE       = 2
+    __GET_ENERGY        = 3
+    __GET_RUNTIME       = 4
+    __GET_TIME_TO_LIVE  = 5
+    __GET_TEMP          = 6
+    __GET_WATER         = 7
     __FLOAT_LEN         = 8
     __LONG_LEN          = 11
+    BATT_TEMP_INDEX     = 0
+    RASP_TEMP_INDEX     = 1
+    ESCE_TEMP_INDEX     = 2
+    ESCB_TEMP_INDEX     = 3
+    CTRL_WATER_SENSOR   = 0
+    PWR_WATER_SENSOR    = 1
     # Private Methods
     def __init__(self, bus, arduinoAdress):
         self.__arduinoAdress=arduinoAdress
@@ -29,7 +35,7 @@ class ArduinoComs:
         '''
         self.__sendCommand(code)
         resp=self.__requestParameter(self.__FLOAT_LEN)
-        return resp#float(resp)    
+        return float(resp)    
     
     def __getLongParameter(self, code):
         '''
@@ -41,7 +47,7 @@ class ArduinoComs:
         '''
         self.__sendCommand(code)
         resp=self.__requestParameter(self.__LONG_LEN)
-        return resp#int(resp)
+        return int(resp)
 
     def __requestParameter(self, len):
         '''
@@ -51,16 +57,13 @@ class ArduinoComs:
             Returns:
                 A string with the bytes read
         '''
-        print(self.__arduinoAdress)
         #for byte in range(len):
         data=[]
         try:
             data=self.__bus.read_i2c_block_data(self.__arduinoAdress, 0x00, len)
-            print(data)
         except:
             print('IO ERROR')
-            time.sleep(0.1)
-        data=[chr(d) for d in data]
+        data=''.join([chr(d) for d in data])
         return data
 
     def __sendCommand(self, code):
@@ -69,10 +72,8 @@ class ArduinoComs:
             Arguments:
                 code: The code to be sent
         '''
-        print(self.__arduinoAdress, code)
         self.__bus.write_byte(self.__arduinoAdress, code)
-        time.sleep(0.1)# Arduino is slow
-
+        #time.sleep(0.1)
     # Public Methods    
     def getTempX(self, sensor):
         '''
