@@ -186,8 +186,8 @@ def talker():
     
     while not rospy.is_shutdown():
         msg = getData()
-        pub.publish(msg)
-        #print(msg)
+        #pub.publish(msg)
+        print(msg)
         rate.sleep()    
 
 if __name__ == '__main__':
