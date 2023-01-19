@@ -10,6 +10,8 @@ set(CMAKE_EXE_LINKER_FLAGS "-Wl,--no-as-needed")  # https://github.com/raspberry
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -46,11 +48,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   speeds.msg
-#   #Message2.msg
-# )
+add_message_files(
+  FILES
+  custom_sensor.msg
+  #Message2.msg
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -65,10 +67,10 @@ find_package(catkin REQUIRED COMPONENTS
 #   set_motors.srv
 # )
 
-# generate_messages(
-#  DEPENDENCIES
-#  std_msgs
-# )
+generate_messages(
+ DEPENDENCIES
+ std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,6 +106,7 @@ catkin_package(
 #  LIBRARIES ex1
   CATKIN_DEPENDS 
   rospy
+  message_runtime
   #  DEPENDS system_lib
 )
 
@@ -169,7 +172,7 @@ catkin_package(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/alarms.py 
+  scripts/sensor_publisher.py 
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
