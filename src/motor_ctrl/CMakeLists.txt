@@ -184,6 +184,7 @@ catkin_install_python(PROGRAMS
   scripts/pid_controller.py
   scripts/controller_teleop.py
   scripts/localization.py
+  scripts/gotoxy.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
