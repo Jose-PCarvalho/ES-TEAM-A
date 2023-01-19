@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 
 from playsound import playsound
 import rospy
@@ -47,7 +47,7 @@ def callback(data):
 
 
 def listener():
-    rospy.init_node('sound', anonymous=True)
+    rospy.init_node('alarm_handler', anonymous=True)
     rospy.Subscriber ('/alarms/data',sensor,callback, queue_size=1)    
     #timer = rospy.Timer(rospy.Duration(0.1), timer_callback)
     #print ("Last message published")
@@ -55,6 +55,7 @@ def listener():
 
 
 if __name__ == '__main__':
+    print("Alarm handler is online")
     ttl = rospy.get_param("/time_to_live", 10)
     max_power_temp = rospy.get_param("/max_power_temp", 30)
     max_control_temp = rospy.get_param("/max_control_temp", 45)
