@@ -30,17 +30,17 @@ path_list.append(path_fixed+'/audios/hot.mp3')
 def callback(data):
     if data.water_power == True or data.water_control == True:
         playsound(path_list[1])
-        time.sleep(10)
+        time.sleep(2)
     if data.time_to_live < ttl:
         playsound(path_list[0])
-        time.sleep(2)
-    if data.power_box_temp > max_esc_temp:
+        time.sleep(5)
+    if data.power_box_temp > max_power_temp:
         playsound(path_list[2])
         time.sleep(10)
-    if data.control_box_temp > max_esc_temp:
+    if data.control_box_temp > max_control_temp:
         playsound(path_list[2])
         time.sleep(10)
-    if data.esc_temp_bombordo > max_esc_temp or data.esc_temp_estibordo:
+    if data.esc_temp_bombordo > max_esc_temp or data.esc_temp_estibordo > max_esc_temp:
         playsound(path_list[2])
         time.sleep(10) 
 
