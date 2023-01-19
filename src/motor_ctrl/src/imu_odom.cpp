@@ -34,7 +34,7 @@ void callback (const sensor_msgs::ImuConstPtr &msg)
     twist_msg.linear.y = old_msg.linear.y+(new_imu_data.linear_acceleration.y - old_imu_data.linear_acceleration.y) * diff_time;
     twist_msg.linear.z = old_msg.linear.z+(new_imu_data.linear_acceleration.z - old_imu_data.linear_acceleration.z) * diff_time;
     old_msg=twist_msg;
-
+    ROS_INFO("Publiquei");
     pub.publish(twist_msg);
 }
 
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
     nh.param<float>("/freq", freq, 10);
 
-    ros::Rate rate(10);
+    ros::Rate rate(1'0);
 
     while(ros::ok())
     {
