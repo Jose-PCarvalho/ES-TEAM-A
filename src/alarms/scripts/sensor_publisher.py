@@ -169,7 +169,7 @@ def getData():
     msg.water_power = ac.getWaterX(ac.PWR_WATER_SENSOR)
     msg.water_control = ac.getWaterX(ac.CTRL_WATER_SENSOR)
     msg.power_box_temp = ac.getTempX(ac.BATT_TEMP_INDEX)
-    msg.control_box_temp = ac.getTempX(ac.CTRL_WATER_SENSOR)
+    msg.control_box_temp = ac.getTempX(ac.RASP_TEMP_INDEX)
     msg.esc_temp_bombordo = ac.getTempX(ac.ESCB_TEMP_INDEX)
     msg.esc_temp_estibordo = ac.getTempX(ac.ESCE_TEMP_INDEX)
     msg.voltage = ac.getVoltage()
