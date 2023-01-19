@@ -2,6 +2,7 @@
 #include <iostream>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Imu.h>
+#include <stdlib.h>
 
 sensor_msgs::Imu new_imu_data, old_imu_data;
 geometry_msgs::Twist old_msg;
@@ -26,6 +27,12 @@ void callback (const sensor_msgs::ImuConstPtr &msg)
     twist_msg.angular.x = new_imu_data.angular_velocity.x;
     twist_msg.angular.y = new_imu_data.angular_velocity.y;
     twist_msg.angular.z = new_imu_data.angular_velocity.z;
+
+    if (abs(twist_msg.linear.x) < 0.02)
+        twist_msg.linear.x = 0;
+
+    if (abs(twist_msg.linear.y) < 0.02)
+        twist_msg.linear.y = 0;
 
     ros::Time time_new = new_imu_data.header.stamp;
     ros::Time time_old = old_imu_data.header.stamp;

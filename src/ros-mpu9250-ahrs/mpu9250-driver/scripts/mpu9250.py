@@ -58,11 +58,11 @@ def talker():
 
     # Apply the settings to the registers and calibrate
     mpu.configure()
-    mpu.calibrate()
-    mpu.abias = [0, 0, 0]
-    mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
-    mpu.mbias = [0, 0, 0] # Set magnetometer hard iron distortion
-    mpu.configure()
+    # mpu.calibrate()
+    # mpu.abias = [0, 0, 0]
+    # mpu.magScale = [0, 0, 0] # Set magnetometer soft iron distortion
+    # mpu.mbias = [0, 0, 0] # Set magnetometer hard iron distortion
+    # mpu.configure()
     accelerometer_correction=np.array(( 
     [0.998744, 0.000000, 0.000000, -0.263538],
     [0.000000, 0.996921, 0.000000, -0.161967] ,
