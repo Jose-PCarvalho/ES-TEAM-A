@@ -25,6 +25,7 @@ class ArduinoComs:
     TEST_TEMP           = 1
     TEST_WATER          = 2
     TEST_VOLTAGE        = 3
+    TEST_PERIPHERALS    = 4
     # Private Methods
     def __init__(self, bus, arduinoAdress):
         self.__arduinoAdress=arduinoAdress
