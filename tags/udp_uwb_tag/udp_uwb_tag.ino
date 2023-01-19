@@ -2,7 +2,7 @@
 #include <DW1000Ranging.h>
 #include "DW1000.h"
 #include <WiFi.h>
-#include <ESP32Ping.h>
+
 #include "link.h"
 
 #define SPI_SCK 18
@@ -41,11 +41,7 @@ void setup()
     Serial.println("Connected");
     Serial.print("IP Address:");
     Serial.println(WiFi.localIP());
-    bool success = Ping.ping(host, 3);
-    if(!success){
-      Serial.println("Ping Failed");
-    }
-      Serial.println("Ping Success");
+    
     while(!client.connect(host, 8000))
     {
       Serial.println("Failed to connect to server");
@@ -83,15 +79,16 @@ void newRange()
 {
     char c[30];
 
-    // Serial.print("from: ");
-    // Serial.print(DW1000Ranging.getDistantDevice()->getShortAddress(), HEX);
-    // Serial.print("\t Range: ");
-    // Serial.print(DW1000Ranging.getDistantDevice()->getRange());
-    // Serial.print(" m");
-    // Serial.print("\t RX power: ");
-    // Serial.print(DW1000Ranging.getDistantDevice()->getRXPower());
-    // Serial.println(" dBm");
-    fresh_link(uwb_data, DW1000Ranging.getDistantDevice()->getShortAddress(), DW1000Ranging.getDistantDevice()->getRange(), DW1000Ranging.getDistantDevice()->getRXPower());
+     Serial.print("from: ");
+     Serial.print(DW1000Ranging.getDistantDevice()->getShortAddress(), HEX);
+     Serial.print("\t Range: ");
+     Serial.print(DW1000Ranging.getDistantDevice()->getRange());
+     Serial.print(" m");
+     Serial.print("\t RX power: ");
+     Serial.print(DW1000Ranging.getDistantDevice()->getRXPower());
+     Serial.println(" dBm");
+    if  (DW1000Ranging.getDistantDevice()->getRange()>0 && DW1000Ranging.getDistantDevice()->getRange()<8)
+      fresh_link(uwb_data, DW1000Ranging.getDistantDevice()->getShortAddress(), DW1000Ranging.getDistantDevice()->getRange(), DW1000Ranging.getDistantDevice()->getRXPower());
 }
 
 void newDevice(DW1000Device *device)
