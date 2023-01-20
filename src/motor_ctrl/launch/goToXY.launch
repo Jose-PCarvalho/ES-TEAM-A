@@ -5,6 +5,8 @@
 
     <node pkg="motor_ctrl" name="gotoxy" type="gotoxy.py" output="screen"/>
     <node pkg="motor_ctrl" name="localization" type="localization.py" output="screen"/>
+    <node pkg="motor_ctrl" name="pid" type="pid_controller.py" output="screen"/>
+
 
 
     <param name="/gotoxy/x" value="$(arg xtarget)" />
