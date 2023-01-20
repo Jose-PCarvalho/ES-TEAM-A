@@ -58,7 +58,7 @@ def talker():
     rospy.Subscriber ('/coordinates',Pose,pose_callback)  
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
     rate = rospy.Rate(20) # 100hz
-    list_coordinates=[(3,4),(1.5,4),(1.5,1.5),(1.5,4)]
+    list_coordinates=[(3,4),(1.2,4),(2,1.5),(3,1.2)]
     
     msg=Twist()
     
@@ -89,6 +89,7 @@ def talker():
             if np.rad2deg(np.abs(theta_target-yaw)) > 15:
                 state=0
             elif np.sqrt((yt-yr)**2+(xt-xr)**2)<1:
+                print("Theta Target:", theta_target, "Theta", yaw)
                 state=3
         elif state==3:
             if np.sqrt((yt-yr)**2+(xt-xr)**2)<0.5:
@@ -116,7 +117,7 @@ def talker():
             msg.linear.x=v
         elif state==3:
             w=np.clip(-12*transform_to_pipi(theta_target-yaw),-15,15) #-12 12
-            v=15*np.sqrt((yt-yr)**2+(xt-xr)**2)
+            v=13*np.sqrt((yt-yr)**2+(xt-xr)**2)
             msg.angular.x=w
             msg.linear.x=v
         elif state==4:
