@@ -58,7 +58,7 @@ def talker():
     rospy.Subscriber ('/coordinates',Pose,pose_callback)  
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
     rate = rospy.Rate(20) # 100hz
-    list_coordinates=[(3,4),(1,4),(1,1),(1,4)]
+    list_coordinates=[(3,4),(1.5,4),(1.5,1.5),(1.5,4)]
     
     msg=Twist()
     
