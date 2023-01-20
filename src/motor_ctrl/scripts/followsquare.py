@@ -57,7 +57,7 @@ def talker():
     rospy.Subscriber ('/imu/rpy/filtered',Vector3Stamped,yaw_callback) 
     rospy.Subscriber ('/coordinates',Pose,pose_callback)  
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
-    rate = rospy.Rate(20) # 100hz
+    rate = rospy.Rate(15) # 100hz
     list_coordinates=[(3,4),(1.2,4),(2,1.5),(3,1.2)]
     
     msg=Twist()
