@@ -185,6 +185,7 @@ catkin_install_python(PROGRAMS
   scripts/controller_teleop.py
   scripts/localization.py
   scripts/gotoxy.py
+  scripts/followsquare.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

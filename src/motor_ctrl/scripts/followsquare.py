@@ -58,17 +58,20 @@ def talker():
     rospy.Subscriber ('/coordinates',Pose,pose_callback)  
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
     rate = rospy.Rate(20) # 100hz
-    xt=1.5
-    yt=4
+    list_coordinates=[(3,4),(1,4),(1,1),(1,4)]
+    
     msg=Twist()
     
     state=0
+    coordinate_state=0
 
 
 
     rospy.loginfo("Localization STARTED")
     while not rospy.is_shutdown(): 
         print("state",state)  
+        xt=list_coordinates[coordinate_state][0]
+        yt=list_coordinates[coordinate_state][1]
         if state==0:
             theta_target=np.arctan2(yt-yr,xt-xr)
             print("Theta Target:", theta_target, "Theta", yaw)
@@ -90,6 +93,10 @@ def talker():
         elif state==3:
             if np.sqrt((yt-yr)**2+(xt-xr)**2)<0.3:
                 state=4
+        elif state==4:
+            coordinate_state+=1
+            if coordinate_state>3:
+                coordinate_state=0
 
         
 
@@ -106,16 +113,16 @@ def talker():
             msg.angular.x=w
             msg.linear.x=v
         elif state==3:
-            w=np.clip(-12*transform_to_pipi(theta_target-yaw),-12,12)
-            v=8*np.sqrt((yt-yr)**2+(xt-xr)**2)
+            w=np.clip(-12*transform_to_pipi(theta_target-yaw),-15,15) #-12 12
+            v=10*np.sqrt((yt-yr)**2+(xt-xr)**2)
             msg.angular.x=w
             msg.linear.x=v
+        elif state==4:
+            msg.angular.x=0
+            msg.linear.x=0
             
         pub.publish(msg)
         rate.sleep()
-
-
-
 
 
 
