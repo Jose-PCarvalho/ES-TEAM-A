@@ -53,17 +53,15 @@ def pose_callback(data):
 
 
 def talker():
-    xt=1.5
-    yt=4
-
+    
     rospy.init_node('GoTo', anonymous=True)
-    rospy.get_param('/gotoxy/x', xt)
-    rospy.get_param('/gotoxy/y', yt)
     rospy.Subscriber ('/imu/rpy/filtered',Vector3Stamped,yaw_callback) 
     rospy.Subscriber ('/coordinates',Pose,pose_callback)  
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
     rate = rospy.Rate(20) # 100hz
-    
+    xt=1.5
+    yt=4
+
     msg=Twist()
     
     state=0
