@@ -97,6 +97,7 @@ def talker():
             coordinate_state+=1
             if coordinate_state>3:
                 coordinate_state=0
+                state=0
 
         
 
