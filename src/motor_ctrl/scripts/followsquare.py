@@ -91,7 +91,7 @@ def talker():
             elif np.sqrt((yt-yr)**2+(xt-xr)**2)<1:
                 state=3
         elif state==3:
-            if np.sqrt((yt-yr)**2+(xt-xr)**2)<0.3:
+            if np.sqrt((yt-yr)**2+(xt-xr)**2)<0.5:
                 state=4
         elif state==4:
             coordinate_state+=1
@@ -114,7 +114,7 @@ def talker():
             msg.linear.x=v
         elif state==3:
             w=np.clip(-12*transform_to_pipi(theta_target-yaw),-15,15) #-12 12
-            v=10*np.sqrt((yt-yr)**2+(xt-xr)**2)
+            v=20*np.sqrt((yt-yr)**2+(xt-xr)**2)
             msg.angular.x=w
             msg.linear.x=v
         elif state==4:
