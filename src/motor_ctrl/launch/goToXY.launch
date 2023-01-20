@@ -1,0 +1,13 @@
+<launch>
+
+    <arg name="xtarget" default="1.5"/>
+    <arg name="ytarget" default="4"/>
+
+    <node pkg="motor_ctrl" name="gotoxy" type="gotoxy.py" output="screen"/>
+    <node pkg="motor_ctrl" name="localization" type="localization.py" output="screen"/>
+
+
+    <param name="/gotoxy/x" value="$(arg xtarget)" />
+    <param name="/gotoxy/y" value="$(arg ytarget)" />
+
+</launch>
