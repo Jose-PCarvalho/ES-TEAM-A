@@ -43,7 +43,7 @@ def talker():
     pub=rospy.Publisher ('/coordinates',Pose,queue_size=1)    
     rate = rospy.Rate(100) # 100hz
 
-    hostname = "192.168.1.254"
+    hostname = "192.168.1.253"
     UDP_IP = socket.gethostbyname(hostname)
     UDP_PORT = 8000
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

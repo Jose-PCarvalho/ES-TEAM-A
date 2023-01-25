@@ -1,0 +1,19 @@
+<launch>
+
+    <!-- <arg name="debug" default="False"/>   -->
+
+    <!-- <node pkg="control" name="mission1" type="mission1" output="screen"/> -->
+    <node pkg="motor_ctrl" type="localization.py" name="localization" />
+    <!-- lança imu, pid -->
+    <node pkg="control" name="mission2" type="mission2.py" output="screen"/> 
+    <include file="$(find vision_module)/launch/ground.launch"/> 
+    <arg name="debug" default="False"/>
+    <param name="/debug" value="$(arg debug)"/>
+
+    <group if="$(eval arg('debug') ==True)">
+        <node pkg="vision_module" type="tune" name="tune" output="screen"/>
+        <node pkg="vision_module" name="display" type="display" output="screen" />
+    </group>
+
+ 
+</launch>

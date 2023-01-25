@@ -14,7 +14,7 @@
 char tag_addr[] = "7D:00:22:EA:82:60:3B:9C";
 const char *ssid = "asv";
 const char *password = "12345678";
-const char *host = "192.168.1.254";
+const char *host = "192.168.1.253";
 
 WiFiClient client;
 
