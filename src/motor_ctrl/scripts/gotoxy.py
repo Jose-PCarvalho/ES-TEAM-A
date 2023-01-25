@@ -81,7 +81,7 @@ def talker():
             print("Theta Target:", theta_target, "Theta", yaw)
             if np.rad2deg(np.abs(theta_target-yaw)) < 3:
                 state=2
-            elif np.rad2deg(np.abs(theta_target-yaw)) < 15:
+            elif np.rad2deg(np.abs(theta_target-yaw)) > 15:
                 state=0
         elif state==2:
             print( np.sqrt((yt-yr)**2+(xt-xr)**2),xr,yr)

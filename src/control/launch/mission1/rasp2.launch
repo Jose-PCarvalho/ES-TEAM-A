@@ -1,0 +1,15 @@
+<launch>
+    <!-- <node pkg="control" name="mission1" type="mission1" output="screen"/> -->
+    <!-- lança imu, pid -->
+
+    <arg name="disable_motors" default="False"/>
+
+
+    <group if="$(eval arg('disable_motors') == False)">
+        <include file="$(find motor_ctrl)/launch/asv_pid.launch" />
+    </group>
+    
+    <include file="$(find vision_module)/launch/super_low.launch" />
+    <include file="$(find tfmini_ros)/launch/tfmini.launch" />
+    <include file="$(find mpu9250-driver)/launch/mpu9250.launch" />
+</launch>

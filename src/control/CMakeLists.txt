@@ -180,6 +180,7 @@ target_link_libraries(mission1
 catkin_install_python(PROGRAMS
   scripts/sound.py
   scripts/ArduinoComs.py
+  scripts/mission2.py
   # scripts/pid_controller.py
   # scripts/controller_telop.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
