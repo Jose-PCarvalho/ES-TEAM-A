@@ -1,7 +1,6 @@
 <launch>
 
     <!-- lança imu, pid -->
-    <node pkg="motor_ctrl" name="imu_odom" type="imu_odom" output="screen"/>
     <node pkg="motor_ctrl" name="pid_controller" type="pid_controller.py" output="screen"/>
     
 
